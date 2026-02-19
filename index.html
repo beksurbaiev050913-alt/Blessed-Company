@@ -6,252 +6,178 @@
 
 <style>
 body {
-  margin: 0;
-  font-family: Arial;
-  color: white;
-  text-align: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
 
-  /* ТВОЙ ФОН */
-  background: url("https://i.imgur.com/zYIlgbl.jpeg") no-repeat center center fixed;
-  background-size: cover;
+    /* ТВОЙ ФОН */
+    background: url("https://i.imgur.com/3ZQ3Z6O.jpeg") no-repeat center center fixed;
+    background-size: cover;
 }
 
 /* затемнение */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
-  z-index: -1;
-}
-
-h1 {
-  margin-top: 40px;
+.overlay {
+    background: rgba(0,0,0,0.7);
+    height: 100vh;
+    padding-top: 100px;
 }
 
 button {
-  padding: 12px 25px;
-  margin: 10px;
-  background: #111;
-  border: 1px solid #444;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
-button:hover {
-  background: #222;
-}
-
-input, textarea {
-  width: 300px;
-  padding: 10px;
-  margin: 10px;
-  background: #111;
-  border: 1px solid #333;
-  color: white;
-}
-
-.form-box {
-  display: none;
-}
-
-.response {
-  margin-top: 30px;
+input {
+    padding: 8px;
+    margin: 5px;
 }
 
 .card {
-  background: rgba(0,0,0,0.85);
-  padding: 20px;
-  border-radius: 15px;
-  display: inline-block;
-  animation: fadeIn 1s;
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid white;
+    display: inline-block;
 }
 
-.role {
-  padding: 5px 10px;
-  border-radius: 5px;
-  display: inline-block;
-  margin-top: 10px;
+img.avatar {
+    width: 80px;
+    border-radius: 50%;
 }
 
-.red { background: red; }
-.orange { background: orange; }
-.yellow { background: gold; }
-
-img {
-  width: 120px;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.8);
-}
-
-.modal-content {
-  background: #111;
-  padding: 20px;
-  margin: 15% auto;
-  width: 300px;
-  border-radius: 10px;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
+/* popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: black;
+    border: 1px solid white;
+    padding: 20px;
 }
 </style>
+
 </head>
 
 <body>
 
+<div class="overlay">
+
 <h1>Blessed Company</h1>
 
-<button onclick="openForm()">Оставить заявку</button>
-
-<div class="form-box" id="formBox">
-  <br>
-  <input type="text" id="name" placeholder="Ваше имя"><br>
-  <input type="number" id="age" placeholder="Ваш возраст"><br>
-  <input type="number" id="grade" placeholder="Ваш класс"><br>
-  <textarea id="about" placeholder="Почему хотите вступить?"></textarea><br>
-  <button onclick="send()">Отправить</button>
+<div id="form">
+    <input type="text" id="name" placeholder="Имя"><br>
+    <input type="number" id="age" placeholder="Возраст"><br>
+    <button onclick="send()">Оставить заявку</button>
 </div>
 
-<div class="response" id="response"></div>
+<div id="status"></div>
+<div id="result"></div>
 
-<!-- Модалка -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <p>Если вам одобрили заявку, сделайте скриншот и отправьте код в Telegram.</p>
-    <button onclick="goTelegram()">Перейти в Telegram</button>
-    <br><br>
-    <button onclick="closeModal()">Закрыть</button>
-  </div>
+<br>
+<button onclick="appeal()">Подать апелляцию</button>
+
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup">
+    <p>Если вам одобрили заявку, сделайте скриншот экрана и отправьте код в Telegram</p>
+    <button onclick="goTG()">Перейти</button><br><br>
+    <button onclick="closePopup()">Закрыть</button>
 </div>
 
 <script>
 
-function openForm() {
-  document.getElementById("formBox").style.display = "block";
-}
-
-function goTelegram() {
-  window.open("https://t.me/KosmosHardoxxx", "_blank");
-}
-
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-}
-
-const admins = [
-  {
+const bosses = [
+{
     name: "Главный Основатель компании",
-    color: "red",
-    avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-  },
-  {
+    avatar: "https://i.imgur.com/1Xq9biB.jpeg"
+},
+{
     name: "Управляющий по IT-делам",
-    color: "yellow",
-    avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
-  },
-  {
+    avatar: "https://i.imgur.com/V5pF3pC.jpeg"
+},
+{
     name: "Основной Заместитель директора",
-    color: "orange",
-    avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135789.png"
-  }
+    avatar: "https://i.imgur.com/Tk7pX6Q.jpeg"
+}
 ];
 
-function getRandomAdmin() {
-  let rand = Math.random() * 100;
-  if (rand < 33) return admins[0];
-  if (rand < 67) return admins[1];
-  return admins[2];
+function randomBoss() {
+    return bosses[Math.floor(Math.random() * bosses.length)];
 }
 
 function generateCode() {
-  return "BC-" + Math.floor(Math.random() * 100000);
+    return "CODE-" + Math.floor(Math.random()*1000000);
 }
 
 function send() {
-  let name = document.getElementById("name").value;
-  let age = document.getElementById("age").value;
-  let grade = document.getElementById("grade").value;
-  let about = document.getElementById("about").value;
 
-  let responseDiv = document.getElementById("response");
+    let age = document.getElementById("age").value;
+    let name = document.getElementById("name").value;
 
-  if (!name || !age || !grade || !about) {
-    responseDiv.innerHTML = "⚠️ Заполните все поля!";
-    return;
-  }
-
-  let admin = getRandomAdmin();
-  let code = generateCode();
-
-  responseDiv.innerHTML = "🟡 Ваша заявка рассматривается (30 секунд)...";
-
-  setTimeout(() => {
-
-    if (age < 11) {
-      responseDiv.innerHTML = createCard("❌ Заявка отклонена",
-        "Минимальный возраст — 11 лет.",
-        admin,
-        code);
-      return;
+    if(!age || !name){
+        alert("Заполни все поля!");
+        return;
     }
 
-    let accepted = Math.random() > 0.5;
+    document.getElementById("status").innerHTML = "Заявка рассматривается...";
+    document.getElementById("result").innerHTML = "";
 
-    if (accepted) {
-      responseDiv.innerHTML = createCard("🟢 Заявка одобрена!",
-        "Добро пожаловать в Blessed Company.",
-        admin,
-        code);
-    } else {
-      responseDiv.innerHTML = createCard("🔴 Заявка отклонена",
-        "Ваша заявка не прошла отбор.",
-        admin,
-        code);
-    }
+    setTimeout(() => {
 
-  }, 30000);
+        let boss = randomBoss();
+        let code = generateCode();
+
+        if(age < 11){
+
+            document.getElementById("status").innerHTML = "❌ Заявка отклонена";
+
+            document.getElementById("result").innerHTML = `
+            <div class="card">
+                <img class="avatar" src="${boss.avatar}"><br>
+                <b>${boss.name}</b><br><br>
+                Причина: Минимальный возраст 11 лет<br>
+                Код заявки: ${code}
+            </div>
+            `;
+
+        } else {
+
+            document.getElementById("status").innerHTML = "✅ Заявка одобрена";
+
+            document.getElementById("result").innerHTML = `
+            <div class="card">
+                <img class="avatar" src="${boss.avatar}"><br>
+                <b>${boss.name}</b><br><br>
+                Поздравляем, ${name}!<br>
+                Вы приняты в компанию.<br><br>
+                Код заявки: ${code}
+            </div>
+            `;
+        }
+
+    }, 30000); // 30 секунд
 }
 
-function createCard(title, text, admin, code) {
-  return `
-    <div class="card">
-      <b>${title}</b><br><br>
-      ${text}<br><br>
-
-      Код заявки: <b>${code}</b><br><br>
-
-      <img src="${admin.avatar}">
-      <div>${admin.name}</div>
-      <div class="role ${admin.color}">${admin.name}</div>
-
-      <br>
-      <button onclick="openModal()">Подать апелляцию</button>
-    </div>
-  `;
+function appeal(){
+    document.getElementById("popup").style.display = "block";
 }
 
-function openModal() {
-  document.getElementById("modal").style.display = "block";
+function closePopup(){
+    document.getElementById("popup").style.display = "none";
+}
+
+function goTG(){
+    window.open("https://t.me/KosmosHardoxxx", "_blank");
 }
 
 </script>
 
 </body>
 </html>
-
