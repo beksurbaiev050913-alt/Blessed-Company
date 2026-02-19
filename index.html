@@ -1,1 +1,257 @@
+9<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Blessed Company</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: black;
+  color: white;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 40px;
+}
+
+button {
+  padding: 12px 25px;
+  margin: 10px;
+  background: #111;
+  border: 1px solid #444;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #222;
+}
+
+input, textarea {
+  width: 300px;
+  padding: 10px;
+  margin: 10px;
+  background: #111;
+  border: 1px solid #333;
+  color: white;
+}
+
+.form-box {
+  display: none;
+}
+
+.response {
+  margin-top: 30px;
+}
+
+.card {
+  background: #111;
+  padding: 20px;
+  border-radius: 10px;
+  display: inline-block;
+  animation: fadeIn 1s;
+}
+
+.role {
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.red { background: red; }
+.orange { background: orange; }
+.yellow { background: gold; }
+
+img {
+  width: 120px;
+  border-radius: 10px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+  background: #111;
+  padding: 20px;
+  margin: 15% auto;
+  width: 300px;
+  border-radius: 10px;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+</style>
+</head>
+
+<body>
+
+<h1>Blessed Company</h1>
+
+<button onclick="openForm()">Оставить заявку</button>
+
+<div class="form-box" id="formBox">
+  <br>
+  <input type="text" id="name" placeholder="Ваше имя"><br>
+  <input type="number" id="age" placeholder="Ваш возраст"><br>
+  <input type="number" id="grade" placeholder="Ваш класс"><br>
+  <textarea id="about" placeholder="Почему хотите вступить?"></textarea><br>
+  <button onclick="send()">Отправить</button>
+</div>
+
+<div class="response" id="response"></div>
+
+<!-- Модальное окно -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <p>Если вам одобрили заявку, сделайте скриншот экрана и отправьте код в Telegram.</p>
+    <button onclick="goTelegram()">Перейти в Telegram</button>
+    <br>
+    <button onclick="closeModal()">Закрыть</button>
+  </div>
+</div>
+
+<script>
+
+function openForm() {
+  document.getElementById("formBox").style.display = "block";
+}
+
+function goTelegram() {
+  window.open("https://t.me/KosmosHardoxxx", "_blank");
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+const admins = [
+  {
+    name: "Главный Основатель компании",
+    color: "red",
+    avatar: "https://i.imgur.com/1Xq9BiP.jpeg"
+  },
+  {
+    name: "Управляющий по IT-делам",
+    color: "yellow",
+    avatar: "https://i.imgur.com/6VBx3io.jpeg"
+  },
+  {
+    name: "Основной Заместитель директора",
+    color: "orange",
+    avatar: "https://i.imgur.com/3ZQ3Z4N.jpeg"
+  }
+];
+
+function getRandomAdmin() {
+  let rand = Math.random() * 100;
+  if (rand < 33) return admins[0];
+  if (rand < 67) return admins[1];
+  return admins[2];
+}
+
+function generateCode() {
+  return "BC-" + Math.floor(Math.random() * 100000);
+}
+
+function send() {
+  let name = document.getElementById("name").value;
+  let age = document.getElementById("age").value;
+  let grade = document.getElementById("grade").value;
+  let about = document.getElementById("about").value;
+
+  let responseDiv = document.getElementById("response");
+
+  if (!name || !age || !grade || !about) {
+    responseDiv.innerHTML = "⚠️ Заполните все поля!";
+    return;
+  }
+
+  let admin = getRandomAdmin();
+  let code = generateCode();
+
+  responseDiv.innerHTML = "🟡 Ваша заявка рассматривается (30 секунд)...";
+
+  setTimeout(() => {
+
+    if (age < 11) {
+      responseDiv.innerHTML = `
+        <div class="card">
+          ❌ Заявка отклонена<br><br>
+          Минимальный возраст — 11 лет.<br><br>
+
+          Код заявки: <b>${code}</b><br><br>
+
+          <img src="${admin.avatar}">
+          <div>${admin.name}</div>
+          <div class="role ${admin.color}">${admin.name}</div>
+
+          <br>
+          <button onclick="openModal()">Подать апелляцию</button>
+        </div>
+      `;
+      return;
+    }
+
+    let accepted = Math.random() > 0.5;
+
+    if (accepted) {
+      responseDiv.innerHTML = `
+        <div class="card">
+          🟢 Заявка одобрена!<br><br>
+          Добро пожаловать в Blessed Company.<br><br>
+
+          Код заявки: <b>${code}</b><br><br>
+
+          <img src="${admin.avatar}">
+          <div>${admin.name}</div>
+          <div class="role ${admin.color}">${admin.name}</div>
+
+          <br>
+          <button onclick="openModal()">Подать апелляцию</button>
+        </div>
+      `;
+    } else {
+      responseDiv.innerHTML = `
+        <div class="card">
+          🔴 Заявка отклонена<br><br>
+          Ваша заявка не прошла отбор.<br><br>
+
+          Код заявки: <b>${code}</b><br><br>
+
+          <img src="${admin.avatar}">
+          <div>${admin.name}</div>
+          <div class="role ${admin.color}">${admin.name}</div>
+
+          <br>
+          <button onclick="openModal()">Подать апелляцию</button>
+        </div>
+      `;
+    }
+
+  }, 30000); // 30 секунд
+
+}
+
+function openModal() {
+  document.getElementById("modal").style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
 
