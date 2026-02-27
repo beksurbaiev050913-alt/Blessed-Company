@@ -1,183 +1,215 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Blessed Company</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
-
-    /* ТВОЙ ФОН */
-    background: url("https://i.imgur.com/3ZQ3Z6O.jpeg") no-repeat center center fixed;
-    background-size: cover;
-}
-
-/* затемнение */
-.overlay {
-    background: rgba(0,0,0,0.7);
-    height: 100vh;
-    padding-top: 100px;
-}
-
-button {
-    padding: 10px 20px;
-    background: transparent;
-    border: 1px solid white;
-    color: white;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-input {
-    padding: 8px;
-    margin: 5px;
-}
-
-.card {
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px solid white;
-    display: inline-block;
-}
-
-img.avatar {
-    width: 80px;
-    border-radius: 50%;
-}
-
-/* popup */
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: black;
-    border: 1px solid white;
-    padding: 20px;
-}
-</style>
-
-</head>
-
-<body>
-
-<div class="overlay">
-
-<h1>Blessed Company</h1>
-
-<div id="form">
-    <input type="text" id="name" placeholder="Имя"><br>
-    <input type="number" id="age" placeholder="Возраст"><br>
-    <button onclick="send()">Оставить заявку</button>
-</div>
-
-<div id="status"></div>
-<div id="result"></div>
-
-<br>
-<button onclick="appeal()">Подать апелляцию</button>
-
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup">
-    <p>Если вам одобрили заявку, сделайте скриншот экрана и отправьте код в Telegram</p>
-    <button onclick="goTG()">Перейти</button><br><br>
-    <button onclick="closePopup()">Закрыть</button>
-</div>
-
-<script>
-
-const bosses = [
-{
-    name: "Главный Основатель компании",
-    avatar: "https://i.imgur.com/1Xq9biB.jpeg"
-},
-{
-    name: "Управляющий по IT-делам",
-    avatar: "https://i.imgur.com/V5pF3pC.jpeg"
-},
-{
-    name: "Основной Заместитель директора",
-    avatar: "https://i.imgur.com/Tk7pX6Q.jpeg"
-}
-];
-
-function randomBoss() {
-    return bosses[Math.floor(Math.random() * bosses.length)];
-}
-
-function generateCode() {
-    return "CODE-" + Math.floor(Math.random()*1000000);
-}
-
-function send() {
-
-    let age = document.getElementById("age").value;
-    let name = document.getElementById("name").value;
-
-    if(!age || !name){
-        alert("Заполни все поля!");
-        return;
-    }
-
-    document.getElementById("status").innerHTML = "Заявка рассматривается...";
-    document.getElementById("result").innerHTML = "";
-
-    setTimeout(() => {
-
-        let boss = randomBoss();
-        let code = generateCode();
-
-        if(age < 11){
-
-            document.getElementById("status").innerHTML = "❌ Заявка отклонена";
-
-            document.getElementById("result").innerHTML = `
-            <div class="card">
-                <img class="avatar" src="${boss.avatar}"><br>
-                <b>${boss.name}</b><br><br>
-                Причина: Минимальный возраст 11 лет<br>
-                Код заявки: ${code}
-            </div>
-            `;
-
-        } else {
-
-            document.getElementById("status").innerHTML = "✅ Заявка одобрена";
-
-            document.getElementById("result").innerHTML = `
-            <div class="card">
-                <img class="avatar" src="${boss.avatar}"><br>
-                <b>${boss.name}</b><br><br>
-                Поздравляем, ${name}!<br>
-                Вы приняты в компанию.<br><br>
-                Код заявки: ${code}
-            </div>
-            `;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Три в ряд 🍪</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fdf6e3;
+            margin: 0;
+            padding: 0;
         }
 
-    }, 30000); // 30 секунд
-}
+        .hidden { display: none; }
 
-function appeal(){
-    document.getElementById("popup").style.display = "block";
-}
+        #menu, #game {
+            padding: 20px;
+        }
 
-function closePopup(){
-    document.getElementById("popup").style.display = "none";
-}
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background-color: #f4a261;
+            color: white;
+        }
 
-function goTG(){
-    window.open("https://t.me/KosmosHardoxxx", "_blank");
-}
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            gap: 5px;
+            justify-content: center;
+            margin: 20px auto;
+        }
 
-</script>
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: #e9c46a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+        }
 
+        .cell.selected {
+            border: 3px solid #2a9d8f;
+        }
+
+        #score {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <h1>Три в ряд 🍪</h1>
+        <button id="playBtn">Играть</button>
+        <button id="supportBtn">Тех.Поддержка</button>
+    </div>
+
+    <div id="game" class="hidden">
+        <h2>Собирай печенки!</h2>
+        <div id="score">Монетки: 0</div>
+        <div id="grid"></div>
+        <button id="backBtn">Назад в меню</button>
+    </div>
+
+    <script>
+        const menu = document.getElementById('menu');
+        const game = document.getElementById('game');
+        const playBtn = document.getElementById('playBtn');
+        const supportBtn = document.getElementById('supportBtn');
+        const backBtn = document.getElementById('backBtn');
+        const grid = document.getElementById('grid');
+        const scoreDisplay = document.getElementById('score');
+
+        let score = 0;
+        const width = 8;
+        const height = 8;
+        const cells = [];
+        const cookieEmojis = ['🍪','🍪','🍪','🍪','🍪','🍪'];
+        let selectedCell = null;
+
+        playBtn.addEventListener('click', () => {
+            menu.classList.add('hidden');
+            game.classList.remove('hidden');
+            startGame();
+        });
+
+        supportBtn.addEventListener('click', () => {
+            window.open('https://t.me/KosmosHardoxxx', '_blank');
+        });
+
+        backBtn.addEventListener('click', () => {
+            game.classList.add('hidden');
+            menu.classList.remove('hidden');
+            grid.innerHTML = '';
+            cells.length = 0;
+            score = 0;
+            scoreDisplay.textContent = `Монетки: ${score}`;
+        });
+
+        function startGame() {
+            createGrid();
+            score = 0;
+            scoreDisplay.textContent = `Монетки: ${score}`;
+        }
+
+        function createGrid() {
+            grid.innerHTML = '';
+            for(let i=0; i<width*height; i++){
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.textContent = cookieEmojis[Math.floor(Math.random()*cookieEmojis.length)];
+                cell.addEventListener('click', selectCell);
+                grid.appendChild(cell);
+                cells.push(cell);
+            }
+        }
+
+        function selectCell(e){
+            const cell = e.target;
+            if(!selectedCell){
+                selectedCell = cell;
+                cell.classList.add('selected');
+            } else {
+                swapCells(selectedCell, cell);
+                selectedCell.classList.remove('selected');
+                selectedCell = null;
+                setTimeout(checkMatches, 200);
+            }
+        }
+
+        function swapCells(cell1, cell2){
+            const temp = cell1.textContent;
+            cell1.textContent = cell2.textContent;
+            cell2.textContent = temp;
+        }
+
+        function checkMatches(){
+            let matched = false;
+
+            // Горизонтальные
+            for(let r=0; r<height; r++){
+                for(let c=0; c<width-2; c++){
+                    const index = r*width + c;
+                    const val = cells[index].textContent;
+                    if(val === cells[index+1].textContent && val === cells[index+2].textContent){
+                        matched = true;
+                        cells[index].textContent = '';
+                        cells[index+1].textContent = '';
+                        cells[index+2].textContent = '';
+                        score += 3;
+                    }
+                }
+            }
+
+            // Вертикальные
+            for(let c=0; c<width; c++){
+                for(let r=0; r<height-2; r++){
+                    const index = r*width + c;
+                    const val = cells[index].textContent;
+                    if(val === cells[index+width].textContent && val === cells[index+2*width].textContent){
+                        matched = true;
+                        cells[index].textContent = '';
+                        cells[index+width].textContent = '';
+                        cells[index+2*width].textContent = '';
+                        score += 3;
+                    }
+                }
+            }
+
+            scoreDisplay.textContent = `Монетки: ${score}`;
+
+            if(matched){
+                dropCells();
+                setTimeout(checkMatches, 300);
+            }
+        }
+
+        function dropCells(){
+            for(let c=0; c<width; c++){
+                for(let r=height-1; r>=0; r--){
+                    const index = r*width + c;
+                    if(cells[index].textContent === ''){
+                        for(let k=r-1; k>=0; k--){
+                            const aboveIndex = k*width + c;
+                            if(cells[aboveIndex].textContent !== ''){
+                                cells[index].textContent = cells[aboveIndex].textContent;
+                                cells[aboveIndex].textContent = '';
+                                break;
+                            }
+                        }
+                        if(cells[index].textContent === ''){
+                            cells[index].textContent = cookieEmojis[Math.floor(Math.random()*cookieEmojis.length)];
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>
