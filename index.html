@@ -1,215 +1,117 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Три в ряд 🍪</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #fdf6e3;
-            margin: 0;
-            padding: 0;
-        }
-
-        .hidden { display: none; }
-
-        #menu, #game {
-            padding: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            border: none;
-            border-radius: 10px;
-            background-color: #f4a261;
-            color: white;
-        }
-
-        #grid {
-            display: grid;
-            grid-template-columns: repeat(8, 50px);
-            grid-template-rows: repeat(8, 50px);
-            gap: 5px;
-            justify-content: center;
-            margin: 20px auto;
-        }
-
-        .cell {
-            width: 50px;
-            height: 50px;
-            background-color: #e9c46a;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .cell.selected {
-            border: 3px solid #2a9d8f;
-        }
-
-        #score {
-            font-size: 20px;
-            margin-top: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Найди пару 🍓</title>
+<style>
+  body { font-family: Arial; text-align:center; background:#fdf6e3; margin:0; padding:0; }
+  button { padding:10px 20px; margin:10px; font-size:18px; cursor:pointer; border:none; border-radius:10px; background:#f4a261; color:white; }
+  .hidden { display:none; }
+  #menu,#game { padding:20px; }
+  #grid { display:grid; grid-template-columns: repeat(4,80px); grid-gap:10px; justify-content:center; margin:20px auto; }
+  .cell { width:80px; height:80px; background:#e9c46a; border-radius:10px; display:flex; justify-content:center; align-items:center; font-size:36px; cursor:pointer; user-select:none; }
+  #score { font-size:20px; margin-top:10px; }
+</style>
 </head>
 <body>
-    <div id="menu">
-        <h1>Три в ряд 🍪</h1>
-        <button id="playBtn">Играть</button>
-        <button id="supportBtn">Тех.Поддержка</button>
-    </div>
 
-    <div id="game" class="hidden">
-        <h2>Собирай печенки!</h2>
-        <div id="score">Монетки: 0</div>
-        <div id="grid"></div>
-        <button id="backBtn">Назад в меню</button>
-    </div>
+<div id="menu">
+  <h1>Найди пару 🍓</h1>
+  <button id="playBtn">Играть</button>
+  <button id="supportBtn">Тех.Поддержка</button>
+</div>
 
-    <script>
-        const menu = document.getElementById('menu');
-        const game = document.getElementById('game');
-        const playBtn = document.getElementById('playBtn');
-        const supportBtn = document.getElementById('supportBtn');
-        const backBtn = document.getElementById('backBtn');
-        const grid = document.getElementById('grid');
-        const scoreDisplay = document.getElementById('score');
+<div id="game" class="hidden">
+  <h2>Совпадай фрукты!</h2>
+  <div id="score">Монетки: 0</div>
+  <div id="grid"></div>
+  <button id="backBtn">Назад в меню</button>
+</div>
 
-        let score = 0;
-        const width = 8;
-        const height = 8;
-        const cells = [];
-        const cookieEmojis = ['🍪','🍪','🍪','🍪','🍪','🍪'];
-        let selectedCell = null;
+<script>
+const menu=document.getElementById('menu');
+const game=document.getElementById('game');
+const playBtn=document.getElementById('playBtn');
+const supportBtn=document.getElementById('supportBtn');
+const backBtn=document.getElementById('backBtn');
+const grid=document.getElementById('grid');
+const scoreDisplay=document.getElementById('score');
 
-        playBtn.addEventListener('click', () => {
-            menu.classList.add('hidden');
-            game.classList.remove('hidden');
-            startGame();
-        });
+const fruits = [
+  {emoji:'🍉', value:5},{emoji:'🍎', value:3},{emoji:'🍓', value:4},{emoji:'🍇', value:2},
+  {emoji:'🍐', value:3},{emoji:'🍑', value:4},{emoji:'🌴', value:5},{emoji:'🥜', value:2}
+];
 
-        supportBtn.addEventListener('click', () => {
-            window.open('https://t.me/KosmosHardoxxx', '_blank');
-        });
+let score = 0;
+let firstCell = null;
+let secondCell = null;
+let lock = false;
 
-        backBtn.addEventListener('click', () => {
-            game.classList.add('hidden');
-            menu.classList.remove('hidden');
-            grid.innerHTML = '';
-            cells.length = 0;
-            score = 0;
-            scoreDisplay.textContent = `Монетки: ${score}`;
-        });
+playBtn.addEventListener('click',()=>{
+  menu.classList.add('hidden');
+  game.classList.remove('hidden');
+  startGame();
+});
 
-        function startGame() {
-            createGrid();
-            score = 0;
-            scoreDisplay.textContent = `Монетки: ${score}`;
-        }
+supportBtn.addEventListener('click',()=>window.open('https://t.me/KosmosHardoxxx','_blank'));
 
-        function createGrid() {
-            grid.innerHTML = '';
-            for(let i=0; i<width*height; i++){
-                const cell = document.createElement('div');
-                cell.classList.add('cell');
-                cell.dataset.index = i;
-                cell.textContent = cookieEmojis[Math.floor(Math.random()*cookieEmojis.length)];
-                cell.addEventListener('click', selectCell);
-                grid.appendChild(cell);
-                cells.push(cell);
-            }
-        }
+backBtn.addEventListener('click',()=>{
+  game.classList.add('hidden');
+  menu.classList.remove('hidden');
+  grid.innerHTML='';
+  score=0;
+  scoreDisplay.textContent=`Монетки: ${score}`;
+});
 
-        function selectCell(e){
-            const cell = e.target;
-            if(!selectedCell){
-                selectedCell = cell;
-                cell.classList.add('selected');
-            } else {
-                swapCells(selectedCell, cell);
-                selectedCell.classList.remove('selected');
-                selectedCell = null;
-                setTimeout(checkMatches, 200);
-            }
-        }
+function startGame(){
+  score=0;
+  scoreDisplay.textContent=`Монетки: ${score}`;
+  createGrid();
+}
 
-        function swapCells(cell1, cell2){
-            const temp = cell1.textContent;
-            cell1.textContent = cell2.textContent;
-            cell2.textContent = temp;
-        }
+function createGrid(){
+  grid.innerHTML='';
+  let pairFruits = [...fruits, ...fruits]; // 16 ячеек
+  pairFruits.sort(()=>0.5-Math.random());
+  for(let i=0;i<pairFruits.length;i++){
+    const cell=document.createElement('div');
+    cell.classList.add('cell');
+    cell.dataset.emoji=pairFruits[i].emoji;
+    cell.dataset.value=pairFruits[i].value;
+    cell.textContent='';
+    cell.addEventListener('click',()=>flipCell(cell));
+    grid.appendChild(cell);
+  }
+}
 
-        function checkMatches(){
-            let matched = false;
+function flipCell(cell){
+  if(lock || cell===firstCell || cell.textContent!=='' && cell.textContent!==cell.dataset.emoji) return;
+  cell.textContent=cell.dataset.emoji;
+  if(!firstCell){
+    firstCell=cell;
+  } else {
+    secondCell=cell;
+    lock=true;
+    setTimeout(checkMatch,500);
+  }
+}
 
-            // Горизонтальные
-            for(let r=0; r<height; r++){
-                for(let c=0; c<width-2; c++){
-                    const index = r*width + c;
-                    const val = cells[index].textContent;
-                    if(val === cells[index+1].textContent && val === cells[index+2].textContent){
-                        matched = true;
-                        cells[index].textContent = '';
-                        cells[index+1].textContent = '';
-                        cells[index+2].textContent = '';
-                        score += 3;
-                    }
-                }
-            }
+function checkMatch(){
+  if(firstCell.dataset.emoji===secondCell.dataset.emoji){
+    score += parseInt(firstCell.dataset.value);
+    scoreDisplay.textContent=`Монетки: ${score}`;
+    firstCell.style.background='#2a9d8f';
+    secondCell.style.background='#2a9d8f';
+  } else {
+    firstCell.textContent='';
+    secondCell.textContent='';
+  }
+  firstCell=null;
+  secondCell=null;
+  lock=false;
+}
+</script>
 
-            // Вертикальные
-            for(let c=0; c<width; c++){
-                for(let r=0; r<height-2; r++){
-                    const index = r*width + c;
-                    const val = cells[index].textContent;
-                    if(val === cells[index+width].textContent && val === cells[index+2*width].textContent){
-                        matched = true;
-                        cells[index].textContent = '';
-                        cells[index+width].textContent = '';
-                        cells[index+2*width].textContent = '';
-                        score += 3;
-                    }
-                }
-            }
-
-            scoreDisplay.textContent = `Монетки: ${score}`;
-
-            if(matched){
-                dropCells();
-                setTimeout(checkMatches, 300);
-            }
-        }
-
-        function dropCells(){
-            for(let c=0; c<width; c++){
-                for(let r=height-1; r>=0; r--){
-                    const index = r*width + c;
-                    if(cells[index].textContent === ''){
-                        for(let k=r-1; k>=0; k--){
-                            const aboveIndex = k*width + c;
-                            if(cells[aboveIndex].textContent !== ''){
-                                cells[index].textContent = cells[aboveIndex].textContent;
-                                cells[aboveIndex].textContent = '';
-                                break;
-                            }
-                        }
-                        if(cells[index].textContent === ''){
-                            cells[index].textContent = cookieEmojis[Math.floor(Math.random()*cookieEmojis.length)];
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 </body>
 </html>
