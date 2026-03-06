@@ -41,7 +41,13 @@
 
     .word {
       font-size: 2em;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
+    }
+
+    .remaining {
+      margin-bottom: 20px;
+      font-size: 1.2em;
+      color: #333;
     }
 
     .stacks {
@@ -100,6 +106,7 @@
 
   <div class="game-area">
     <div class="word" id="currentWord">Слово</div>
+    <div class="remaining" id="wordsLeft">Слов осталось: 50</div>
     <div class="stacks" id="stacksContainer"></div>
     <div class="status" id="status"></div>
     <div class="level-info" id="levelInfo"></div>
@@ -109,7 +116,7 @@
   <script>
     const levels = [
       {
-        stacks: ["Лето", "Фрукты", "Погода"],
+        stacks: ["Фрукты", "Погода"], // Убираем "Лето"
         words: ["Арбуз","Солнце","Клубника","Облако","Груша","Мороз","Яблоко","Дождь","Персик","Туча",
                 "Апельсин","Ветер","Банан","Гроза","Арбуз","Снег","Вишня","Ливень","Малина","Солнечный день",
                 "Слива","Град","Абрикос","Туман","Персик","Ливневый дождь","Виноград","Жара","Ягода","Радуга",
@@ -142,20 +149,28 @@
     const stacksContainer = document.getElementById("stacksContainer");
     const statusEl = document.getElementById("status");
     const levelInfoEl = document.getElementById("levelInfo");
+    const wordsLeftEl = document.getElementById("wordsLeft");
     const nextLevelBtn = document.getElementById("nextLevelBtn");
 
     function startLevel(level) {
       wordIndex = 0;
       stepsLeft = 100;
       nextLevelBtn.style.display = "none";
+      statusEl.textContent = "";
       levelInfoEl.textContent = `Уровень ${level+1} | Шаги: ${stepsLeft}`;
+      updateWordsLeft();
       showWord();
       showStacks(levels[level].stacks);
-      statusEl.textContent = "";
+    }
+
+    function updateWordsLeft() {
+      const remaining = levels[currentLevel].words.length - wordIndex;
+      wordsLeftEl.textContent = `Слов осталось: ${remaining}`;
     }
 
     function showWord() {
       currentWordEl.textContent = levels[currentLevel].words[wordIndex];
+      updateWordsLeft();
     }
 
     function showStacks(stacks) {
@@ -176,28 +191,26 @@
 
       let correct = false;
 
-      // Проверяем правильность
-      switch (currentLevel) {
-        case 0:
-          if ((currentWord === "Арбуз" || currentWord === "Клубника" || currentWord === "Груша" ||
-               currentWord === "Яблоко" || currentWord === "Персик" || currentWord === "Апельсин" ||
-               currentWord === "Малина" || currentWord === "Слива" || currentWord === "Виноград" ||
-               currentWord === "Киви" || currentWord === "Черешня") && stack === "Фрукты") correct = true;
-          if ((currentWord === "Солнце" || currentWord === "Мороз" || currentWord === "Дождь" || currentWord === "Туча" ||
-               currentWord === "Гроза" || currentWord === "Снег" || currentWord === "Ветер" || currentWord === "Тепло" ||
-               currentWord === "Радуга" || currentWord === "Ливневый дождь") && stack === "Погода") correct = true;
-          if ((currentWord === "Арбуз" || currentWord === "Солнечный день" || currentWord === "Теплый день" || currentWord === "День летний") && stack === "Лето") correct = true;
-          break;
-        case 1:
-          if ((["Телефон","Ноутбук","Планшет","Часы","Телевизор","Робот","Наушники"].includes(currentWord)) && stack === "Электроника") correct = true;
-          if ((["BMW","Мерседес","Лада","Ауди","Форд","Тойота","Мазда","Хонда"].includes(currentWord)) && stack === "Автомобили") correct = true;
-          if ((["Дерево","Сосна","Ель","Береза","Дуб","Секвойя","Липа"].includes(currentWord)) && stack === "Лес") correct = true;
-          break;
-        case 2:
-          if ((["Кошка","Собака","Лев","Тигр","Слон","Мышь","Обезьяна","Кролик","Лиса","Жираф"].includes(currentWord)) && stack === "Животные") correct = true;
-          if ((["Clash Royale","Roblox","Candy Crush","Among Us","Brawl Stars","Clash of Clans","Mobile Legends","Genshin","PUBG"].includes(currentWord)) && stack === "Мобильные игры") correct = true;
-          if ((["Сосна","Дуб","Береза","Ель","Секвойя","Липа"].includes(currentWord)) && stack === "Деревья") correct = true;
-          break;
+      // Проверка правильности с точными словами
+      const correctMapping = {
+        0: { // уровень 1
+          "Фрукты": ["Арбуз","Клубника","Груша","Яблоко","Персик","Апельсин","Малина","Слива","Виноград","Киви","Черешня","Ягода","Абрикос"],
+          "Погода": ["Солнце","Облако","Мороз","Дождь","Туча","Гроза","Снег","Ветер","Тепло","Радуга","Ливневый дождь","Туман","Солнечный день","Теплый день","День летний"]
+        },
+        1: { // уровень 2
+          "Электроника": ["Телефон","Ноутбук","Планшет","Часы","Телевизор","Робот","Наушники","Камера"],
+          "Автомобили": ["BMW","Мерседес","Лада","Ауди","Форд","Тойота","Мазда","Хонда"],
+          "Лес": ["Дерево","Сосна","Ель","Береза","Дуб","Секвойя","Липа"]
+        },
+        2: { // уровень 3
+          "Животные": ["Кошка","Собака","Лев","Тигр","Слон","Мышь","Обезьяна","Кролик","Лиса","Жираф"],
+          "Мобильные игры": ["Clash Royale","Roblox","Candy Crush","Among Us","Brawl Stars","Clash of Clans","Mobile Legends","Genshin","PUBG"],
+          "Деревья": ["Сосна","Дуб","Береза","Ель","Секвойя","Липа"]
+        }
+      };
+
+      if (correctMapping[currentLevel][stack].includes(currentWord)) {
+        correct = true;
       }
 
       if (correct) {
@@ -207,6 +220,8 @@
       }
 
       wordIndex++;
+      updateWordsLeft();
+
       if (wordIndex >= levels[currentLevel].words.length || stepsLeft <= 0) {
         if (currentLevel < levels.length - 1) {
           nextLevelBtn.style.display = "inline-block";
@@ -224,7 +239,6 @@
       startLevel(currentLevel);
     });
 
-    // Старт игры
     startLevel(currentLevel);
   </script>
 </body>
