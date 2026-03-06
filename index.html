@@ -2,115 +2,173 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Найди пару 🍓</title>
+<title>Солитер - Слова</title>
+
 <style>
-  body { font-family: Arial; text-align:center; background:#fdf6e3; margin:0; padding:0; }
-  button { padding:10px 20px; margin:10px; font-size:18px; cursor:pointer; border:none; border-radius:10px; background:#f4a261; color:white; }
-  .hidden { display:none; }
-  #menu,#game { padding:20px; }
-  #grid { display:grid; grid-template-columns: repeat(4,80px); grid-gap:10px; justify-content:center; margin:20px auto; }
-  .cell { width:80px; height:80px; background:#e9c46a; border-radius:10px; display:flex; justify-content:center; align-items:center; font-size:36px; cursor:pointer; user-select:none; }
-  #score { font-size:20px; margin-top:10px; }
+body{
+font-family: Arial;
+text-align:center;
+background:#1e272e;
+color:white;
+}
+
+h1{
+margin-top:20px;
+}
+
+#letters{
+margin-top:40px;
+}
+
+.letter{
+display:inline-block;
+background:white;
+color:black;
+padding:15px 20px;
+margin:5px;
+font-size:24px;
+border-radius:10px;
+cursor:pointer;
+}
+
+#word{
+margin-top:20px;
+font-size:30px;
+}
+
+button{
+margin-top:20px;
+padding:10px 20px;
+font-size:18px;
+cursor:pointer;
+}
+
+#info{
+margin-top:15px;
+font-size:20px;
+}
 </style>
 </head>
+
 <body>
 
-<div id="menu">
-  <h1>Найди пару 🍓</h1>
-  <button id="playBtn">Играть</button>
-  <button id="supportBtn">Тех.Поддержка</button>
+<h1>Солитер - Слова</h1>
+
+<div id="info">
+Уровень: <span id="level"></span> |
+Время: <span id="time"></span>
 </div>
 
-<div id="game" class="hidden">
-  <h2>Совпадай фрукты!</h2>
-  <div id="score">Монетки: 0</div>
-  <div id="grid"></div>
-  <button id="backBtn">Назад в меню</button>
-</div>
+<div id="letters"></div>
+
+<div id="word">Слово: </div>
+
+<button onclick="checkWord()">Проверить</button>
 
 <script>
-const menu=document.getElementById('menu');
-const game=document.getElementById('game');
-const playBtn=document.getElementById('playBtn');
-const supportBtn=document.getElementById('supportBtn');
-const backBtn=document.getElementById('backBtn');
-const grid=document.getElementById('grid');
-const scoreDisplay=document.getElementById('score');
 
-const fruits = [
-  {emoji:'🍉', value:5},{emoji:'🍎', value:3},{emoji:'🍓', value:4},{emoji:'🍇', value:2},
-  {emoji:'🍐', value:3},{emoji:'🍑', value:4},{emoji:'🌴', value:5},{emoji:'🥜', value:2}
+let levels = [
+{letters:["К","О","Т","А","Р","С"], words:["КОТ","ТОК","РОТ"]},
+{letters:["М","И","Р","А","К","Т"], words:["МИР","ТИР","РАК"]},
+{letters:["С","Л","О","В","А","Р"], words:["СЛОВО","ВОР","РОС"]},
+{letters:["Б","А","Н","К","А","Т"], words:["БАНК","ТАНК","БАТ"]},
+{letters:["Г","О","Р","А","Д","С"], words:["ГОРА","ДАР","САД"]}
 ];
 
-let score = 0;
-let firstCell = null;
-let secondCell = null;
-let lock = false;
+let level = localStorage.getItem("level");
+if(level == null) level = 0;
 
-playBtn.addEventListener('click',()=>{
-  menu.classList.add('hidden');
-  game.classList.remove('hidden');
-  startGame();
-});
+let currentWord = "";
 
-supportBtn.addEventListener('click',()=>window.open('https://t.me/KosmosHardoxxx','_blank'));
+let time = 300;
 
-backBtn.addEventListener('click',()=>{
-  game.classList.add('hidden');
-  menu.classList.remove('hidden');
-  grid.innerHTML='';
-  score=0;
-  scoreDisplay.textContent=`Монетки: ${score}`;
-});
+function startTimer(){
 
-function startGame(){
-  score=0;
-  scoreDisplay.textContent=`Монетки: ${score}`;
-  createGrid();
+setInterval(()=>{
+
+time--;
+
+let minutes = Math.floor(time/60);
+let seconds = time%60;
+
+document.getElementById("time").innerText =
+minutes+":"+String(seconds).padStart(2,'0');
+
+if(time<=0){
+alert("Время вышло! Ты проиграл!");
+location.reload();
 }
 
-function createGrid(){
-  grid.innerHTML='';
-  let pairFruits = [...fruits, ...fruits]; // 16 ячеек
-  pairFruits.sort(()=>0.5-Math.random());
-  for(let i=0;i<pairFruits.length;i++){
-    const cell=document.createElement('div');
-    cell.classList.add('cell');
-    cell.dataset.emoji=pairFruits[i].emoji;
-    cell.dataset.value=pairFruits[i].value;
-    cell.textContent='';
-    cell.addEventListener('click',()=>flipCell(cell));
-    grid.appendChild(cell);
-  }
+},1000)
+
 }
 
-function flipCell(cell){
-  if(lock || cell===firstCell || cell.textContent!=='' && cell.textContent!==cell.dataset.emoji) return;
-  cell.textContent=cell.dataset.emoji;
-  if(!firstCell){
-    firstCell=cell;
-  } else {
-    secondCell=cell;
-    lock=true;
-    setTimeout(checkMatch,500);
-  }
+function loadLevel(){
+
+document.getElementById("level").innerText = Number(level)+1;
+
+let letters = levels[level].letters;
+
+let container = document.getElementById("letters");
+container.innerHTML="";
+
+letters.forEach(letter=>{
+
+let div = document.createElement("div");
+div.className="letter";
+div.innerText=letter;
+
+div.onclick=()=>{
+currentWord+=letter;
+document.getElementById("word").innerText="Слово: "+currentWord;
 }
 
-function checkMatch(){
-  if(firstCell.dataset.emoji===secondCell.dataset.emoji){
-    score += parseInt(firstCell.dataset.value);
-    scoreDisplay.textContent=`Монетки: ${score}`;
-    firstCell.style.background='#2a9d8f';
-    secondCell.style.background='#2a9d8f';
-  } else {
-    firstCell.textContent='';
-    secondCell.textContent='';
-  }
-  firstCell=null;
-  secondCell=null;
-  lock=false;
+container.appendChild(div);
+
+})
+
 }
+
+function checkWord(){
+
+let words = levels[level].words;
+
+if(words.includes(currentWord)){
+
+alert("Правильное слово!");
+
+level++;
+
+if(level >= levels.length){
+
+alert("Ты прошёл всю игру!");
+
+localStorage.setItem("level",0);
+
+}else{
+
+localStorage.setItem("level",level);
+
+alert("Следующий уровень!");
+
+loadLevel();
+
+}
+
+}else{
+
+alert("Такого слова нет");
+
+}
+
+currentWord="";
+document.getElementById("word").innerText="Слово:";
+
+}
+
+loadLevel();
+startTimer();
+
 </script>
 
 </body>
