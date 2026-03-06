@@ -1,175 +1,231 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Солитер - Слова</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сортировка слов</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
 
-<style>
-body{
-font-family: Arial;
-text-align:center;
-background:#1e272e;
-color:white;
-}
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #4caf50;
+      color: white;
+      box-sizing: border-box;
+    }
 
-h1{
-margin-top:20px;
-}
+    .book {
+      width: 50px;
+      height: 50px;
+      background: url('https://cdn-icons-png.flaticon.com/512/29/29302.png') no-repeat center center;
+      background-size: contain;
+    }
 
-#letters{
-margin-top:40px;
-}
+    .game-area {
+      margin-top: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-.letter{
-display:inline-block;
-background:white;
-color:black;
-padding:15px 20px;
-margin:5px;
-font-size:24px;
-border-radius:10px;
-cursor:pointer;
-}
+    .word {
+      font-size: 2em;
+      margin-bottom: 30px;
+    }
 
-#word{
-margin-top:20px;
-font-size:30px;
-}
+    .stacks {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
 
-button{
-margin-top:20px;
-padding:10px 20px;
-font-size:18px;
-cursor:pointer;
-}
+    .stack {
+      width: 150px;
+      height: 150px;
+      background: #fff;
+      border: 2px solid #4caf50;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+      text-align: center;
+    }
 
-#info{
-margin-top:15px;
-font-size:20px;
-}
-</style>
+    .stack:hover {
+      background: #e0f7fa;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+
+    .level-info {
+      margin-top: 10px;
+      font-size: 1em;
+      color: #333;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background: #4caf50;
+      color: white;
+    }
+  </style>
 </head>
-
 <body>
+  <header>
+    <div class="book" title="Не кликается"></div>
+    <div class="book" id="bookButton" title="Словарь / 50 слов"></div>
+  </header>
 
-<h1>Солитер - Слова</h1>
+  <div class="game-area">
+    <div class="word" id="currentWord">Слово</div>
+    <div class="stacks" id="stacksContainer"></div>
+    <div class="status" id="status"></div>
+    <div class="level-info" id="levelInfo"></div>
+    <button id="nextLevelBtn" style="display:none;">Следующий уровень</button>
+  </div>
 
-<div id="info">
-Уровень: <span id="level"></span> |
-Время: <span id="time"></span>
-</div>
+  <script>
+    const levels = [
+      {
+        stacks: ["Лето", "Фрукты", "Погода"],
+        words: ["Арбуз","Солнце","Клубника","Облако","Груша","Мороз","Яблоко","Дождь","Персик","Туча",
+                "Апельсин","Ветер","Банан","Гроза","Арбуз","Снег","Вишня","Ливень","Малина","Солнечный день",
+                "Слива","Град","Абрикос","Туман","Персик","Ливневый дождь","Виноград","Жара","Ягода","Радуга",
+                "Киви","Холод","Мандарины","Тепло","Черешня","Облака","Арбуз","День летний","Яблоко","Теплый ветер",
+                "Груша","Пасмурно","Клубника","Солнечно","Малина","Летний дождь","Слива","Теплый день","Арбуз","Солнце"]
+      },
+      {
+        stacks: ["Электроника", "Автомобили", "Лес"],
+        words: ["Телефон","BMW","Дерево","Ноутбук","Мерседес","Сосна","Планшет","Лада","Ель","Часы",
+                "Ауди","Береза","Камера","Форд","Дуб","Робот","Тойота","Секвойя","Телевизор","Мазда",
+                "Сосна","Наушники","Хонда","Береза","Планшет","Лада","Дуб","Часы","Форд","Ель",
+                "Телефон","Ауди","Секвойя","Робот","Тойота","Сосна","Ноутбук","Мазда","Дуб","Наушники",
+                "Телевизор","Хонда","Береза","Планшет","BMW","Секвойя","Робот","Дерево","Телефон","Мерседес"]
+      },
+      {
+        stacks: ["Животные", "Мобильные игры", "Деревья"],
+        words: ["Кошка","Clash Royale","Сосна","Собака","Roblox","Дуб","Лев","Candy Crush","Береза","Тигр",
+                "Among Us","Ель","Слон","Brawl Stars","Секвойя","Мышь","Clash of Clans","Дуб","Обезьяна","Roblox",
+                "Липа","Кролик","Mobile Legends","Сосна","Лиса","Genshin","Береза","Жираф","PUBG","Ель",
+                "Кошка","Brawl Stars","Дуб","Собака","Clash Royale","Секвойя","Лев","Candy Crush","Сосна","Слон",
+                "Among Us","Береза","Мышь","Mobile Legends","Дуб","Обезьяна","Genshin","Липа","Кролик","PUBG"]
+      }
+    ];
 
-<div id="letters"></div>
+    let currentLevel = 0;
+    let wordIndex = 0;
+    let stepsLeft = 100;
 
-<div id="word">Слово: </div>
+    const currentWordEl = document.getElementById("currentWord");
+    const stacksContainer = document.getElementById("stacksContainer");
+    const statusEl = document.getElementById("status");
+    const levelInfoEl = document.getElementById("levelInfo");
+    const nextLevelBtn = document.getElementById("nextLevelBtn");
 
-<button onclick="checkWord()">Проверить</button>
+    function startLevel(level) {
+      wordIndex = 0;
+      stepsLeft = 100;
+      nextLevelBtn.style.display = "none";
+      levelInfoEl.textContent = `Уровень ${level+1} | Шаги: ${stepsLeft}`;
+      showWord();
+      showStacks(levels[level].stacks);
+      statusEl.textContent = "";
+    }
 
-<script>
+    function showWord() {
+      currentWordEl.textContent = levels[currentLevel].words[wordIndex];
+    }
 
-let levels = [
-{letters:["К","О","Т","А","Р","С"], words:["КОТ","ТОК","РОТ"]},
-{letters:["М","И","Р","А","К","Т"], words:["МИР","ТИР","РАК"]},
-{letters:["С","Л","О","В","А","Р"], words:["СЛОВО","ВОР","РОС"]},
-{letters:["Б","А","Н","К","А","Т"], words:["БАНК","ТАНК","БАТ"]},
-{letters:["Г","О","Р","А","Д","С"], words:["ГОРА","ДАР","САД"]}
-];
+    function showStacks(stacks) {
+      stacksContainer.innerHTML = "";
+      stacks.forEach(stack => {
+        const div = document.createElement("div");
+        div.classList.add("stack");
+        div.textContent = stack;
+        div.addEventListener("click", () => handleStackClick(stack));
+        stacksContainer.appendChild(div);
+      });
+    }
 
-let level = localStorage.getItem("level");
-if(level == null) level = 0;
+    function handleStackClick(stack) {
+      const currentWord = levels[currentLevel].words[wordIndex];
+      stepsLeft--;
+      levelInfoEl.textContent = `Уровень ${currentLevel+1} | Шаги: ${stepsLeft}`;
 
-let currentWord = "";
+      let correct = false;
 
-let time = 300;
+      // Проверяем правильность
+      switch (currentLevel) {
+        case 0:
+          if ((currentWord === "Арбуз" || currentWord === "Клубника" || currentWord === "Груша" ||
+               currentWord === "Яблоко" || currentWord === "Персик" || currentWord === "Апельсин" ||
+               currentWord === "Малина" || currentWord === "Слива" || currentWord === "Виноград" ||
+               currentWord === "Киви" || currentWord === "Черешня") && stack === "Фрукты") correct = true;
+          if ((currentWord === "Солнце" || currentWord === "Мороз" || currentWord === "Дождь" || currentWord === "Туча" ||
+               currentWord === "Гроза" || currentWord === "Снег" || currentWord === "Ветер" || currentWord === "Тепло" ||
+               currentWord === "Радуга" || currentWord === "Ливневый дождь") && stack === "Погода") correct = true;
+          if ((currentWord === "Арбуз" || currentWord === "Солнечный день" || currentWord === "Теплый день" || currentWord === "День летний") && stack === "Лето") correct = true;
+          break;
+        case 1:
+          if ((["Телефон","Ноутбук","Планшет","Часы","Телевизор","Робот","Наушники"].includes(currentWord)) && stack === "Электроника") correct = true;
+          if ((["BMW","Мерседес","Лада","Ауди","Форд","Тойота","Мазда","Хонда"].includes(currentWord)) && stack === "Автомобили") correct = true;
+          if ((["Дерево","Сосна","Ель","Береза","Дуб","Секвойя","Липа"].includes(currentWord)) && stack === "Лес") correct = true;
+          break;
+        case 2:
+          if ((["Кошка","Собака","Лев","Тигр","Слон","Мышь","Обезьяна","Кролик","Лиса","Жираф"].includes(currentWord)) && stack === "Животные") correct = true;
+          if ((["Clash Royale","Roblox","Candy Crush","Among Us","Brawl Stars","Clash of Clans","Mobile Legends","Genshin","PUBG"].includes(currentWord)) && stack === "Мобильные игры") correct = true;
+          if ((["Сосна","Дуб","Береза","Ель","Секвойя","Липа"].includes(currentWord)) && stack === "Деревья") correct = true;
+          break;
+      }
 
-function startTimer(){
+      if (correct) {
+        statusEl.textContent = "✅ Правильно!";
+      } else {
+        statusEl.textContent = "❌ Неправильно!";
+      }
 
-setInterval(()=>{
+      wordIndex++;
+      if (wordIndex >= levels[currentLevel].words.length || stepsLeft <= 0) {
+        if (currentLevel < levels.length - 1) {
+          nextLevelBtn.style.display = "inline-block";
+          statusEl.textContent += " Уровень завершен!";
+        } else {
+          statusEl.textContent += " Игра окончена!";
+        }
+      } else {
+        showWord();
+      }
+    }
 
-time--;
+    nextLevelBtn.addEventListener("click", () => {
+      currentLevel++;
+      startLevel(currentLevel);
+    });
 
-let minutes = Math.floor(time/60);
-let seconds = time%60;
-
-document.getElementById("time").innerText =
-minutes+":"+String(seconds).padStart(2,'0');
-
-if(time<=0){
-alert("Время вышло! Ты проиграл!");
-location.reload();
-}
-
-},1000)
-
-}
-
-function loadLevel(){
-
-document.getElementById("level").innerText = Number(level)+1;
-
-let letters = levels[level].letters;
-
-let container = document.getElementById("letters");
-container.innerHTML="";
-
-letters.forEach(letter=>{
-
-let div = document.createElement("div");
-div.className="letter";
-div.innerText=letter;
-
-div.onclick=()=>{
-currentWord+=letter;
-document.getElementById("word").innerText="Слово: "+currentWord;
-}
-
-container.appendChild(div);
-
-})
-
-}
-
-function checkWord(){
-
-let words = levels[level].words;
-
-if(words.includes(currentWord)){
-
-alert("Правильное слово!");
-
-level++;
-
-if(level >= levels.length){
-
-alert("Ты прошёл всю игру!");
-
-localStorage.setItem("level",0);
-
-}else{
-
-localStorage.setItem("level",level);
-
-alert("Следующий уровень!");
-
-loadLevel();
-
-}
-
-}else{
-
-alert("Такого слова нет");
-
-}
-
-currentWord="";
-document.getElementById("word").innerText="Слово:";
-
-}
-
-loadLevel();
-startTimer();
-
-</script>
-
+    // Старт игры
+    startLevel(currentLevel);
+  </script>
 </body>
 </html>
