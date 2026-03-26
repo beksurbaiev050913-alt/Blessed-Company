@@ -1,245 +1,858 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Сортировка слов</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Гоночный центр</title>
   <style>
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      display: flex;
+      background: linear-gradient(180deg, #111827, #1f2937);
+      color: white;
+      overflow: hidden;
+    }
+    .screen {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+    }
+    .active { display: flex; }
+
+    /* LOBBY */
+    #lobby {
       flex-direction: column;
       align-items: center;
-      margin: 0;
-      padding: 0;
+      justify-content: center;
+      gap: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+    .panel {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 16px;
+      width: min(92vw, 520px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    h1, h2, h3, p { margin: 8px 0; }
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .big-btn {
+      width: min(92vw, 320px);
+      background: #f59e0b;
+      color: #111;
+    }
+    .sec-btn {
+      background: #374151;
+      color: white;
+      margin: 4px;
+    }
+    .cars-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .car-card {
+      background: rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 10px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+    .car-card.selected {
+      border-color: #f59e0b;
+      background: rgba(245,158,11,0.18);
     }
 
-    header {
+    /* PRE BATTLE */
+    #prebattle {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
+      padding: 20px;
+    }
+    .vs-box {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 20px;
+      width: min(92vw, 500px);
+    }
+
+    /* BATTLE */
+    #battle {
+      position: relative;
+      background: #0f172a;
+    }
+    #hudTop, #hudBottom {
+      position: absolute;
+      left: 0;
       width: 100%;
       display: flex;
       justify-content: space-between;
-      padding: 10px 20px;
-      background: #4caf50;
-      color: white;
-      box-sizing: border-box;
+      padding: 8px 10px;
+      z-index: 20;
+      pointer-events: none;
+    }
+    #hudTop { top: 0; }
+    #hudBottom { bottom: 106px; }
+    .hud-box {
+      background: rgba(0,0,0,0.45);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 14px;
+      pointer-events: auto;
     }
 
-    .book {
-      width: 50px;
-      height: 50px;
-      background: url('https://cdn-icons-png.flaticon.com/512/29/29302.png') no-repeat center center;
-      background-size: contain;
+    #battlefield {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, #3b82f6 0%, #3b82f6 47%, #2563eb 47%, #2563eb 53%, #3b82f6 53%, #3b82f6 100%);
     }
+    .grass-top, .grass-bottom {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 47%;
+      background:
+        linear-gradient(180deg, rgba(34,197,94,0.16), rgba(34,197,94,0.09)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,0.02) 0 30px,
+          rgba(0,0,0,0.02) 30px 60px
+        );
+    }
+    .grass-top { top: 0; }
+    .grass-bottom { bottom: 0; }
 
-    .game-area {
-      margin-top: 50px;
+    .river {
+      position: absolute;
+      top: 47%;
+      left: 0;
+      width: 100%;
+      height: 6%;
+      background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.18);
+    }
+    .bridge {
+      position: absolute;
+      top: 47%;
+      width: 70px;
+      height: 6%;
+      background: #c29a63;
+      border-left: 4px solid #8b5e34;
+      border-right: 4px solid #8b5e34;
+      z-index: 3;
+    }
+    .bridge.left { left: 22%; }
+    .bridge.right { right: 22%; }
+
+    .half-line {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      border-top: 2px dashed rgba(255,255,255,0.22);
+      z-index: 2;
+    }
+    .half-line.player-limit { top: 73%; }
+    .half-line.bot-limit { top: 27%; }
+
+    .tower {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-    }
-
-    .word {
-      font-size: 2em;
-      margin-bottom: 10px;
-    }
-
-    .remaining {
-      margin-bottom: 20px;
-      font-size: 1.2em;
-      color: #333;
-    }
-
-    .stacks {
-      display: flex;
       justify-content: center;
-      gap: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      z-index: 8;
+      padding: 4px;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .tower.player { background: #2563eb; }
+    .tower.bot { background: #dc2626; }
+
+    .hp-bar {
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(0,0,0,0.45);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .hp-fill {
+      height: 100%;
+      background: #22c55e;
     }
 
-    .stack {
-      width: 150px;
-      height: 150px;
-      background: #fff;
-      border: 2px solid #4caf50;
+    .unit {
+      position: absolute;
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.2s;
+      font-size: 18px;
+      z-index: 9;
+      border: 2px solid rgba(255,255,255,0.25);
+      user-select: none;
+    }
+    .unit.player { background: #1d4ed8; }
+    .unit.bot { background: #b91c1c; }
+
+    #hand {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background: rgba(0,0,0,0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 25;
+      padding: 8px;
+    }
+    .hand-card {
+      width: 18%;
+      max-width: 95px;
+      min-width: 66px;
+      height: 82px;
+      background: #1f2937;
+      border-radius: 14px;
+      padding: 6px;
       text-align: center;
-    }
-
-    .stack:hover {
-      background: #e0f7fa;
-    }
-
-    .status {
-      margin-top: 20px;
-      font-size: 1.2em;
-    }
-
-    .level-info {
-      margin-top: 10px;
-      font-size: 1em;
-      color: #333;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1em;
+      border: 2px solid transparent;
       cursor: pointer;
-      border: none;
-      border-radius: 5px;
-      background: #4caf50;
-      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .hand-card.selected {
+      border-color: #f59e0b;
+      transform: translateY(-4px);
+    }
+    .cost {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #f59e0b;
+      color: black;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .small {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+    .title-pill {
+      display: inline-block;
+      background: rgba(245,158,11,0.16);
+      color: #fbbf24;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+    .result-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0,0,0,0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="book" title="Не кликается"></div>
-    <div class="book" id="bookButton" title="Словарь / 50 слов"></div>
-  </header>
+  <div id="lobby" class="screen active">
+    <div class="panel">
+      <h1>🚗 Гоночный центр</h1>
+      <p id="playerInfo"></p>
+      <p id="titleInfo"></p>
+      <p id="favoriteInfo"></p>
+    </div>
 
-  <div class="game-area">
-    <div class="word" id="currentWord">Слово</div>
-    <div class="remaining" id="wordsLeft">Слов осталось: 50</div>
-    <div class="stacks" id="stacksContainer"></div>
-    <div class="status" id="status"></div>
-    <div class="level-info" id="levelInfo"></div>
-    <button id="nextLevelBtn" style="display:none;">Следующий уровень</button>
+    <button class="big-btn" onclick="openPrebattle()">⚔️ В бой</button>
+    <button class="sec-btn" onclick="toggleGarage()">🚘 Мои тачки</button>
+
+    <div id="garagePanel" class="panel" style="display:none;">
+      <h3>Любимая карта</h3>
+      <div id="garageCars" class="cars-grid"></div>
+    </div>
+  </div>
+
+  <div id="prebattle" class="screen">
+    <div class="vs-box">
+      <h2>Матч начинается...</h2>
+      <p id="prePlayer"></p>
+      <p id="preBot"></p>
+      <p>Осмотр карты: <span id="countdown">3</span></p>
+    </div>
+  </div>
+
+  <div id="battle" class="screen">
+    <div id="hudTop">
+      <div class="hud-box" id="botHud">Бот</div>
+      <div class="hud-box">Режим: Борьба за царя</div>
+    </div>
+
+    <div id="battlefield">
+      <div class="grass-top"></div>
+      <div class="grass-bottom"></div>
+      <div class="river"></div>
+      <div class="bridge left"></div>
+      <div class="bridge right"></div>
+      <div class="half-line bot-limit"></div>
+      <div class="half-line player-limit"></div>
+    </div>
+
+    <div id="hudBottom">
+      <div class="hud-box" id="playerHud">Игрок</div>
+      <div class="hud-box" id="fuelHud">⛽ 10/10</div>
+    </div>
+
+    <div id="hand"></div>
+
+    <div id="resultOverlay" class="result-overlay">
+      <h1 id="resultText"></h1>
+      <button class="big-btn" onclick="backToLobby()">Назад в лобби</button>
+    </div>
   </div>
 
   <script>
-    const levels = [
-      {
-        stacks: ["Фрукты", "Погода"], // Убираем "Лето"
-        words: ["Арбуз","Солнце","Клубника","Облако","Груша","Мороз","Яблоко","Дождь","Персик","Туча",
-                "Апельсин","Ветер","Банан","Гроза","Арбуз","Снег","Вишня","Ливень","Малина","Солнечный день",
-                "Слива","Град","Абрикос","Туман","Персик","Ливневый дождь","Виноград","Жара","Ягода","Радуга",
-                "Киви","Холод","Мандарины","Тепло","Черешня","Облака","Арбуз","День летний","Яблоко","Теплый ветер",
-                "Груша","Пасмурно","Клубника","Солнечно","Малина","Летний дождь","Слива","Теплый день","Арбуз","Солнце"]
-      },
-      {
-        stacks: ["Электроника", "Автомобили", "Лес"],
-        words: ["Телефон","BMW","Дерево","Ноутбук","Мерседес","Сосна","Планшет","Лада","Ель","Часы",
-                "Ауди","Береза","Камера","Форд","Дуб","Робот","Тойота","Секвойя","Телевизор","Мазда",
-                "Сосна","Наушники","Хонда","Береза","Планшет","Лада","Дуб","Часы","Форд","Ель",
-                "Телефон","Ауди","Секвойя","Робот","Тойота","Сосна","Ноутбук","Мазда","Дуб","Наушники",
-                "Телевизор","Хонда","Береза","Планшет","BMW","Секвойя","Робот","Дерево","Телефон","Мерседес"]
-      },
-      {
-        stacks: ["Животные", "Мобильные игры", "Деревья"],
-        words: ["Кошка","Clash Royale","Сосна","Собака","Roblox","Дуб","Лев","Candy Crush","Береза","Тигр",
-                "Among Us","Ель","Слон","Brawl Stars","Секвойя","Мышь","Clash of Clans","Дуб","Обезьяна","Roblox",
-                "Липа","Кролик","Mobile Legends","Сосна","Лиса","Genshin","Береза","Жираф","PUBG","Ель",
-                "Кошка","Brawl Stars","Дуб","Собака","Clash Royale","Секвойя","Лев","Candy Crush","Сосна","Слон",
-                "Among Us","Береза","Мышь","Mobile Legends","Дуб","Обезьяна","Genshin","Липа","Кролик","PUBG"]
-      }
+    const cars = {
+      semerka: { id:'semerka', name:'Семерка с района', emoji:'🚗', type:'racer', hp:400, damage:200, speed:1.45, cost:3, range:38, attackSpeed:900 },
+      niva: { id:'niva', name:'Нива дяди Руслана', emoji:'🚙', type:'tank', hp:500, damage:180, speed:0.95, cost:4, range:38, attackSpeed:1050 },
+      devyatka: { id:'devyatka', name:'Девятка Лёхи', emoji:'🚘', type:'racer', hp:350, damage:230, speed:1.55, cost:3, range:38, attackSpeed:850 },
+      chetirka: { id:'chetirka', name:'Четырка', emoji:'🚗', type:'racer', hp:400, damage:200, speed:1.4, cost:3, range:38, attackSpeed:900 },
+      pyatnashka: { id:'pyatnashka', name:'Пятнашка', emoji:'🚕', type:'tank', hp:450, damage:190, speed:1.0, cost:4, range:38, attackSpeed:980 },
+      urus: { id:'urus', name:'Lamborghini Urus', emoji:'🚙', type:'tank', hp:1200, damage:200, speed:0.78, cost:7, range:40, attackSpeed:1100 },
+      aventador: { id:'aventador', name:'Lamborghini Aventador', emoji:'🏎️', type:'racer', hp:250, damage:350, speed:1.9, cost:4, range:40, attackSpeed:780 },
+      bmwm5: { id:'bmwm5', name:'BMW M5 F90', emoji:'🚘', type:'racer', hp:320, damage:300, speed:1.75, cost:4, range:40, attackSpeed:820 },
+      g63: { id:'g63', name:'Mercedes G63', emoji:'🚙', type:'tank', hp:900, damage:230, speed:0.86, cost:6, range:40, attackSpeed:1020 }
+    };
+
+    const starterDeck = ['semerka', 'niva', 'devyatka', 'chetirka', 'pyatnashka'];
+
+    let gameData = JSON.parse(localStorage.getItem('raceRoyaleData')) || {
+      trophies: 0,
+      gems: 0,
+      favorite: 'semerka',
+      unlockedTitles: [],
+      selectedTitle: '',
+      ownedCars: starterDeck.slice()
+    };
+
+    const battleState = {
+      running: false,
+      playerFuel: 10,
+      botFuel: 10,
+      selectedCardId: null,
+      playerDeck: starterDeck.slice(),
+      botDeck: ['urus', 'aventador', 'bmwm5', 'niva', 'g63'],
+      units: [],
+      towers: [],
+      lastBotThink: 0,
+      botName: '',
+      botTitle: '',
+      botFavorite: ''
+    };
+
+    const botProfiles = [
+      { name: 'Бот_Вазер', title:'', favorite:'chetirka', style:'balanced' },
+      { name: 'Sayona_Driver', title:'Красавчик', favorite:'bmwm5', style:'push' },
+      { name: 'Turbo_Русик', title:'', favorite:'urus', style:'tank' },
+      { name: 'Fast_M5', title:'Легенда', favorite:'aventador', style:'racer' },
+      { name: 'KingRoad', title:'Мастер игры', favorite:'g63', style:'smart' }
     ];
 
-    let currentLevel = 0;
-    let wordIndex = 0;
-    let stepsLeft = 100;
-
-    const currentWordEl = document.getElementById("currentWord");
-    const stacksContainer = document.getElementById("stacksContainer");
-    const statusEl = document.getElementById("status");
-    const levelInfoEl = document.getElementById("levelInfo");
-    const wordsLeftEl = document.getElementById("wordsLeft");
-    const nextLevelBtn = document.getElementById("nextLevelBtn");
-
-    function startLevel(level) {
-      wordIndex = 0;
-      stepsLeft = 100;
-      nextLevelBtn.style.display = "none";
-      statusEl.textContent = "";
-      levelInfoEl.textContent = `Уровень ${level+1} | Шаги: ${stepsLeft}`;
-      updateWordsLeft();
-      showWord();
-      showStacks(levels[level].stacks);
+    function saveData() {
+      localStorage.setItem('raceRoyaleData', JSON.stringify(gameData));
     }
 
-    function updateWordsLeft() {
-      const remaining = levels[currentLevel].words.length - wordIndex;
-      wordsLeftEl.textContent = `Слов осталось: ${remaining}`;
+    function getCenterInfo(trophies) {
+      const center = Math.min(14, Math.floor(trophies / 1000) + 1);
+      let zoneName = 'Центр Новичка';
+      if (center >= 6 && center <= 10) zoneName = 'Центр Sayona';
+      if (center >= 11) zoneName = 'Центр Сильнейшего';
+      return { center, zoneName };
     }
 
-    function showWord() {
-      currentWordEl.textContent = levels[currentLevel].words[wordIndex];
-      updateWordsLeft();
+    function refreshTitles() {
+      const center = getCenterInfo(gameData.trophies).center;
+      const titles = [];
+      if (center >= 6) titles.push('Красавчик');
+      if (center >= 10) titles.push('Легенда');
+      if (center >= 14) titles.push('Мастер игры');
+      gameData.unlockedTitles = titles;
+      if (gameData.selectedTitle && !titles.includes(gameData.selectedTitle)) {
+        gameData.selectedTitle = '';
+      }
+      saveData();
     }
 
-    function showStacks(stacks) {
-      stacksContainer.innerHTML = "";
-      stacks.forEach(stack => {
-        const div = document.createElement("div");
-        div.classList.add("stack");
-        div.textContent = stack;
-        div.addEventListener("click", () => handleStackClick(stack));
-        stacksContainer.appendChild(div);
+    function renderLobby() {
+      refreshTitles();
+      const { center, zoneName } = getCenterInfo(gameData.trophies);
+      document.getElementById('playerInfo').textContent =
+        `🏆 Кубки: ${gameData.trophies} | 💎 Гемы: ${gameData.gems} | Центр: ${center}/14 — ${zoneName}`;
+      document.getElementById('titleInfo').innerHTML =
+        `Титул: ${gameData.selectedTitle ? `<span class="title-pill">${gameData.selectedTitle}</span>` : 'нет'}`;
+      document.getElementById('favoriteInfo').textContent =
+        `Любимая карта: ${cars[gameData.favorite].name}`;
+      renderGarage();
+    }
+
+    function toggleGarage() {
+      const p = document.getElementById('garagePanel');
+      p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function renderGarage() {
+      const wrap = document.getElementById('garageCars');
+      wrap.innerHTML = '';
+      gameData.ownedCars.forEach(id => {
+        const c = cars[id];
+        const div = document.createElement('div');
+        div.className = 'car-card ' + (gameData.favorite === id ? 'selected' : '');
+        div.innerHTML = `
+          <div><strong>${c.emoji} ${c.name}</strong></div>
+          <div class="small">HP ${c.hp} | Урон ${c.damage}</div>
+          <div class="small">${c.type === 'tank' ? 'Жирная' : 'Гоночная'} | ⛽ ${c.cost}</div>
+        `;
+        div.onclick = () => {
+          gameData.favorite = id;
+          saveData();
+          renderLobby();
+        };
+        wrap.appendChild(div);
       });
     }
 
-    function handleStackClick(stack) {
-      const currentWord = levels[currentLevel].words[wordIndex];
-      stepsLeft--;
-      levelInfoEl.textContent = `Уровень ${currentLevel+1} | Шаги: ${stepsLeft}`;
+    function openPrebattle() {
+      battleState.botProfile = pickBotProfile();
+      showScreen('prebattle');
+      document.getElementById('prePlayer').innerHTML =
+        `Ты ${gameData.selectedTitle ? `<span class="title-pill">${gameData.selectedTitle}</span>` : ''}<br>Любимая карта: ${cars[gameData.favorite].name}`;
+      document.getElementById('preBot').innerHTML =
+        `${battleState.botProfile.name} ${battleState.botProfile.title ? `<span class="title-pill">${battleState.botProfile.title}</span>` : ''}<br>Любимая карта: ${cars[battleState.botProfile.favorite].name}`;
 
-      let correct = false;
-
-      // Проверка правильности с точными словами
-      const correctMapping = {
-        0: { // уровень 1
-          "Фрукты": ["Арбуз","Клубника","Груша","Яблоко","Персик","Апельсин","Малина","Слива","Виноград","Киви","Черешня","Ягода","Абрикос"],
-          "Погода": ["Солнце","Облако","Мороз","Дождь","Туча","Гроза","Снег","Ветер","Тепло","Радуга","Ливневый дождь","Туман","Солнечный день","Теплый день","День летний"]
-        },
-        1: { // уровень 2
-          "Электроника": ["Телефон","Ноутбук","Планшет","Часы","Телевизор","Робот","Наушники","Камера"],
-          "Автомобили": ["BMW","Мерседес","Лада","Ауди","Форд","Тойота","Мазда","Хонда"],
-          "Лес": ["Дерево","Сосна","Ель","Береза","Дуб","Секвойя","Липа"]
-        },
-        2: { // уровень 3
-          "Животные": ["Кошка","Собака","Лев","Тигр","Слон","Мышь","Обезьяна","Кролик","Лиса","Жираф"],
-          "Мобильные игры": ["Clash Royale","Roblox","Candy Crush","Among Us","Brawl Stars","Clash of Clans","Mobile Legends","Genshin","PUBG"],
-          "Деревья": ["Сосна","Дуб","Береза","Ель","Секвойя","Липа"]
+      let n = 3;
+      document.getElementById('countdown').textContent = n;
+      const timer = setInterval(() => {
+        n--;
+        document.getElementById('countdown').textContent = n;
+        if (n <= 0) {
+          clearInterval(timer);
+          startBattle();
         }
+      }, 1000);
+    }
+
+    function pickBotProfile() {
+      const center = getCenterInfo(gameData.trophies).center;
+      let pool = botProfiles.filter(bot => {
+        if (center <= 5) return bot.title === '' || bot.title === 'Красавчик';
+        if (center <= 10) return bot.title !== 'Мастер игры';
+        return true;
+      });
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function startBattle() {
+      showScreen('battle');
+      battleState.running = true;
+      battleState.playerFuel = 10;
+      battleState.botFuel = 10;
+      battleState.selectedCardId = null;
+      battleState.units = [];
+      battleState.towers = [];
+      battleState.lastBotThink = 0;
+      battleState.botName = battleState.botProfile.name;
+      battleState.botTitle = battleState.botProfile.title;
+      battleState.botFavorite = battleState.botProfile.favorite;
+
+      document.getElementById('resultOverlay').style.display = 'none';
+      document.getElementById('battlefield').querySelectorAll('.tower, .unit').forEach(e => e.remove());
+
+      createTowers();
+      renderHand();
+      updateHud();
+
+      battleLoop();
+    }
+
+    function createTower(side, x, y, hp, role) {
+      const el = document.createElement('div');
+      el.className = `tower ${side}`;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.innerHTML = `
+        <div class="hp-bar"><div class="hp-fill" style="width:100%"></div></div>
+        ${role}
+      `;
+      document.getElementById('battlefield').appendChild(el);
+
+      const tower = {
+        type: 'tower',
+        side,
+        role,
+        x, y,
+        width: 52,
+        height: 52,
+        hp,
+        maxHp: hp,
+        alive: true,
+        el
       };
+      battleState.towers.push(tower);
+      return tower;
+    }
 
-      if (correctMapping[currentLevel][stack].includes(currentWord)) {
-        correct = true;
+    function createTowers() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      createTower('bot', w * 0.18, h * 0.12, 1600, 'Л');
+      createTower('bot', w * 0.68, h * 0.12, 1600, 'П');
+      createTower('bot', w * 0.43, h * 0.05, 2400, 'Ц');
+
+      createTower('player', w * 0.18, h * 0.72, 1600, 'Л');
+      createTower('player', w * 0.68, h * 0.72, 1600, 'П');
+      createTower('player', w * 0.43, h * 0.80, 2400, 'Ц');
+    }
+
+    function renderHand() {
+      const hand = document.getElementById('hand');
+      hand.innerHTML = '';
+      battleState.playerDeck.forEach(id => {
+        const c = cars[id];
+        const card = document.createElement('div');
+        card.className = 'hand-card ' + (battleState.selectedCardId === id ? 'selected' : '');
+        card.innerHTML = `
+          <div class="cost">${c.cost}</div>
+          <div style="font-size:20px;margin-top:6px">${c.emoji}</div>
+          <div class="small"><strong>${c.name}</strong></div>
+        `;
+        card.onclick = () => {
+          battleState.selectedCardId = battleState.selectedCardId === id ? null : id;
+          renderHand();
+        };
+        hand.appendChild(card);
+      });
+    }
+
+    function updateHud() {
+      document.getElementById('fuelHud').textContent = `⛽ ${battleState.playerFuel.toFixed(1)}/10`;
+      document.getElementById('playerHud').innerHTML =
+        `Ты ${gameData.selectedTitle ? '• ' + gameData.selectedTitle : ''}<br>${cars[gameData.favorite].name}`;
+      document.getElementById('botHud').innerHTML =
+        `${battleState.botName} ${battleState.botTitle ? '• ' + battleState.botTitle : ''}<br>${cars[battleState.botFavorite].name}`;
+    }
+
+    document.getElementById('battlefield').addEventListener('click', (e) => {
+      if (!battleState.running || !battleState.selectedCardId) return;
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const allowedTop = rect.height * 0.47;
+      const allowedBottom = rect.height * 0.95;
+
+      if (y < allowedTop) return;
+      if (y > allowedBottom) return;
+
+      const car = cars[battleState.selectedCardId];
+      if (battleState.playerFuel < car.cost) return;
+
+      spawnUnit('player', battleState.selectedCardId, x, y);
+      battleState.playerFuel -= car.cost;
+      battleState.selectedCardId = null;
+      renderHand();
+      updateHud();
+    });
+
+    function spawnUnit(side, carId, x, y) {
+      const c = cars[carId];
+      const el = document.createElement('div');
+      el.className = `unit ${side}`;
+      el.innerHTML = c.emoji;
+      el.style.left = (x - 17) + 'px';
+      el.style.top = (y - 17) + 'px';
+      document.getElementById('battlefield').appendChild(el);
+
+      const u = {
+        type: 'unit',
+        side,
+        carId,
+        x: x - 17,
+        y: y - 17,
+        width: 34,
+        height: 34,
+        hp: c.hp,
+        maxHp: c.hp,
+        damage: c.damage,
+        speed: c.speed,
+        range: c.range,
+        attackSpeed: c.attackSpeed,
+        lastAttack: 0,
+        el
+      };
+      battleState.units.push(u);
+      return u;
+    }
+
+    function dist(a, b) {
+      const ax = a.x + a.width / 2;
+      const ay = a.y + a.height / 2;
+      const bx = b.x + b.width / 2;
+      const by = b.y + b.height / 2;
+      return Math.hypot(ax - bx, ay - by);
+    }
+
+    function nearestEnemy(unit) {
+      const enemies = [
+        ...battleState.units.filter(u => u.side !== unit.side),
+        ...battleState.towers.filter(t => t.side !== unit.side && t.alive)
+      ];
+      if (!enemies.length) return null;
+      enemies.sort((a, b) => dist(unit, a) - dist(unit, b));
+      return enemies[0];
+    }
+
+    function moveToward(unit, target, delta) {
+      const ux = unit.x + unit.width / 2;
+      const uy = unit.y + unit.height / 2;
+      const tx = target.x + target.width / 2;
+      const ty = target.y + target.height / 2;
+
+      let dx = tx - ux;
+      let dy = ty - uy;
+      const len = Math.hypot(dx, dy) || 1;
+      dx /= len;
+      dy /= len;
+
+      unit.x += dx * unit.speed * delta * 0.06;
+      unit.y += dy * unit.speed * delta * 0.06;
+
+      unit.el.style.left = unit.x + 'px';
+      unit.el.style.top = unit.y + 'px';
+    }
+
+    function attack(attacker, target, now) {
+      if (now - attacker.lastAttack < attacker.attackSpeed) return;
+      attacker.lastAttack = now;
+      target.hp -= attacker.damage;
+
+      if (target.type === 'tower') {
+        const fill = target.el.querySelector('.hp-fill');
+        fill.style.width = Math.max(0, (target.hp / target.maxHp) * 100) + '%';
       }
 
-      if (correct) {
-        statusEl.textContent = "✅ Правильно!";
-      } else {
-        statusEl.textContent = "❌ Неправильно!";
-      }
-
-      wordIndex++;
-      updateWordsLeft();
-
-      if (wordIndex >= levels[currentLevel].words.length || stepsLeft <= 0) {
-        if (currentLevel < levels.length - 1) {
-          nextLevelBtn.style.display = "inline-block";
-          statusEl.textContent += " Уровень завершен!";
+      if (target.hp <= 0) {
+        if (target.type === 'tower') {
+          target.alive = false;
+          target.el.remove();
+          checkWin();
         } else {
-          statusEl.textContent += " Игра окончена!";
+          target.el.remove();
+          battleState.units = battleState.units.filter(u => u !== target);
         }
-      } else {
-        showWord();
       }
     }
 
-    nextLevelBtn.addEventListener("click", () => {
-      currentLevel++;
-      startLevel(currentLevel);
-    });
+    function battleLoop() {
+      let last = performance.now();
 
-    startLevel(currentLevel);
+      function frame(now) {
+        if (!battleState.running) return;
+        const delta = now - last;
+        last = now;
+
+        battleState.playerFuel = Math.min(10, battleState.playerFuel + delta * 0.0009);
+        battleState.botFuel = Math.min(10, battleState.botFuel + delta * 0.0009);
+        updateHud();
+
+        for (const unit of [...battleState.units]) {
+          const target = nearestEnemy(unit);
+          if (!target) continue;
+
+          const d = dist(unit, target);
+          if (d <= unit.range + 10) {
+            attack(unit, target, now);
+          } else {
+            moveToward(unit, target, delta);
+          }
+        }
+
+        botThink(now);
+        checkWin();
+
+        if (battleState.running) requestAnimationFrame(frame);
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    function getUnitsBySide(side) {
+      return battleState.units.filter(u => u.side === side);
+    }
+
+    function botThink(now) {
+      if (now - battleState.lastBotThink < 900) return;
+      battleState.lastBotThink = now;
+
+      const botUnits = getUnitsBySide('bot');
+      const playerUnits = getUnitsBySide('player');
+
+      const hasPlayerCards = playerUnits.length > 0;
+      const hasBotCards = botUnits.length > 0;
+
+      const playerTank = playerUnits.find(u => cars[u.carId].type === 'tank');
+      const playerRacer = playerUnits.find(u => cars[u.carId].type === 'racer');
+
+      // Если у игрока жирный, а у бота пусто — контр гоночной
+      if (!hasBotCards && playerTank) {
+        const racerChoice = battleState.botDeck.find(id => cars[id].type === 'racer' && cars[id].cost <= battleState.botFuel);
+        if (racerChoice) {
+          spawnUnit('bot', racerChoice, laneXByEnemy(playerTank), window.innerHeight * 0.18);
+          battleState.botFuel -= cars[racerChoice].cost;
+          return;
+        }
+      }
+
+      // Если у игрока гоночная, а у бота пусто — контр жирной
+      if (!hasBotCards && playerRacer) {
+        const tankChoice = battleState.botDeck.find(id => cars[id].type === 'tank' && cars[id].cost <= battleState.botFuel);
+        if (tankChoice) {
+          spawnUnit('bot', tankChoice, laneXByEnemy(playerRacer), window.innerHeight * 0.18);
+          battleState.botFuel -= cars[tankChoice].cost;
+          return;
+        }
+      }
+
+      // Если у игрока вообще нет карт — бот иногда делает пуш жирный + гоночный
+      if (!hasPlayerCards) {
+        const doCombo = Math.random() < 0.30;
+        if (doCombo && battleState.botFuel >= 7) {
+          const tank = battleState.botDeck.find(id => cars[id].type === 'tank' && cars[id].cost <= battleState.botFuel);
+          if (tank) {
+            const x = Math.random() < 0.5 ? window.innerWidth * 0.30 : window.innerWidth * 0.70;
+            spawnUnit('bot', tank, x, window.innerHeight * 0.14);
+            battleState.botFuel -= cars[tank].cost;
+
+            const racer = battleState.botDeck.find(id => cars[id].type === 'racer' && cars[id].cost <= battleState.botFuel);
+            if (racer) {
+              setTimeout(() => {
+                if (!battleState.running) return;
+                if (battleState.botFuel >= cars[racer].cost) {
+                  spawnUnit('bot', racer, x, window.innerHeight * 0.09);
+                  battleState.botFuel -= cars[racer].cost;
+                }
+              }, 600);
+            }
+            return;
+          }
+        }
+
+        // Обычная атака, если карта пуста
+        if (battleState.botFuel >= 4 && Math.random() < 0.6) {
+          const preferred = battleState.botProfile.style === 'tank'
+            ? battleState.botDeck.find(id => cars[id].type === 'tank' && cars[id].cost <= battleState.botFuel)
+            : battleState.botDeck.find(id => cars[id].cost <= battleState.botFuel);
+          if (preferred) {
+            const x = Math.random() < 0.5 ? window.innerWidth * 0.30 : window.innerWidth * 0.70;
+            spawnUnit('bot', preferred, x, window.innerHeight * 0.14);
+            battleState.botFuel -= cars[preferred].cost;
+            return;
+          }
+        }
+      }
+
+      // Если бензин почти фулл — не тупить
+      if (battleState.botFuel >= 9) {
+        const possible = battleState.botDeck.filter(id => cars[id].cost <= battleState.botFuel);
+        if (possible.length) {
+          const pick = possible[Math.floor(Math.random() * possible.length)];
+          const x = Math.random() < 0.5 ? window.innerWidth * 0.30 : window.innerWidth * 0.70;
+          spawnUnit('bot', pick, x, window.innerHeight * 0.14);
+          battleState.botFuel -= cars[pick].cost;
+        }
+      }
+    }
+
+    function laneXByEnemy(enemy) {
+      const center = enemy.x + enemy.width / 2;
+      return center < window.innerWidth / 2 ? window.innerWidth * 0.30 : window.innerWidth * 0.70;
+    }
+
+    function checkWin() {
+      const playerMain = battleState.towers.find(t => t.side === 'player' && t.role === 'Ц');
+      const botMain = battleState.towers.find(t => t.side === 'bot' && t.role === 'Ц');
+
+      if (!botMain || !botMain.alive) {
+        finishBattle(true);
+      } else if (!playerMain || !playerMain.alive) {
+        finishBattle(false);
+      }
+    }
+
+    function finishBattle(win) {
+      battleState.running = false;
+      const overlay = document.getElementById('resultOverlay');
+      const text = document.getElementById('resultText');
+      overlay.style.display = 'flex';
+
+      if (win) {
+        text.textContent = 'Победа!';
+      } else {
+        text.textContent = 'Поражение! 😢';
+      }
+    }
+
+    function backToLobby() {
+      showScreen('lobby');
+      renderLobby();
+    }
+
+    renderLobby();
   </script>
 </body>
 </html>
