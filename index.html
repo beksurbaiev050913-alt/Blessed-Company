@@ -7,21 +7,20 @@
   <style>
     * { box-sizing: border-box; }
     :root {
-      --panel: rgba(8, 15, 28, 0.68);
-      --panel-2: rgba(255,255,255,0.08);
-      --line: rgba(255,255,255,0.14);
+      --panel: rgba(8, 15, 28, 0.7);
+      --line: rgba(255,255,255,0.12);
       --gold: #f6c453;
       --gold-dark: #d89c1a;
-      --sand-1: #d9b67c;
-      --sand-2: #c79d65;
-      --sand-3: #ebc890;
-      --blue-1: #4dd4ff;
-      --blue-2: #1ea5ff;
-      --green: #32d17d;
+      --sand-1: #e3bf84;
+      --sand-2: #cf9f63;
+      --sand-3: #f0d19d;
+      --blue-1: #7be7ff;
+      --blue-2: #1aa6ff;
+      --green: #35d27d;
       --red: #ff6363;
       --text: #f3f6fb;
-      --muted: #b6c2d9;
-      --shadow: 0 18px 45px rgba(0,0,0,0.35);
+      --muted: #b8c7df;
+      --shadow: 0 18px 42px rgba(0,0,0,0.35);
     }
 
     html, body {
@@ -42,13 +41,8 @@
       100% { background-position: 0% 50%; }
     }
 
-    .screen {
-      display: none;
-      width: 100vw;
-      height: 100vh;
-    }
-    .screen.active { display: flex; }
-
+    .screen { display:none; width:100vw; height:100vh; }
+    .screen.active { display:flex; }
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -56,390 +50,211 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
     }
-
+    .small { font-size: 12px; color: var(--muted); }
+    .muted { color: var(--muted); }
+    .chip {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:7px 12px; border-radius:999px;
+      background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.1);
+      font-size:13px;
+    }
+    .title-chip {
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:7px 12px; border-radius:999px; font-size:13px; font-weight:700;
+      background: linear-gradient(180deg, rgba(255,223,123,0.22), rgba(255,180,0,0.18));
+      color:#ffd76d; border:1px solid rgba(255,220,100,0.25);
+    }
     button {
-      border: none;
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .14s ease, opacity .14s ease, box-shadow .14s ease;
+      border:none; border-radius:14px; padding:12px 16px; font-size:15px; font-weight:700;
+      cursor:pointer; transition:transform .14s ease, opacity .14s ease, box-shadow .14s ease;
     }
     button:hover { transform: translateY(-1px); }
     button:active { transform: translateY(1px); }
-    button:disabled { opacity: .45; cursor: default; transform: none; }
-
-    .btn-gold {
-      color: #1e1300;
-      background: linear-gradient(180deg, #ffd97a, #f6b73a);
-      box-shadow: 0 12px 28px rgba(246, 183, 58, 0.28);
-    }
-    .btn-dark {
-      color: white;
-      background: linear-gradient(180deg, #32435f, #202d43);
-    }
-    .btn-red {
-      color: white;
-      background: linear-gradient(180deg, #ff7a7a, #e44747);
-    }
-    .btn-blue {
-      color: white;
-      background: linear-gradient(180deg, #46b3ff, #1d73ff);
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.09);
-      border: 1px solid rgba(255,255,255,0.1);
-      font-size: 13px;
-      color: var(--text);
-    }
-
-    .title-chip {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(255,223,123,0.22), rgba(255,180,0,0.18));
-      color: #ffd76d;
-      border: 1px solid rgba(255,220,100,0.25);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .small { font-size: 12px; color: var(--muted); }
-    .muted { color: var(--muted); }
-    .center { text-align: center; }
+    button:disabled { opacity:.45; cursor:default; transform:none; }
+    .btn-gold { color:#1e1300; background:linear-gradient(180deg,#ffd97a,#f6b73a); box-shadow:0 12px 28px rgba(246, 183, 58, .28); }
+    .btn-dark { color:white; background:linear-gradient(180deg,#32435f,#202d43); }
+    .btn-red { color:white; background:linear-gradient(180deg,#ff7a7a,#e44747); }
+    .btn-blue { color:white; background:linear-gradient(180deg,#46b3ff,#1d73ff); }
+    .btn-green { color:white; background:linear-gradient(180deg,#44d78d,#18a95f); }
 
     /* LOBBY */
-    #lobby {
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
+    #lobby { align-items:center; justify-content:center; padding:24px; }
     .lobby-wrap {
-      width: min(1080px, 100%);
-      display: grid;
-      grid-template-columns: 1.2fr .95fr;
-      gap: 20px;
-      align-items: stretch;
+      width:min(1180px, 100%);
+      display:grid; grid-template-columns:1.15fr .95fr; gap:20px;
     }
-    .lobby-main, .lobby-side {
-      padding: 22px;
-      min-height: 0;
-    }
-    .lobby-main {
-      display: grid;
-      grid-template-rows: auto auto 1fr auto;
-      gap: 16px;
-      position: relative;
-      overflow: hidden;
-    }
+    .lobby-main, .lobby-side { padding:22px; position:relative; overflow:hidden; }
     .glow {
-      position: absolute;
-      width: 360px;
-      height: 360px;
-      filter: blur(42px);
-      opacity: .28;
-      border-radius: 50%;
-      pointer-events: none;
+      position:absolute; width:360px; height:360px; filter:blur(42px); opacity:.28;
+      border-radius:50%; pointer-events:none;
     }
-    .glow.one { right: -80px; top: -60px; background: #3aa4ff; }
-    .glow.two { left: -100px; bottom: -100px; background: #7d5eff; }
-
-    .headline {
-      position: relative;
-      z-index: 1;
-    }
-    .headline h1 {
-      margin: 0 0 6px;
-      font-size: clamp(32px, 4vw, 46px);
-      letter-spacing: .3px;
-    }
-    .headline p {
-      margin: 0;
-      font-size: 15px;
-      color: #d3ddf0;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      position: relative;
-      z-index: 1;
-    }
+    .glow.one { right:-80px; top:-60px; background:#3aa4ff; }
+    .glow.two { left:-100px; bottom:-100px; background:#7d5eff; }
+    .headline h1 { margin:0 0 6px; font-size:clamp(32px, 4vw, 48px); }
+    .headline p { margin:0; color:#d3ddf0; }
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
     .stat-box {
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.08);
+      padding:12px; border-radius:16px; background:rgba(255,255,255,0.07);
+      border:1px solid rgba(255,255,255,0.08);
     }
-    .stat-box .n {
-      font-size: 22px;
-      font-weight: 800;
-      margin-top: 4px;
-    }
-
+    .stat-box .n { font-size:22px; font-weight:800; margin-top:4px; }
     .center-card {
-      position: relative;
-      z-index: 1;
-      padding: 18px;
-      border-radius: 20px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.09);
-      min-height: 180px;
-    }
-    .progress-wrap {
-      margin-top: 14px;
+      margin-top:14px; padding:18px; border-radius:20px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.09);
     }
     .progress-bar {
-      width: 100%;
-      height: 16px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.08);
+      width:100%; height:16px; border-radius:999px; overflow:hidden;
+      background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.08);
     }
     .progress-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
+      height:100%; width:0%; border-radius:999px;
       background: linear-gradient(90deg, #ffe07c, #f6b73a, #ff995c);
       transition: width .25s ease;
     }
-    .main-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-    .main-actions button { min-width: 150px; }
-
-    .lobby-side {
-      display: grid;
-      grid-template-rows: auto auto auto 1fr;
-      gap: 14px;
-    }
+    .main-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .main-actions button { min-width:140px; }
+    .lobby-side { display:grid; grid-template-rows:auto auto auto auto 1fr; gap:14px; }
     .mini-section {
-      padding: 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
+      padding:14px; border-radius:18px; background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
     }
     .favorite-card-preview {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(0,0,0,0.2);
-      margin-top: 10px;
+      display:flex; gap:10px; align-items:center; padding:12px; border-radius:16px;
+      background:rgba(0,0,0,.2); margin-top:10px;
     }
     .big-emoji {
-      width: 54px;
-      height: 54px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
+      width:54px; height:54px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+      font-size:30px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.08);
     }
+    .vertical-pass-preview {
+      max-height:260px; overflow:auto; display:grid; gap:8px; padding-right:4px;
+    }
+    .pass-row {
+      display:grid; grid-template-columns:42px 1fr 1fr; gap:8px; align-items:center;
+      padding:8px; border-radius:14px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.06);
+    }
+    .pass-row.active-level { box-shadow: 0 0 0 2px rgba(255,206,94,.28) inset; }
+    .pass-row.claimed { opacity:.66; }
 
-    /* GARAGE / SHOP */
+    /* COMMON PAGE */
     .page {
-      width: min(1180px, 100%);
-      height: 100%;
-      margin: 0 auto;
-      padding: 18px;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 14px;
+      width:min(1240px, 100%); height:100%; margin:0 auto; padding:18px;
+      display:grid; grid-template-rows:auto 1fr; gap:14px;
     }
     .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
     }
-    .page-header h2 { margin: 0; }
-    .page-content {
-      min-height: 0;
-      display: grid;
-      gap: 14px;
-    }
+    .page-content { min-height:0; display:grid; gap:14px; }
 
-    #garage .page-content {
-      grid-template-columns: 360px 1fr;
-    }
-
-    .deck-panel, .cars-panel, .shop-panel {
-      min-height: 0;
-      padding: 16px;
-      overflow: auto;
-    }
-
-    .deck-slots {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
+    /* GARAGE */
+    #garage .page-content { grid-template-columns:360px 1fr; }
+    .deck-panel, .cars-panel, .shop-panel, .pass-panel, .calendar-panel { min-height:0; padding:16px; overflow:auto; }
+    .deck-slots { display:grid; gap:10px; margin-top:12px; }
     .deck-slot {
-      display: grid;
-      grid-template-columns: 68px 1fr auto;
-      gap: 10px;
-      align-items: center;
-      padding: 10px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
+      display:grid; grid-template-columns:68px 1fr auto; gap:10px; align-items:center;
+      padding:10px; border-radius:16px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
     }
-    .deck-slot.empty {
-      border-style: dashed;
-      opacity: .86;
-    }
-    .slot-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .car-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 12px;
-    }
+    .deck-slot.empty { border-style:dashed; opacity:.88; }
+    .slot-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .car-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(236px,1fr)); gap:12px; }
     .car-card {
-      padding: 12px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      display: grid;
-      grid-template-columns: 64px 1fr;
-      gap: 10px;
-      align-items: start;
-      position: relative;
+      padding:12px; border-radius:18px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+      display:grid; grid-template-columns:64px 1fr; gap:10px; align-items:start;
     }
-    .car-card.favorite {
-      box-shadow: 0 0 0 2px rgba(255,208,88,0.32) inset;
-    }
-    .car-card.in-deck {
-      box-shadow: 0 0 0 2px rgba(67,180,255,0.24) inset;
-    }
-    .car-meta h3 {
-      margin: 0 0 6px;
-      font-size: 16px;
-      line-height: 1.2;
-    }
-    .car-lines {
-      display: grid;
-      gap: 4px;
-      font-size: 12px;
-      color: #dce5f6;
-    }
-    .car-actions {
-      grid-column: 1 / -1;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
+    .car-card.favorite { box-shadow:0 0 0 2px rgba(255,208,88,.32) inset; }
+    .car-card.in-deck { box-shadow:0 0 0 2px rgba(67,180,255,.24) inset; }
+    .car-meta h3 { margin:0 0 6px; font-size:16px; line-height:1.2; }
+    .car-lines { display:grid; gap:4px; font-size:12px; color:#dce5f6; }
+    .car-actions { grid-column:1/-1; display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
 
-    .shop-cases {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
+    /* SHOP */
+    #shop .page-content { grid-template-columns:1fr 320px; }
+    .shop-cases { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
     .case-card {
-      padding: 16px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.08);
-      display: grid;
-      gap: 12px;
+      padding:16px; border-radius:20px; background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.08); display:grid; gap:12px;
+    }
+    .drop-box {
+      margin-top:14px; padding:16px; border-radius:18px; background:rgba(0,0,0,.26);
+      border:1px solid rgba(255,255,255,.08); min-height:120px; display:flex; align-items:center; justify-content:center;
+      text-align:center;
+    }
+    .limited-card {
+      padding:16px; border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,206,94,.15), rgba(255,255,255,.05));
+      border:1px solid rgba(255,214,110,.2);
+      display:grid; gap:10px;
+    }
+    .daily-store-item {
+      padding:12px; border-radius:16px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+      display:grid; gap:8px; margin-top:10px;
     }
 
-    .drop-box {
-      margin-top: 14px;
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(0,0,0,0.26);
-      border: 1px solid rgba(255,255,255,0.08);
-      min-height: 114px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    /* PASS */
+    #pass .page-content { grid-template-columns:340px 1fr; }
+    .pass-left-card { display:grid; gap:12px; }
+    .timer-big { font-size:28px; font-weight:900; }
+    .xp-bar {
+      width:100%; height:16px; border-radius:999px; background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.08); overflow:hidden;
     }
+    .xp-fill {
+      height:100%; width:0%; background:linear-gradient(90deg,#70e8ff,#2ab2ff,#496dff);
+      transition:width .2s ease;
+    }
+    .quest-list { display:grid; gap:10px; margin-top:12px; }
+    .quest-card {
+      padding:12px; border-radius:16px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+    }
+    .pass-track {
+      display:grid; gap:10px; padding-right:4px; overflow:auto;
+    }
+    .pass-level {
+      display:grid; grid-template-columns:58px 1fr 1fr; gap:10px; align-items:center;
+      padding:10px; border-radius:18px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+    }
+    .pass-level.current { box-shadow:0 0 0 2px rgba(255,206,94,.28) inset; }
+    .pass-level.claimed-free .free-reward,
+    .pass-level.claimed-plus .plus-reward { opacity:.6; }
+    .reward-box {
+      padding:10px; border-radius:14px; background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.08); min-height:74px;
+      display:grid; gap:4px; align-content:center;
+    }
+    .pass-level-title { width:58px; height:58px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-weight:900; background:rgba(255,255,255,.08); }
+
+    /* CALENDAR */
+    #calendar .page-content { grid-template-columns:1fr; }
+    .calendar-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+    .calendar-card {
+      padding:14px; border-radius:18px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+      display:grid; gap:8px;
+    }
+    .calendar-card.done { opacity:.66; }
 
     /* PREBATTLE */
-    #prebattle {
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .prebattle-card {
-      width: min(760px, 100%);
-      padding: 22px;
-      display: grid;
-      gap: 16px;
-    }
-    .versus {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 14px;
-      align-items: center;
-    }
+    #prebattle { align-items:center; justify-content:center; padding:20px; }
+    .prebattle-card { width:min(760px,100%); padding:22px; display:grid; gap:16px; }
+    .versus { display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:center; }
     .fighter {
-      padding: 16px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
+      padding:16px; border-radius:20px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+      text-align:center;
     }
-    .countdown {
-      font-size: 52px;
-      font-weight: 900;
-      color: #ffe07c;
-      text-align: center;
-    }
+    .countdown { font-size:52px; font-weight:900; color:#ffe07c; text-align:center; }
 
     /* BATTLE */
-    #battle {
-      position: relative;
-      overflow: hidden;
-      background: #132135;
-      user-select: none;
-    }
+    #battle { position:relative; overflow:hidden; background:#132135; user-select:none; }
     #battlefield {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
+      position:absolute; inset:0; overflow:hidden;
       background:
-        radial-gradient(circle at 20% 10%, rgba(255,255,255,0.07), transparent 26%),
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.07), transparent 26%),
         linear-gradient(180deg, var(--sand-3), var(--sand-1) 45%, var(--sand-2));
     }
-    .sand-decor, .sand-decor-2 {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
+    .sand-decor, .sand-decor-2 { position:absolute; inset:0; pointer-events:none; }
     .sand-decor {
-      background:
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 36px, rgba(0,0,0,0.03) 36px 72px),
-        repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0 42px, rgba(0,0,0,0.02) 42px 84px);
-      opacity: .26;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 36px, rgba(0,0,0,.03) 36px 72px),
+                  repeating-linear-gradient(180deg, rgba(255,255,255,.03) 0 42px, rgba(0,0,0,.02) 42px 84px);
+      opacity:.24;
     }
     .sand-decor-2 {
       background:
@@ -447,306 +262,142 @@
         radial-gradient(circle at 72% 33%, rgba(0,0,0,.06), transparent 8%),
         radial-gradient(circle at 38% 80%, rgba(255,255,255,.07), transparent 10%),
         radial-gradient(circle at 85% 70%, rgba(0,0,0,.07), transparent 7%);
-      opacity: .55;
+      opacity:.55;
     }
     .river {
-      position: absolute;
-      left: 0;
-      top: 46.4%;
-      width: 100%;
-      height: 7.2%;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.3), transparent 14%),
-        linear-gradient(180deg, #7ee9ff, #49c8ff 38%, #1e9fff 100%);
-      box-shadow: inset 0 0 18px rgba(255,255,255,0.22);
-      z-index: 2;
+      position:absolute; left:0; top:46.4%; width:100%; height:7.2%;
+      background: linear-gradient(180deg, rgba(255,255,255,.3), transparent 14%), linear-gradient(180deg, var(--blue-1), #49c8ff 38%, var(--blue-2));
+      box-shadow: inset 0 0 18px rgba(255,255,255,.22); z-index:2;
     }
     .bridge {
-      position: absolute;
-      top: 46.4%;
-      width: 86px;
-      height: 7.2%;
-      border-left: 4px solid #8d5b2f;
-      border-right: 4px solid #8d5b2f;
-      background: linear-gradient(180deg, #d3a06a, #af7747);
-      z-index: 3;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.08);
+      position:absolute; top:46.4%; width:88px; height:7.2%; z-index:3;
+      border-left:4px solid #8d5b2f; border-right:4px solid #8d5b2f;
+      background:linear-gradient(180deg,#d3a06a,#af7747);
+      box-shadow:inset 0 0 0 2px rgba(255,255,255,.08);
     }
-    .bridge.left { left: 22%; }
-    .bridge.right { right: 22%; }
-
-    .placement-line {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      border-top: 2px dashed rgba(255,255,255,0.18);
-      z-index: 1;
-      pointer-events: none;
-    }
-    .placement-line.player { top: 71%; }
-    .placement-line.bot { top: 29%; }
-
+    .bridge.left { left:22%; }
+    .bridge.right { right:22%; }
+    .placement-line { position:absolute; left:0; width:100%; border-top:2px dashed rgba(255,255,255,.18); z-index:1; pointer-events:none; }
+    .placement-line.player { top:71%; }
+    .placement-line.bot { top:29%; }
     .placement-highlight {
-      position: absolute;
-      border: 2px dashed rgba(255,255,255,0.28);
-      background: rgba(255,255,255,0.07);
-      z-index: 1;
-      pointer-events: none;
-      display: none;
+      position:absolute; border:2px dashed rgba(255,255,255,.28); background:rgba(255,255,255,.07);
+      z-index:1; pointer-events:none; display:none;
     }
-
     .tower {
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      border-radius: 18px;
-      z-index: 9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 800;
-      color: white;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.4);
-      border: 2px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.28);
+      position:absolute; z-index:9; color:white; text-shadow:0 2px 6px rgba(0,0,0,.4);
+      border:2px solid rgba(255,255,255,.2); box-shadow:0 8px 18px rgba(0,0,0,.28);
+      display:flex; align-items:center; justify-content:center; font-weight:800;
     }
-    .tower.player {
-      background: linear-gradient(180deg, #3f8cff, #1a5de0);
+    .tower-side { width:66px; height:78px; border-radius:18px 18px 22px 22px; }
+    .tower-king { width:84px; height:96px; border-radius:22px 22px 28px 28px; }
+    .tower.player { background:linear-gradient(180deg,#4fa0ff,#1e5fdf); }
+    .tower.bot { background:linear-gradient(180deg,#ff8585,#d83a3a); }
+    .tower-roof {
+      position:absolute; top:-8px; left:8px; right:8px; height:22px; border-radius:12px 12px 8px 8px;
+      background:linear-gradient(180deg,#ffe082,#f2b23a);
     }
-    .tower.bot {
-      background: linear-gradient(180deg, #ff7979, #d23636);
+    .tower-gate {
+      position:absolute; bottom:8px; left:18px; right:18px; height:20px; border-radius:10px 10px 6px 6px;
+      background:rgba(20,20,24,.44);
+      border:1px solid rgba(255,255,255,.08);
     }
-    .tower.king {
-      width: 74px;
-      height: 74px;
-      border-radius: 22px;
+    .tower-turret {
+      position:absolute; top:18px; width:16px; height:16px; border-radius:50%; background:#ffe082;
+      box-shadow:0 0 0 3px rgba(255,255,255,.12);
     }
+    .tower.player .tower-turret { box-shadow:0 0 0 3px rgba(29,115,255,.25); }
+    .tower.bot .tower-turret { box-shadow:0 0 0 3px rgba(255,81,81,.25); }
     .tower .hpbar {
-      position: absolute;
-      top: -12px;
-      left: 2px;
-      width: calc(100% - 4px);
-      height: 8px;
-      background: rgba(0,0,0,0.36);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
+      position:absolute; top:-12px; left:2px; width:calc(100% - 4px); height:8px;
+      background:rgba(0,0,0,.36); border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.08);
     }
-    .tower .hpfill {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #52e082, #21c35f);
+    .tower .hpfill { width:100%; height:100%; background:linear-gradient(90deg,#52e082,#21c35f); }
+    .tower-flash {
+      position:absolute; width:18px; height:18px; border-radius:50%; background:rgba(255,233,140,.9);
+      filter:blur(2px); pointer-events:none; opacity:0; transition:opacity .12s ease;
     }
 
     .unit {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 21px;
-      z-index: 10;
-      border: 2px solid rgba(255,255,255,0.22);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.22);
-      pointer-events: none;
+      position:absolute; width:40px; height:40px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+      font-size:21px; z-index:10; border:2px solid rgba(255,255,255,.22); box-shadow:0 8px 20px rgba(0,0,0,.22); pointer-events:none;
     }
-    .unit.player {
-      background: linear-gradient(180deg, #3f8cff, #1a5de0);
-    }
-    .unit.bot {
-      background: linear-gradient(180deg, #ff7979, #d23636);
-    }
+    .unit.player { background:linear-gradient(180deg,#3f8cff,#1a5de0); }
+    .unit.bot { background:linear-gradient(180deg,#ff7979,#d23636); }
     .unit .uhp {
-      position: absolute;
-      top: -10px;
-      left: 2px;
-      width: calc(100% - 4px);
-      height: 6px;
-      background: rgba(0,0,0,0.38);
-      border-radius: 999px;
-      overflow: hidden;
+      position:absolute; top:-10px; left:2px; width:calc(100% - 4px); height:6px; background:rgba(0,0,0,.38); border-radius:999px; overflow:hidden;
     }
-    .unit .uhp span {
-      display: block;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #57e68a, #21bf60);
-    }
+    .unit .uhp span { display:block; width:100%; height:100%; background:linear-gradient(90deg,#57e68a,#21bf60); }
 
     .battle-top {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      z-index: 40;
-      pointer-events: none;
+      position:absolute; top:0; left:0; width:100%; display:flex; justify-content:space-between; padding:10px; z-index:40; pointer-events:none;
     }
     .battle-bottom {
-      position: absolute;
-      bottom: 108px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding: 10px;
-      z-index: 40;
-      pointer-events: none;
+      position:absolute; bottom:108px; left:0; width:100%; display:flex; justify-content:space-between; align-items:flex-end;
+      padding:10px; z-index:40; pointer-events:none;
     }
     .hud-box {
-      background: rgba(8, 16, 28, 0.66);
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: var(--shadow);
-      border-radius: 16px;
-      padding: 10px 12px;
-      min-width: 170px;
-      pointer-events: auto;
+      background:rgba(8,16,28,.66); border:1px solid rgba(255,255,255,.12); box-shadow:var(--shadow);
+      border-radius:16px; padding:10px 12px; min-width:170px; pointer-events:auto;
     }
-    .fuel-box {
-      min-width: 190px;
-    }
-    .fuel-bar {
-      width: 100%;
-      height: 14px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.4);
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.08);
-      margin-top: 6px;
-    }
-    .fuel-fill {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, #ffe07c, #f6b73a);
-    }
-
+    .fuel-box { min-width:190px; }
+    .fuel-bar { width:100%; height:14px; border-radius:999px; background:rgba(0,0,0,.4); overflow:hidden; border:1px solid rgba(255,255,255,.08); margin-top:6px; }
+    .fuel-fill { height:100%; width:100%; background:linear-gradient(90deg,#ffe07c,#f6b73a); }
+    .battle-time { font-size:22px; font-weight:900; }
     .title-picker-btn {
-      min-width: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      padding: 0;
+      min-width:0; width:48px; height:48px; border-radius:14px; display:inline-flex; align-items:center; justify-content:center; font-size:22px; padding:0;
     }
-
     #hand {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 108px;
-      z-index: 45;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      padding: 8px;
-      background: linear-gradient(180deg, rgba(10,18,31,.14), rgba(7,12,22,.9));
-      border-top: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(8px);
+      position:absolute; left:0; bottom:0; width:100%; height:108px; z-index:45; display:flex; justify-content:center; align-items:center;
+      gap:8px; padding:8px; background:linear-gradient(180deg, rgba(10,18,31,.14), rgba(7,12,22,.9)); border-top:1px solid rgba(255,255,255,.08); backdrop-filter:blur(8px);
     }
     .hand-card {
-      position: relative;
-      width: 18%;
-      min-width: 72px;
-      max-width: 120px;
-      height: 90px;
-      border-radius: 18px;
-      padding: 8px 8px 6px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-      border: 2px solid rgba(255,255,255,0.08);
-      cursor: pointer;
-      transition: transform .12s ease, border-color .12s ease, opacity .12s ease;
-      overflow: hidden;
+      position:relative; width:18%; min-width:72px; max-width:120px; height:90px; border-radius:18px; padding:8px 8px 6px;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04)); border:2px solid rgba(255,255,255,.08);
+      cursor:pointer; transition:transform .12s ease, border-color .12s ease, opacity .12s ease; overflow:hidden;
     }
-    .hand-card.selected {
-      border-color: rgba(255,205,89,0.95);
-      transform: translateY(-6px);
-      box-shadow: 0 10px 24px rgba(246, 183, 58, 0.22);
-    }
-    .hand-card.unaffordable { opacity: .55; }
+    .hand-card.selected { border-color:rgba(255,205,89,.95); transform:translateY(-6px); box-shadow:0 10px 24px rgba(246,183,58,.22); }
+    .hand-card.unaffordable { opacity:.55; }
     .hand-cost {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #ffe07c, #f6b73a);
-      color: #1a1302;
-      font-size: 12px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position:absolute; top:5px; right:5px; width:24px; height:24px; border-radius:50%; background:linear-gradient(180deg,#ffe07c,#f6b73a);
+      color:#1a1302; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center;
     }
-    .hand-card h4 {
-      margin: 4px 0 2px;
-      font-size: 12px;
-      line-height: 1.15;
-      height: 30px;
-      overflow: hidden;
-    }
-    .hand-card .card-emoji {
-      font-size: 22px;
-    }
+    .hand-card h4 { margin:4px 0 2px; font-size:12px; line-height:1.15; height:30px; overflow:hidden; }
+    .hand-card .card-emoji { font-size:22px; }
 
     .overlay {
-      position: absolute;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 70;
-      background: rgba(0,0,0,0.48);
-      backdrop-filter: blur(6px);
+      position:absolute; inset:0; display:none; align-items:center; justify-content:center; padding:20px; z-index:70;
+      background:rgba(0,0,0,.48); backdrop-filter:blur(6px);
     }
-    .overlay.active { display: flex; }
-    .overlay-card {
-      width: min(520px, 100%);
-      padding: 20px;
-    }
-    .title-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
+    .overlay.active { display:flex; }
+    .overlay-card { width:min(560px, 100%); padding:20px; }
+    .title-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
     .title-item {
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.08);
-      cursor: pointer;
-      font-size: 13px;
+      padding:10px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.08);
+      cursor:pointer; font-size:13px;
     }
-    .title-item.active {
-      box-shadow: 0 0 0 2px rgba(255,210,92,0.36) inset;
-      color: #ffe08d;
+    .title-item.active { box-shadow:0 0 0 2px rgba(255,210,92,.36) inset; color:#ffe08d; }
+    .result-big { font-size:clamp(34px, 6vw, 54px); margin:0 0 4px; font-weight:900; }
+
+    .fx-shot {
+      position:absolute; width:10px; height:10px; border-radius:50%; background:#fff2a7; box-shadow:0 0 18px rgba(255,231,140,.95);
+      z-index:20; pointer-events:none;
+    }
+    .fx-explosion {
+      position:absolute; width:20px; height:20px; border-radius:50%; background:rgba(255,180,80,.9); filter:blur(2px);
+      z-index:22; pointer-events:none; transform:translate(-50%, -50%);
+      animation: explode .42s ease forwards;
+    }
+    @keyframes explode {
+      0% { opacity:1; width:20px; height:20px; }
+      100% { opacity:0; width:90px; height:90px; }
     }
 
-    .result-big {
-      font-size: clamp(34px, 6vw, 54px);
-      margin: 0 0 4px;
-      font-weight: 900;
-    }
-
-    @media (max-width: 980px) {
-      .lobby-wrap { grid-template-columns: 1fr; }
-      #garage .page-content { grid-template-columns: 1fr; }
-      .shop-cases { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .versus { grid-template-columns: 1fr; }
+    @media (max-width: 1100px) {
+      .lobby-wrap, #pass .page-content, #garage .page-content, #shop .page-content { grid-template-columns:1fr; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .shop-cases { grid-template-columns:1fr; }
+      .versus { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -758,7 +409,7 @@
         <div class="glow two"></div>
         <div class="headline">
           <h1>🚗 Гоночный центр</h1>
-          <p>Машины, мосты, бензин и путь от Центра Новичка до Центра Сильнейшего.</p>
+          <p>Машины, мосты, бензин, башни и ежедневный сезон Car Pass.</p>
         </div>
 
         <div class="stats-grid">
@@ -772,14 +423,13 @@
           <div class="small">Текущий прогресс</div>
           <h2 id="centerName" style="margin:6px 0 4px">Центр Новичка</h2>
           <div class="muted" id="centerRewardText">Победа +33 • Поражение -17</div>
-          <div class="progress-wrap">
-            <div class="progress-bar"><div class="progress-fill" id="centerProgress"></div></div>
-            <div class="small" id="centerProgressText" style="margin-top:8px">0 / 1000</div>
-          </div>
+          <div style="margin-top:14px;" class="progress-bar"><div class="progress-fill" id="centerProgress"></div></div>
+          <div class="small" id="centerProgressText" style="margin-top:8px;">0 / 1000</div>
           <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
             <span class="chip" id="titleChipLobby">Титул: нет</span>
             <span class="chip" id="favoriteChipLobby">Любимая: —</span>
             <span class="chip" id="limitChipLobby">Лимит гемов: 2145</span>
+            <span class="chip" id="passTimerLobby">⏳ До конца сезона: --:--:--</span>
           </div>
         </div>
 
@@ -787,6 +437,8 @@
           <button class="btn-gold" id="battleBtn">⚔️ В бой</button>
           <button class="btn-dark" id="garageBtn">🚘 Мои тачки</button>
           <button class="btn-blue" id="shopBtn">🛒 Магазин</button>
+          <button class="btn-green" id="passBtn">🚗 Car Pass — Внедорожная дорога</button>
+          <button class="btn-dark" id="calendarBtn">📅 Календарь</button>
         </div>
       </div>
 
@@ -801,11 +453,17 @@
         </div>
         <div class="mini-section">
           <div class="small">Твоя гонка (5 карт)</div>
-          <div id="miniDeckPreview" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; margin-top:10px;"></div>
+          <div id="miniDeckPreview" style="display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:10px;"></div>
+        </div>
+        <div class="mini-section">
+          <div class="small">Car Pass</div>
+          <div style="margin-top:8px; font-weight:800;" id="passProgressLobby">Уровень 1 • 0 / 90 XP</div>
+          <div class="xp-bar" style="margin-top:8px;"><div class="xp-fill" id="passProgressFillLobby"></div></div>
+          <div class="vertical-pass-preview" id="passPreviewList" style="margin-top:10px;"></div>
         </div>
         <div class="mini-section">
           <div class="small">Подсказка</div>
-          <p style="margin:8px 0 0; line-height:1.45; color:#dbe6fb;">Жирные тачки медленные и живучие. Гоночные быстро добивают. Боты могут контрить, защищаться и делать пуш: жирный спереди, гоночная сзади.</p>
+          <p style="margin:8px 0 0; line-height:1.45; color:#dbe6fb;">На Новичке боты очень тупые. На Sayona — средние. На Сильнейшем — как прежние. Между постановками у ботов есть кд, так что спама стало меньше.</p>
         </div>
       </div>
     </div>
@@ -815,9 +473,7 @@
     <div class="page">
       <div class="page-header">
         <h2>🚘 Мои тачки</h2>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn-dark" id="backFromGarage">Назад</button>
-        </div>
+        <button class="btn-dark" id="backFromGarage">Назад</button>
       </div>
       <div class="page-content">
         <div class="panel deck-panel">
@@ -827,13 +483,9 @@
           <div id="deckSlots" class="deck-slots"></div>
           <div style="margin-top:14px;" class="small">Выбранная пустая ячейка: <span id="selectedEmptySlotText">нет</span></div>
         </div>
-
         <div class="panel cars-panel">
           <div style="display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
-            <div>
-              <div class="small">Коллекция</div>
-              <h3 style="margin:6px 0 0;">Все мои тачки</h3>
-            </div>
+            <div><div class="small">Коллекция</div><h3 style="margin:6px 0 0;">Все мои тачки</h3></div>
             <div class="chip" id="garageSummary">0 машин</div>
           </div>
           <div id="garageCars" class="car-grid"></div>
@@ -872,8 +524,90 @@
               <div class="muted">50% жирная, 50% гоночная. Дальше равный шанс внутри вида.</div>
               <button class="btn-gold" data-roll="mixed">Крутить</button>
             </div>
+            <div class="case-card">
+              <div class="small">15 гемов</div>
+              <h3 style="margin:0;">🚙 Внедорожный кейс</h3>
+              <div class="muted">Только внедорожники. Главный приз: Rolls-Royce Black Cullinan — шанс 2%.</div>
+              <button class="btn-gold" data-roll="offroad">Крутить</button>
+            </div>
           </div>
+
           <div class="drop-box" id="dropBox">Пока ничего не выпало. Крути рулетку 👀</div>
+        </div>
+
+        <div class="panel shop-panel">
+          <div class="limited-card">
+            <div class="small">🔥 Ограничено • Только сегодня</div>
+            <h3 style="margin:0;">Mercedes Maybach GLS 990</h3>
+            <div class="muted">Урон 230 • HP 450 • Цена 129 гемов. После конца сезона купить будет нельзя.</div>
+            <div class="chip" id="limitedTimer">⏳ Осталось: --:--:--</div>
+            <button class="btn-gold" id="buyLimitedBtn">Купить за 129 💎</button>
+          </div>
+
+          <div class="daily-store-item">
+            <div class="small">Подарок дня</div>
+            <div style="font-weight:800;">Бесплатная награда</div>
+            <div class="muted">Раз в день можно забрать 5 гемов.</div>
+            <button class="btn-green" id="claimDailyShopBtn">Забрать</button>
+          </div>
+
+          <div class="daily-store-item" id="storeOffer1"></div>
+          <div class="daily-store-item" id="storeOffer2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pass" class="screen">
+    <div class="page">
+      <div class="page-header">
+        <h2>🚗 Car Pass — Внедорожная дорога</h2>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <span class="chip" id="passTimerTop">⏳ До конца сезона: --:--:--</span>
+          <button class="btn-dark" id="backFromPass">Назад</button>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="panel pass-panel pass-left-card">
+          <div>
+            <div class="small">Уровень сезона</div>
+            <h3 style="margin:6px 0 4px;" id="passLevelTitle">Уровень 1</h3>
+            <div class="muted" id="passXpText">0 / 90 XP</div>
+            <div class="xp-bar" style="margin-top:10px;"><div class="xp-fill" id="passXpFill"></div></div>
+          </div>
+
+          <div>
+            <div class="small">Car Pass+</div>
+            <div class="timer-big" id="passPriceBlock">179 💎</div>
+            <div class="muted" id="passPlusStatus">Окупаемый пропуск: кейсы, титул и финальный G63 Brabus.</div>
+            <button class="btn-gold" id="buyPassPlusBtn" style="margin-top:10px;">Купить Car Pass+</button>
+          </div>
+
+          <div>
+            <div class="small">Квесты (20 штук)</div>
+            <div class="quest-list" id="questList"></div>
+          </div>
+        </div>
+
+        <div class="panel pass-panel">
+          <div class="small">Вертикальный путь наград</div>
+          <div id="passTrack" class="pass-track" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="calendar" class="screen">
+    <div class="page">
+      <div class="page-header">
+        <h2>📅 Календарь наград за игры</h2>
+        <button class="btn-dark" id="backFromCalendar">Назад</button>
+      </div>
+      <div class="page-content">
+        <div class="panel calendar-panel">
+          <div class="small">Прогресс</div>
+          <h3 style="margin:6px 0 4px;" id="gamesPlayedText">Игр сыграно: 0</h3>
+          <div class="calendar-grid" id="calendarGrid"></div>
         </div>
       </div>
     </div>
@@ -881,23 +615,23 @@
 
   <div id="prebattle" class="screen">
     <div class="panel prebattle-card">
-      <div class="small center">Осмотр боевой карты</div>
+      <div class="small" style="text-align:center;">Осмотр боевой карты</div>
       <div class="versus">
-        <div class="fighter center">
+        <div class="fighter">
           <div class="small">Ты</div>
           <h2 style="margin:8px 0 10px;" id="prePlayerName">Игрок</h2>
           <div id="prePlayerTitle"></div>
           <div id="prePlayerFav" style="margin-top:12px;"></div>
         </div>
         <div class="countdown" id="preCountdown">3</div>
-        <div class="fighter center">
+        <div class="fighter">
           <div class="small">Соперник</div>
           <h2 style="margin:8px 0 10px;" id="preBotName">Бот</h2>
           <div id="preBotTitle"></div>
           <div id="preBotFav" style="margin-top:12px;"></div>
         </div>
       </div>
-      <div class="muted center">Режим: Борьба за царя • 3 башни • речка и 2 мостика</div>
+      <div class="muted" style="text-align:center;">Режим: Борьба за царя • 3 башни • речка и 2 мостика</div>
     </div>
   </div>
 
@@ -915,7 +649,7 @@
 
     <div class="battle-top">
       <div class="hud-box" id="botHud"></div>
-      <div class="hud-box">👑 Борьба за царя</div>
+      <div class="hud-box"><div>👑 Борьба за царя</div><div class="battle-time" id="battleTimer">2:00</div></div>
     </div>
 
     <div class="battle-bottom">
@@ -943,7 +677,7 @@
     </div>
 
     <div class="overlay" id="resultOverlay">
-      <div class="panel overlay-card center">
+      <div class="panel overlay-card" style="text-align:center;">
         <div class="result-big" id="resultBig">Победа!</div>
         <div id="resultDetails" class="muted">+33 кубка • +3 гема</div>
         <div style="display:flex; justify-content:center; gap:8px; margin-top:16px; flex-wrap:wrap;">
@@ -956,19 +690,26 @@
 
   <script>
     const GEM_LIMIT = 2145;
+    const PASS_PRICE = 179;
+    const BATTLE_DURATION_MS = 120000;
     const TROPHY_STEP_REWARD = 9;
+    const PASS_LEVEL_XP = 90;
+    const PASS_LEVELS = 30;
+    const QUEST_XP = 50;
+    const STARTER_DECK = ['vaz2107', 'niva2121', 'vaz2109', 'vaz2114', 'vaz2115'];
 
     const carCatalog = [
-      { id:'vaz2107', name:'Семерка с района', emoji:'🚗', kind:'racer', hp:400, damage:200, speed:0.72, cost:3, attackSpeed:980, range:42 },
-      { id:'niva2121', name:'Нива дяди Руслана', emoji:'🚙', kind:'tank', hp:500, damage:180, speed:0.55, cost:4, attackSpeed:1080, range:42 },
-      { id:'vaz2109', name:'Девятка Лёхи', emoji:'🚘', kind:'racer', hp:350, damage:230, speed:0.76, cost:3, attackSpeed:900, range:42 },
-      { id:'vaz2114', name:'Четырка', emoji:'🚗', kind:'racer', hp:400, damage:200, speed:0.71, cost:3, attackSpeed:980, range:42 },
-      { id:'vaz2115', name:'Пятнашка', emoji:'🚕', kind:'tank', hp:450, damage:190, speed:0.57, cost:4, attackSpeed:1020, range:42 },
+      { id:'vaz2107', name:'Семерка с района', emoji:'🚗', kind:'racer', hp:400, damage:200, speed:0.70, cost:3, attackSpeed:980, range:42 },
+      { id:'niva2121', name:'Нива дяди Руслана', emoji:'🚙', kind:'tank', hp:500, damage:180, speed:0.54, cost:4, attackSpeed:1080, range:42 },
+      { id:'vaz2109', name:'Девятка Лёхи', emoji:'🚘', kind:'racer', hp:350, damage:230, speed:0.74, cost:3, attackSpeed:900, range:42 },
+      { id:'vaz2114', name:'Четырка', emoji:'🚗', kind:'racer', hp:400, damage:200, speed:0.69, cost:3, attackSpeed:980, range:42 },
+      { id:'vaz2115', name:'Пятнашка', emoji:'🚕', kind:'tank', hp:450, damage:190, speed:0.56, cost:4, attackSpeed:1020, range:42 },
 
-      { id:'urus', name:'Lamborghini Urus', emoji:'🚙', kind:'tank', hp:1200, damage:200, speed:0.46, cost:7, attackSpeed:1150, range:44 },
-      { id:'g63', name:'Mercedes G63', emoji:'🚙', kind:'tank', hp:1100, damage:215, speed:0.47, cost:7, attackSpeed:1120, range:44 },
-      { id:'lc300', name:'Toyota Land Cruiser 300', emoji:'🚙', kind:'tank', hp:1050, damage:220, speed:0.48, cost:6, attackSpeed:1100, range:44 },
-      { id:'x7m60i', name:'BMW X7 M60i', emoji:'🚙', kind:'tank', hp:980, damage:225, speed:0.49, cost:6, attackSpeed:1080, range:44 },
+      { id:'urus', name:'Lamborghini Urus', emoji:'🚙', kind:'tank', hp:1200, damage:200, speed:0.45, cost:7, attackSpeed:1150, range:44 },
+      { id:'g63', name:'Mercedes G63', emoji:'🚙', kind:'tank', hp:1100, damage:215, speed:0.46, cost:7, attackSpeed:1120, range:44 },
+      { id:'g65', name:'Mercedes G65 AMG', emoji:'🚙', kind:'tank', hp:980, damage:240, speed:0.49, cost:6, attackSpeed:1060, range:44 },
+      { id:'lc300', name:'Toyota Land Cruiser 300', emoji:'🚙', kind:'tank', hp:1050, damage:220, speed:0.47, cost:6, attackSpeed:1100, range:44 },
+      { id:'x7m60i', name:'BMW X7 M60i', emoji:'🚙', kind:'tank', hp:980, damage:225, speed:0.48, cost:6, attackSpeed:1080, range:44 },
       { id:'escalade', name:'Cadillac Escalade', emoji:'🚙', kind:'tank', hp:1020, damage:210, speed:0.47, cost:6, attackSpeed:1120, range:44 },
       { id:'defender110', name:'Land Rover Defender 110', emoji:'🚙', kind:'tank', hp:960, damage:230, speed:0.50, cost:6, attackSpeed:1080, range:44 },
       { id:'gle63', name:'Mercedes GLE 63 S', emoji:'🚙', kind:'tank', hp:920, damage:240, speed:0.51, cost:6, attackSpeed:1060, range:44 },
@@ -985,136 +726,259 @@
       { id:'ram1500', name:'Dodge RAM 1500', emoji:'🚙', kind:'tank', hp:940, damage:230, speed:0.49, cost:6, attackSpeed:1090, range:44 },
       { id:'f150raptor', name:'Ford F-150 Raptor', emoji:'🚙', kind:'tank', hp:860, damage:242, speed:0.53, cost:5, attackSpeed:1040, range:44 },
       { id:'urusperf', name:'Lamborghini Urus Performante', emoji:'🚙', kind:'tank', hp:980, damage:235, speed:0.50, cost:6, attackSpeed:1070, range:44 },
+      { id:'maybachgls990', name:'Mercedes Maybach GLS 990', emoji:'🚙', kind:'tank', hp:450, damage:230, speed:0.56, cost:4, attackSpeed:1000, range:44, limited:true },
+      { id:'cullinan', name:'Rolls-Royce Black Cullinan', emoji:'🚙', kind:'tank', hp:1080, damage:255, speed:0.48, cost:6, attackSpeed:1020, range:44 },
+      { id:'audirs2suv', name:'Audi RS 2 SUVs', emoji:'🚙', kind:'tank', hp:930, damage:248, speed:0.52, cost:5, attackSpeed:1020, range:44 },
+      { id:'g63brabus', name:'GelendVagen 63 AMG Brabus Restyiling', emoji:'🚙', kind:'tank', hp:1150, damage:250, speed:0.49, cost:7, attackSpeed:1000, range:44 },
 
-      { id:'aventador', name:'Lamborghini Aventador', emoji:'🏎️', kind:'racer', hp:250, damage:350, speed:0.90, cost:4, attackSpeed:760, range:42 },
-      { id:'huracan', name:'Lamborghini Huracán', emoji:'🏎️', kind:'racer', hp:280, damage:330, speed:0.88, cost:4, attackSpeed:780, range:42 },
-      { id:'revuelto', name:'Lamborghini Revuelto', emoji:'🏎️', kind:'racer', hp:300, damage:340, speed:0.87, cost:4, attackSpeed:780, range:42 },
-      { id:'bmwm5f90', name:'BMW M5 F90', emoji:'🚘', kind:'racer', hp:320, damage:300, speed:0.82, cost:4, attackSpeed:810, range:42 },
-      { id:'m4comp', name:'BMW M4 Competition', emoji:'🚘', kind:'racer', hp:300, damage:310, speed:0.84, cost:4, attackSpeed:800, range:42 },
-      { id:'rs7', name:'Audi RS7', emoji:'🚘', kind:'racer', hp:330, damage:295, speed:0.81, cost:4, attackSpeed:820, range:42 },
-      { id:'r8v10', name:'Audi R8 V10', emoji:'🏎️', kind:'racer', hp:270, damage:340, speed:0.88, cost:4, attackSpeed:780, range:42 },
-      { id:'amggt', name:'Mercedes-AMG GT', emoji:'🏎️', kind:'racer', hp:310, damage:305, speed:0.83, cost:4, attackSpeed:800, range:42 },
-      { id:'s63amg', name:'Mercedes S63 AMG', emoji:'🚘', kind:'racer', hp:360, damage:285, speed:0.78, cost:4, attackSpeed:850, range:42 },
-      { id:'c63s', name:'Mercedes C63 S', emoji:'🚘', kind:'racer', hp:300, damage:315, speed:0.84, cost:4, attackSpeed:800, range:42 },
-      { id:'gtr35', name:'Nissan GT-R R35', emoji:'🏎️', kind:'racer', hp:290, damage:325, speed:0.86, cost:4, attackSpeed:790, range:42 },
-      { id:'supra', name:'Toyota Supra A90', emoji:'🏎️', kind:'racer', hp:300, damage:312, speed:0.84, cost:4, attackSpeed:800, range:42 },
-      { id:'mk4supra', name:'Toyota Supra MK4', emoji:'🏎️', kind:'racer', hp:310, damage:305, speed:0.83, cost:4, attackSpeed:810, range:42 },
-      { id:'gr86', name:'Toyota GR86', emoji:'🚗', kind:'racer', hp:340, damage:275, speed:0.80, cost:3, attackSpeed:850, range:42 },
-      { id:'camry70trd', name:'Toyota Camry 70 TRD', emoji:'🚘', kind:'racer', hp:360, damage:270, speed:0.77, cost:3, attackSpeed:860, range:42 },
+      { id:'aventador', name:'Lamborghini Aventador', emoji:'🏎️', kind:'racer', hp:250, damage:350, speed:0.88, cost:4, attackSpeed:760, range:42 },
+      { id:'huracan', name:'Lamborghini Huracán', emoji:'🏎️', kind:'racer', hp:280, damage:330, speed:0.86, cost:4, attackSpeed:780, range:42 },
+      { id:'revuelto', name:'Lamborghini Revuelto', emoji:'🏎️', kind:'racer', hp:300, damage:340, speed:0.85, cost:4, attackSpeed:780, range:42 },
+      { id:'bmwm5f90', name:'BMW M5 F90', emoji:'🚘', kind:'racer', hp:320, damage:300, speed:0.80, cost:4, attackSpeed:810, range:42 },
+      { id:'m4comp', name:'BMW M4 Competition', emoji:'🚘', kind:'racer', hp:300, damage:310, speed:0.82, cost:4, attackSpeed:800, range:42 },
+      { id:'rs7', name:'Audi RS7', emoji:'🚘', kind:'racer', hp:330, damage:295, speed:0.80, cost:4, attackSpeed:820, range:42 },
+      { id:'r8v10', name:'Audi R8 V10', emoji:'🏎️', kind:'racer', hp:270, damage:340, speed:0.86, cost:4, attackSpeed:780, range:42 },
+      { id:'amggt', name:'Mercedes-AMG GT', emoji:'🏎️', kind:'racer', hp:310, damage:305, speed:0.81, cost:4, attackSpeed:800, range:42 },
+      { id:'s63amg', name:'Mercedes S63 AMG', emoji:'🚘', kind:'racer', hp:360, damage:285, speed:0.77, cost:4, attackSpeed:850, range:42 },
+      { id:'c63s', name:'Mercedes C63 S', emoji:'🚘', kind:'racer', hp:300, damage:315, speed:0.82, cost:4, attackSpeed:800, range:42 },
+      { id:'gtr35', name:'Nissan GT-R R35', emoji:'🏎️', kind:'racer', hp:290, damage:325, speed:0.84, cost:4, attackSpeed:790, range:42 },
+      { id:'supra', name:'Toyota Supra A90', emoji:'🏎️', kind:'racer', hp:300, damage:312, speed:0.82, cost:4, attackSpeed:800, range:42 },
+      { id:'mk4supra', name:'Toyota Supra MK4', emoji:'🏎️', kind:'racer', hp:310, damage:305, speed:0.81, cost:4, attackSpeed:810, range:42 },
+      { id:'gr86', name:'Toyota GR86', emoji:'🚗', kind:'racer', hp:340, damage:275, speed:0.78, cost:3, attackSpeed:850, range:42 },
+      { id:'camry70trd', name:'Toyota Camry 70 TRD', emoji:'🚘', kind:'racer', hp:360, damage:270, speed:0.76, cost:3, attackSpeed:860, range:42 },
       { id:'mustanggt', name:'Ford Mustang GT', emoji:'🏎️', kind:'racer', hp:330, damage:290, speed:0.80, cost:4, attackSpeed:820, range:42 },
       { id:'chargerhellcat', name:'Dodge Charger Hellcat', emoji:'🚘', kind:'racer', hp:360, damage:285, speed:0.78, cost:4, attackSpeed:840, range:42 },
       { id:'challenger', name:'Dodge Challenger SRT', emoji:'🚘', kind:'racer', hp:370, damage:280, speed:0.77, cost:4, attackSpeed:850, range:42 },
-      { id:'corvettec8', name:'Chevrolet Corvette C8', emoji:'🏎️', kind:'racer', hp:285, damage:328, speed:0.86, cost:4, attackSpeed:790, range:42 },
+      { id:'corvettec8', name:'Chevrolet Corvette C8', emoji:'🏎️', kind:'racer', hp:285, damage:328, speed:0.84, cost:4, attackSpeed:790, range:42 },
       { id:'camarozl1', name:'Chevrolet Camaro ZL1', emoji:'🚘', kind:'racer', hp:350, damage:286, speed:0.78, cost:4, attackSpeed:840, range:42 },
-      { id:'911turbo', name:'Porsche 911 Turbo S', emoji:'🏎️', kind:'racer', hp:295, damage:332, speed:0.87, cost:4, attackSpeed:785, range:42 },
-      { id:'taycanturbo', name:'Porsche Taycan Turbo', emoji:'🚘', kind:'racer', hp:345, damage:282, speed:0.79, cost:4, attackSpeed:835, range:42 },
-      { id:'lc500', name:'Lexus LC 500', emoji:'🚘', kind:'racer', hp:340, damage:278, speed:0.79, cost:3, attackSpeed:845, range:42 },
-      { id:'is500', name:'Lexus IS 500', emoji:'🚘', kind:'racer', hp:355, damage:276, speed:0.78, cost:3, attackSpeed:850, range:42 },
-      { id:'civictyper', name:'Honda Civic Type R', emoji:'🚗', kind:'racer', hp:330, damage:280, speed:0.80, cost:3, attackSpeed:840, range:42 }
+      { id:'911turbo', name:'Porsche 911 Turbo S', emoji:'🏎️', kind:'racer', hp:295, damage:332, speed:0.85, cost:4, attackSpeed:785, range:42 },
+      { id:'taycanturbo', name:'Porsche Taycan Turbo', emoji:'🚘', kind:'racer', hp:345, damage:282, speed:0.78, cost:4, attackSpeed:835, range:42 },
+      { id:'lc500', name:'Lexus LC 500', emoji:'🚘', kind:'racer', hp:340, damage:278, speed:0.78, cost:3, attackSpeed:845, range:42 },
+      { id:'is500', name:'Lexus IS 500', emoji:'🚘', kind:'racer', hp:355, damage:276, speed:0.77, cost:3, attackSpeed:850, range:42 },
+      { id:'civictyper', name:'Honda Civic Type R', emoji:'🚗', kind:'racer', hp:330, damage:280, speed:0.79, cost:3, attackSpeed:840, range:42 }
     ];
 
     const carsById = Object.fromEntries(carCatalog.map(c => [c.id, c]));
-    const STARTER_DECK = ['vaz2107', 'niva2121', 'vaz2109', 'vaz2114', 'vaz2115'];
+    const tankIds = carCatalog.filter(c => c.kind === 'tank' && !c.limited).map(c => c.id);
+    const racerIds = carCatalog.filter(c => c.kind === 'racer').map(c => c.id);
+    const offroadIds = carCatalog.filter(c => c.kind === 'tank').map(c => c.id);
+
+    const passFreeRewards = {
+      1:{type:'gems', amount:5}, 2:{type:'randomCar'}, 3:{type:'gems', amount:7}, 4:{type:'case', caseType:'mixed'}, 5:{type:'gems', amount:10},
+      6:{type:'randomCar'}, 7:{type:'gems', amount:12}, 8:{type:'case', caseType:'tank'}, 9:{type:'gems', amount:15}, 10:{type:'car', carId:'g65'},
+      11:{type:'gems', amount:15}, 12:{type:'randomCar'}, 13:{type:'gems', amount:20}, 14:{type:'case', caseType:'racer'}, 15:{type:'gems', amount:20},
+      16:{type:'randomCar'}, 17:{type:'gems', amount:25}, 18:{type:'case', caseType:'mixed'}, 19:{type:'gems', amount:25}, 20:{type:'randomCar'},
+      21:{type:'gems', amount:30}, 22:{type:'case', caseType:'tank'}, 23:{type:'gems', amount:30}, 24:{type:'randomCar'}, 25:{type:'gems', amount:35},
+      26:{type:'case', caseType:'racer'}, 27:{type:'gems', amount:35}, 28:{type:'randomCar'}, 29:{type:'gems', amount:40}, 30:{type:'case', caseType:'offroad'}
+    };
+
+    const passPlusRewards = {
+      1:{type:'gems', amount:5}, 2:{type:'randomCar'}, 3:{type:'gems', amount:7}, 4:{type:'case', caseType:'tank'}, 5:{type:'gems', amount:10},
+      6:{type:'randomCar'}, 7:{type:'gems', amount:12}, 8:{type:'case', caseType:'racer'}, 9:{type:'gems', amount:15}, 10:{type:'car', carId:'audirs2suv'},
+      11:{type:'gems', amount:15}, 12:{type:'randomCar'}, 13:{type:'gems', amount:20}, 14:{type:'case', caseType:'mixed'}, 15:{type:'bundleCases'},
+      16:{type:'randomCar'}, 17:{type:'gems', amount:25}, 18:{type:'case', caseType:'tank'}, 19:{type:'gems', amount:25}, 20:{type:'case', caseType:'offroad'},
+      21:{type:'gems', amount:30}, 22:{type:'randomCar'}, 23:{type:'gems', amount:30}, 24:{type:'case', caseType:'racer'}, 25:{type:'title', title:'Внедорожная пантера'},
+      26:{type:'gems', amount:35}, 27:{type:'randomCar'}, 28:{type:'case', caseType:'mixed'}, 29:{type:'gems', amount:40}, 30:{type:'car', carId:'g63brabus'}
+    };
+
+    const questTemplates = [
+      { key:'wins', text:'Выиграй 1 бой', target:1 },
+      { key:'wins', text:'Выиграй 2 боя', target:2 },
+      { key:'wins', text:'Выиграй 3 боя', target:3 },
+      { key:'losses', text:'Сыграй 1 проигрыш', target:1 },
+      { key:'games', text:'Сыграй 2 боя', target:2 },
+      { key:'games', text:'Сыграй 4 боя', target:4 },
+      { key:'placements', text:'Поставь 8 машин', target:8 },
+      { key:'placements', text:'Поставь 15 машин', target:15 },
+      { key:'towers', text:'Сломай 1 башню', target:1 },
+      { key:'towers', text:'Сломай 2 башни', target:2 },
+      { key:'damage', text:'Нанеси 2000 урона', target:2000 },
+      { key:'damage', text:'Нанеси 4000 урона', target:4000 },
+      { key:'tankPlay', text:'Поставь 5 жирных машин', target:5 },
+      { key:'racerPlay', text:'Поставь 5 гоночных машин', target:5 },
+      { key:'destroyKing', text:'Уничтожь главную башню', target:1 },
+      { key:'games', text:'Сыграй 6 боёв', target:6 },
+      { key:'wins', text:'Выиграй 4 боя', target:4 },
+      { key:'damage', text:'Нанеси 7000 урона', target:7000 },
+      { key:'placements', text:'Поставь 25 машин', target:25 },
+      { key:'towers', text:'Сломай 3 башни', target:3 }
+    ];
+
+    const calendarRewards = [
+      { games:10, reward:{type:'gems', amount:5} },
+      { games:20, reward:{type:'case', caseType:'mixed'} },
+      { games:30, reward:{type:'gems', amount:10} },
+      { games:40, reward:{type:'case', caseType:'racer'} },
+      { games:50, reward:{type:'randomCar'} },
+      { games:60, reward:{type:'gems', amount:15} },
+      { games:70, reward:{type:'case', caseType:'tank'} },
+      { games:80, reward:{type:'gems', amount:20} },
+      { games:90, reward:{type:'case', caseType:'offroad'} },
+      { games:100, reward:{type:'car', carId:'cullinan'} }
+    ];
 
     function makeBotProfiles() {
-      const namesA = ['Turbo', 'Street', 'King', 'Road', 'Nitro', 'Drift', 'Pulse', 'Fast', 'Auto', 'Ghost'];
-      const namesB = ['Sayona', 'Vaz', 'Rider', 'Storm', 'Wheel', 'Rush', 'Master', 'Track', 'Crown', 'Shift'];
-      const titlesByTier = {
-        novice: ['', '', '', 'Красавчик'],
-        sayona: ['', 'Красавчик', 'Легенда', ''],
-        strongest: ['', 'Красавчик', 'Легенда', 'Мастер игры']
-      };
-      const tankIds = carCatalog.filter(c => c.kind === 'tank').map(c => c.id);
-      const racerIds = carCatalog.filter(c => c.kind === 'racer').map(c => c.id);
+      const namesA = ['Turbo','Street','King','Road','Nitro','Drift','Pulse','Fast','Auto','Ghost'];
+      const namesB = ['Sayona','Vaz','Rider','Storm','Wheel','Rush','Master','Track','Crown','Shift'];
+      const noviceTitles = ['', '', '', 'Красавчик'];
+      const sayonaTitles = ['', 'Красавчик', '', ''];
+      const strongTitles = ['', 'Красавчик', 'Легенда', ''];
       const profiles = [];
       for (let i = 0; i < 70; i++) {
         const tier = i < 24 ? 'novice' : i < 48 ? 'sayona' : 'strongest';
-        const style = ['balanced', 'push', 'tank', 'racer', 'smart', 'counter', 'greedy'][i % 7];
-        const favorite = i % 2 === 0 ? racerIds[i % racerIds.length] : tankIds[i % tankIds.length];
+        const styles = tier === 'novice' ? ['clumsy','slow','weakcounter'] : tier === 'sayona' ? ['balanced','push','counter'] : ['balanced','push','counter','tank','racer'];
+        const titlePool = tier === 'novice' ? noviceTitles : tier === 'sayona' ? sayonaTitles : strongTitles;
         const deck = [];
+        const source = [...tankIds.slice(0,20), ...racerIds.slice(0,20)];
         while (deck.length < 5) {
-          const pool = Math.random() < 0.5 ? tankIds : racerIds;
-          const pick = pool[(i * 3 + deck.length * 7 + Math.floor(Math.random() * pool.length)) % pool.length];
+          const pick = source[(i * 7 + deck.length * 5 + Math.floor(Math.random() * source.length)) % source.length];
           if (!deck.includes(pick)) deck.push(pick);
         }
         profiles.push({
           name: `${namesA[i % namesA.length]}_${namesB[(i * 2) % namesB.length]}_${i + 1}`,
-          title: titlesByTier[tier][i % titlesByTier[tier].length],
-          favorite,
+          title: titlePool[i % titlePool.length],
+          favorite: deck[0],
           deck,
-          style,
+          style: styles[i % styles.length],
           tier
         });
       }
       return profiles;
     }
-
     const botProfiles = makeBotProfiles();
 
-    const saved = JSON.parse(localStorage.getItem('race_center_save_v4') || 'null');
+    function defaultPassState() {
+      return {
+        dayKey: getDayKey(),
+        xp: 0,
+        plusOwned: false,
+        freeClaimed: [],
+        plusClaimed: [],
+        limitedBought: false,
+        dailyShopClaimed: false,
+        quests: questTemplates.map(q => ({...q, progress:0, claimed:false}))
+      };
+    }
+
+    const saved = JSON.parse(localStorage.getItem('race_center_save_v7') || 'null');
     const data = saved || {
       trophies: 0,
-      gems: 0,
+      gems: 18,
       ownedCars: [...STARTER_DECK],
       deck: [...STARTER_DECK],
       favoriteCarId: 'vaz2107',
       selectedTitle: '',
       rewardClaimedSteps: 0,
-      finishedGame: false
+      finishedGame: false,
+      starterBonusGiven: true,
+      pass: defaultPassState(),
+      calendar: { gamesPlayed:0, claimed:[] },
+      store: { dayKey:getDayKey(), offers:null },
+      titlesOwned: [],
+      dailyShopBonusDay:''
     };
+
+    if (!data.starterBonusGiven) {
+      data.gems += 18;
+      data.starterBonusGiven = true;
+    }
+    if (!data.pass) data.pass = defaultPassState();
+    if (!data.calendar) data.calendar = { gamesPlayed:0, claimed:[] };
+    if (!data.store) data.store = { dayKey:getDayKey(), offers:null };
+    if (!data.titlesOwned) data.titlesOwned = [];
 
     let selectedGarageEmptySlot = null;
     let selectedBotProfile = null;
     let preTimer = null;
+    let uiTimer = null;
 
     const battle = {
-      running: false,
-      playerFuel: 10,
-      botFuel: 10,
-      selectedCardId: null,
-      units: [],
-      towers: [],
-      loopId: null,
-      lastTime: 0,
-      lastBotThink: 0,
-      botProfile: null,
-      playerDestroyedEnemyTowers: 0,
-      botDestroyedPlayerTowers: 0
+      running:false,
+      playerFuel:10,
+      botFuel:10,
+      selectedCardId:null,
+      units:[],
+      towers:[],
+      loopId:null,
+      lastTime:0,
+      lastBotThink:0,
+      botProfile:null,
+      battleStart:0,
+      playerStats:{ damage:0, towers:0, placements:0, tankPlay:0, racerPlay:0, destroyKing:0 },
+      playerWon:false,
+      botSettings:{ thinkMin:2500, thinkMax:4000, counterChance:.35, comboChance:.06, smartness:.2 },
+      nextBotThinkAt:0,
+      projectiles:[]
     };
 
-    function saveData() {
-      localStorage.setItem('race_center_save_v4', JSON.stringify(data));
+    function getDayKey(d = new Date()) {
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
 
-    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
-    function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-    function byId(id) { return document.getElementById(id); }
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-      byId(id).classList.add('active');
+    function msToEndOfDay() {
+      const now = new Date();
+      const end = new Date(now);
+      end.setHours(24,0,0,0);
+      return Math.max(0, end - now);
+    }
+
+    function formatMs(ms) {
+      const total = Math.floor(ms / 1000);
+      const h = Math.floor(total / 3600);
+      const m = Math.floor((total % 3600) / 60);
+      const s = total % 60;
+      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function byId(id){ return document.getElementById(id); }
+    function showScreen(id){ document.querySelectorAll('.screen').forEach(el => el.classList.remove('active')); byId(id).classList.add('active'); }
+    function centerOf(obj){ return { x: obj.x + obj.width/2, y: obj.y + obj.height/2 }; }
+    function distance(a,b){ const aa=centerOf(a), bb=centerOf(b); return Math.hypot(aa.x-bb.x, aa.y-bb.y); }
+
+    function saveData(){ localStorage.setItem('race_center_save_v7', JSON.stringify(data)); }
+
+    function resetDailySystemsIfNeeded() {
+      const dayKey = getDayKey();
+      if (data.pass.dayKey !== dayKey) data.pass = defaultPassState();
+      if (data.store.dayKey !== dayKey) data.store = { dayKey, offers:null };
+      generateStoreOffersIfNeeded();
+    }
+
+    function generateStoreOffersIfNeeded() {
+      if (data.store.offers) return;
+      const offer1Type = Math.random() < .5 ? 'case' : 'car';
+      const offer2Type = Math.random() < .5 ? 'gems' : 'car';
+      const carPool = [...racerIds.slice(0,12), ...tankIds.slice(0,12)];
+      data.store.offers = [
+        offer1Type === 'case'
+          ? { type:'case', label:'Скидка дня: смешанный кейс', price:7, caseType:'mixed' }
+          : { type:'car', label:`Тачка дня: ${carsById[carPool[3]].name}`, price:39, carId:carPool[3] },
+        offer2Type === 'gems'
+          ? { type:'gems', label:'Пак 20 гемов', price:14, amount:20 }
+          : { type:'car', label:`Спецпредложение: ${carsById[carPool[7]].name}`, price:49, carId:carPool[7] }
+      ];
+      saveData();
+    }
+
+    function normalizeDeck() {
+      while (data.deck.length < 5) data.deck.push(null);
+      if (data.deck.length > 5) data.deck.length = 5;
+      for (let i=0;i<5;i++) if (data.deck[i] && !data.ownedCars.includes(data.deck[i])) data.deck[i] = null;
+      if (!data.favoriteCarId || !data.ownedCars.includes(data.favoriteCarId)) data.favoriteCarId = data.ownedCars[0] || STARTER_DECK[0];
+      if (!getUnlockedTitles().includes(data.selectedTitle)) data.selectedTitle = '';
+      saveData();
     }
 
     function getCenterInfo(trophies = data.trophies) {
       const center = clamp(Math.floor(trophies / 1000) + 1, 1, 14);
-      let group = 'novice';
-      let name = 'Центр Новичка';
-      let win = 33;
-      let lose = -17;
-      if (center >= 6 && center <= 10) {
-        group = 'sayona';
-        name = 'Центр Sayona';
-        win = 25;
-        lose = -21;
-      }
-      if (center >= 11) {
-        group = 'strongest';
-        name = 'Центр Сильнейшего';
-        win = 13;
-        lose = -28;
-      }
+      let group='novice', name='Центр Новичка', win=33, lose=-17;
+      if (center >= 6 && center <= 10) { group='sayona'; name='Центр Sayona'; win=25; lose=-21; }
+      if (center >= 11) { group='strongest'; name='Центр Сильнейшего'; win=13; lose=-28; }
       const start = (center - 1) * 1000;
       const within = trophies - start;
-      return { center, name, group, win, lose, start, within, end: center * 1000 };
+      return { center, group, name, win, lose, start, within, end:center*1000 };
     }
 
     function getUnlockedTitles() {
@@ -1123,20 +987,14 @@
       if (center >= 6) arr.push('Красавчик');
       if (center >= 10) arr.push('Легенда');
       if (center >= 14) arr.push('Мастер игры');
+      data.titlesOwned.forEach(t => { if (!arr.includes(t)) arr.push(t); });
       return arr;
     }
 
-    function normalizeDeck() {
-      while (data.deck.length < 5) data.deck.push(null);
-      if (data.deck.length > 5) data.deck.length = 5;
-      for (let i = 0; i < 5; i++) {
-        const id = data.deck[i];
-        if (id && !data.ownedCars.includes(id)) data.deck[i] = null;
-      }
-      if (!data.favoriteCarId || !data.ownedCars.includes(data.favoriteCarId)) {
-        data.favoriteCarId = data.ownedCars[0] || STARTER_DECK[0];
-      }
-      if (!getUnlockedTitles().includes(data.selectedTitle)) data.selectedTitle = '';
+    function getPassLevel() {
+      const level = clamp(Math.floor(data.pass.xp / PASS_LEVEL_XP) + 1, 1, PASS_LEVELS);
+      const xpInLevel = data.pass.xp - (level - 1) * PASS_LEVEL_XP;
+      return { level, xpInLevel, next:PASS_LEVEL_XP };
     }
 
     function addGems(amount) {
@@ -1145,24 +1003,122 @@
       return data.gems - before;
     }
 
-    function checkTrophyRoadRewards(oldTrophies, newTrophies) {
-      const oldStep = Math.floor(Math.max(oldTrophies, 0) / 100);
-      const newStep = Math.floor(Math.max(newTrophies, 0) / 100);
-      let granted = 0;
-      if (newStep > oldStep) {
-        for (let step = oldStep + 1; step <= newStep; step++) {
-          granted += addGems(TROPHY_STEP_REWARD);
-        }
-        data.rewardClaimedSteps = Math.max(data.rewardClaimedSteps, newStep);
-      }
-      return granted;
+    function addPassXp(amount) {
+      data.pass.xp = clamp(data.pass.xp + amount, 0, PASS_LEVEL_XP * PASS_LEVELS);
     }
 
-    function setFavorite(id) {
-      if (!data.ownedCars.includes(id)) return;
-      data.favoriteCarId = id;
+    function rewardToText(reward) {
+      if (!reward) return '—';
+      if (reward.type === 'gems') return `${reward.amount} 💎`;
+      if (reward.type === 'randomCar') return 'Случайная машина';
+      if (reward.type === 'case') {
+        const names = { tank:'Рулетка больших машин', racer:'Рулетка гоночных', mixed:'Смешанная рулетка', offroad:'Внедорожный кейс' };
+        return names[reward.caseType] || 'Кейс';
+      }
+      if (reward.type === 'bundleCases') return '3 кейса';
+      if (reward.type === 'car') return carsById[reward.carId]?.name || 'Машина';
+      if (reward.type === 'title') return `Титул: ${reward.title}`;
+      return 'Награда';
+    }
+
+    function grantCase(caseType) {
+      let pool = carCatalog;
+      if (caseType === 'tank') pool = carCatalog.filter(c => c.kind === 'tank' && !c.limited);
+      if (caseType === 'racer') pool = carCatalog.filter(c => c.kind === 'racer');
+      if (caseType === 'mixed') pool = carCatalog.filter(c => !c.limited || c.id === 'cullinan');
+      if (caseType === 'offroad') {
+        if (Math.random() < 0.02) return carsById['cullinan'];
+        pool = carCatalog.filter(c => c.kind === 'tank' && c.id !== 'cullinan');
+      }
+      return rand(pool);
+    }
+
+    function grantReward(reward) {
+      if (!reward) return 'Награда не найдена';
+      if (reward.type === 'gems') {
+        const got = addGems(reward.amount);
+        saveData();
+        return got > 0 ? `Получено ${got} 💎` : 'Лимит гемов достигнут';
+      }
+      if (reward.type === 'randomCar') {
+        const pool = carCatalog.filter(c => !c.limited);
+        const car = rand(pool);
+        if (!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id);
+        saveData();
+        return `Получена машина: ${car.name}`;
+      }
+      if (reward.type === 'car') {
+        if (!data.ownedCars.includes(reward.carId)) data.ownedCars.push(reward.carId);
+        saveData();
+        return `Получена машина: ${carsById[reward.carId].name}`;
+      }
+      if (reward.type === 'case') {
+        const car = grantCase(reward.caseType);
+        if (!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id);
+        saveData();
+        return `Из кейса выпало: ${car.name}`;
+      }
+      if (reward.type === 'bundleCases') {
+        const drops = ['racer','tank','mixed'].map(type => grantCase(type));
+        drops.forEach(car => { if (!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id); });
+        saveData();
+        return `Из 3 кейсов выпали: ${drops.map(c => c.name).join(', ')}`;
+      }
+      if (reward.type === 'title') {
+        if (!data.titlesOwned.includes(reward.title)) data.titlesOwned.push(reward.title);
+        saveData();
+        return `Получен титул: ${reward.title}`;
+      }
+      return 'Награда выдана';
+    }
+
+    function claimPassReward(level, lane) {
+      const passLevel = getPassLevel().level;
+      if (level > passLevel) return;
+      if (lane === 'free') {
+        if (data.pass.freeClaimed.includes(level)) return;
+        data.pass.freeClaimed.push(level);
+        alert(grantReward(passFreeRewards[level]));
+      } else {
+        if (!data.pass.plusOwned) return;
+        if (data.pass.plusClaimed.includes(level)) return;
+        data.pass.plusClaimed.push(level);
+        alert(grantReward(passPlusRewards[level]));
+      }
       saveData();
       renderAll();
+    }
+
+    function updateQuestProgress(key, amount = 1) {
+      let changed = false;
+      data.pass.quests.forEach(q => {
+        if (!q.claimed && q.key === key) {
+          q.progress = Math.min(q.target, q.progress + amount);
+          changed = true;
+        }
+      });
+      if (changed) saveData();
+    }
+
+    function claimQuest(index) {
+      const quest = data.pass.quests[index];
+      if (!quest || quest.claimed || quest.progress < quest.target) return;
+      quest.claimed = true;
+      addPassXp(QUEST_XP);
+      saveData();
+      renderAll();
+    }
+
+    function claimCalendarReward(index) {
+      const item = calendarRewards[index];
+      if (!item) return;
+      if (data.calendar.gamesPlayed < item.games) return;
+      if (data.calendar.claimed.includes(item.games)) return;
+      data.calendar.claimed.push(item.games);
+      alert(grantReward(item.reward));
+      saveData();
+      renderCalendar();
+      renderLobby();
     }
 
     function renderLobby() {
@@ -1178,17 +1134,14 @@
       byId('centerProgressText').textContent = `${info.within} / 1000`;
       byId('titleChipLobby').textContent = `Титул: ${data.selectedTitle || 'нет'}`;
       byId('favoriteChipLobby').textContent = `Любимая: ${carsById[data.favoriteCarId]?.name || '—'}`;
+      byId('limitChipLobby').textContent = `Лимит гемов: ${GEM_LIMIT}`;
 
       const titleBox = byId('lobbyTitleBox');
       titleBox.innerHTML = data.selectedTitle ? `<span class="title-chip">${data.selectedTitle}</span>` : `<span class="chip">Без титула</span>`;
-
       const fav = carsById[data.favoriteCarId];
       byId('favoritePreview').innerHTML = fav ? `
         <div class="big-emoji">${fav.emoji}</div>
-        <div>
-          <div style="font-weight:800;">${fav.name}</div>
-          <div class="small">${fav.kind === 'tank' ? 'Жирная' : 'Гоночная'} • HP ${fav.hp} • Урон ${fav.damage} • ⛽ ${fav.cost}</div>
-        </div>
+        <div><div style="font-weight:800;">${fav.name}</div><div class="small">${fav.kind === 'tank' ? 'Жирная' : 'Гоночная'} • HP ${fav.hp} • Урон ${fav.damage} • ⛽ ${fav.cost}</div></div>
       ` : `<div class="muted">Нет любимой карты</div>`;
 
       const miniDeck = byId('miniDeckPreview');
@@ -1197,24 +1150,30 @@
         const box = document.createElement('div');
         box.style.padding = '8px';
         box.style.borderRadius = '14px';
-        box.style.background = 'rgba(255,255,255,0.06)';
-        box.style.border = '1px solid rgba(255,255,255,0.08)';
+        box.style.background = 'rgba(255,255,255,.06)';
+        box.style.border = '1px solid rgba(255,255,255,.08)';
         box.style.textAlign = 'center';
-        if (!id) {
-          box.innerHTML = `<div class="small">Пусто</div>`;
-        } else {
-          const c = carsById[id];
-          box.innerHTML = `<div style="font-size:20px;">${c.emoji}</div><div class="small">${c.cost}⛽</div>`;
-        }
+        if (!id) box.innerHTML = `<div class="small">Пусто</div>`;
+        else { const c = carsById[id]; box.innerHTML = `<div style="font-size:20px;">${c.emoji}</div><div class="small">${c.cost}⛽</div>`; }
         miniDeck.appendChild(box);
       });
+
+      const p = getPassLevel();
+      byId('passProgressLobby').textContent = `Уровень ${p.level} • ${p.xpInLevel} / ${PASS_LEVEL_XP} XP`;
+      byId('passProgressFillLobby').style.width = `${(p.xpInLevel / PASS_LEVEL_XP) * 100}%`;
+      const preview = byId('passPreviewList');
+      preview.innerHTML = '';
+      for (let level = Math.max(1, p.level - 1); level <= Math.min(PASS_LEVELS, p.level + 3); level++) {
+        const row = document.createElement('div');
+        row.className = `pass-row ${level === p.level ? 'active-level' : ''} ${data.pass.freeClaimed.includes(level) ? 'claimed' : ''}`;
+        row.innerHTML = `<div style="font-weight:900;">${level}</div><div class="small">🎁 ${rewardToText(passFreeRewards[level])}</div><div class="small">⭐ ${rewardToText(passPlusRewards[level])}</div>`;
+        preview.appendChild(row);
+      }
     }
 
     function renderGarage() {
-      normalizeDeck();
       byId('garageSummary').textContent = `${data.ownedCars.length} машин`;
       byId('selectedEmptySlotText').textContent = selectedGarageEmptySlot === null ? 'нет' : `ячейка ${selectedGarageEmptySlot + 1}`;
-
       const deckWrap = byId('deckSlots');
       deckWrap.innerHTML = '';
       data.deck.forEach((id, i) => {
@@ -1224,140 +1183,246 @@
         if (empty) {
           div.innerHTML = `
             <div class="big-emoji">➕</div>
-            <div>
-              <div style="font-weight:800;">Пустая ячейка ${i + 1}</div>
-              <div class="small">Нажми, чтобы выбрать её и добавить машину снизу.</div>
-            </div>
+            <div><div style="font-weight:800;">Пустая ячейка ${i+1}</div><div class="small">Нажми, чтобы выбрать её и добавить машину снизу.</div></div>
             <div class="slot-actions"><button class="btn-blue">Выбрать</button></div>
           `;
-          div.querySelector('button').onclick = () => {
-            selectedGarageEmptySlot = i;
-            renderGarage();
-          };
+          div.querySelector('button').onclick = () => { selectedGarageEmptySlot = i; renderGarage(); };
         } else {
           const c = carsById[id];
           div.innerHTML = `
             <div class="big-emoji">${c.emoji}</div>
-            <div>
-              <div style="font-weight:800;">${c.name}</div>
-              <div class="small">${c.kind === 'tank' ? 'Жирная' : 'Гоночная'} • HP ${c.hp} • Урон ${c.damage} • ⛽ ${c.cost}</div>
-            </div>
-            <div class="slot-actions">
-              <button class="btn-red">Убрать из гонки</button>
-            </div>
+            <div><div style="font-weight:800;">${c.name}</div><div class="small">${c.kind === 'tank' ? 'Жирная' : 'Гоночная'} • HP ${c.hp} • Урон ${c.damage} • ⛽ ${c.cost}</div></div>
+            <div class="slot-actions"><button class="btn-red">Убрать из гонки</button></div>
           `;
           div.querySelector('button').onclick = () => {
             data.deck[i] = null;
             if (selectedGarageEmptySlot === null) selectedGarageEmptySlot = i;
-            saveData();
-            renderGarage();
-            renderLobby();
+            saveData(); renderGarage(); renderLobby();
           };
         }
-        if (selectedGarageEmptySlot === i) {
-          div.style.boxShadow = '0 0 0 2px rgba(68,180,255,.35) inset';
-        }
+        if (selectedGarageEmptySlot === i) div.style.boxShadow = '0 0 0 2px rgba(68,180,255,.35) inset';
         deckWrap.appendChild(div);
       });
 
       const grid = byId('garageCars');
       grid.innerHTML = '';
-      data.ownedCars
-        .slice()
-        .sort((a, b) => carsById[a].name.localeCompare(carsById[b].name, 'ru'))
-        .forEach(id => {
-          const c = carsById[id];
-          const inDeck = data.deck.includes(id);
-          const card = document.createElement('div');
-          card.className = `car-card ${inDeck ? 'in-deck' : ''} ${data.favoriteCarId === id ? 'favorite' : ''}`;
-          card.innerHTML = `
-            <div class="big-emoji">${c.emoji}</div>
-            <div class="car-meta">
-              <h3>${c.name}</h3>
-              <div class="car-lines">
-                <div>${c.kind === 'tank' ? 'Жирная' : 'Гоночная'} • ⛽ ${c.cost}</div>
-                <div>HP ${c.hp} • Урон ${c.damage}</div>
-                <div>Скорость ${c.speed.toFixed(2)} • Удар ${c.attackSpeed}мс</div>
-              </div>
+      data.ownedCars.slice().sort((a,b) => carsById[a].name.localeCompare(carsById[b].name, 'ru')).forEach(id => {
+        const c = carsById[id];
+        const inDeck = data.deck.includes(id);
+        const card = document.createElement('div');
+        card.className = `car-card ${inDeck ? 'in-deck' : ''} ${data.favoriteCarId === id ? 'favorite' : ''}`;
+        card.innerHTML = `
+          <div class="big-emoji">${c.emoji}</div>
+          <div class="car-meta">
+            <h3>${c.name}</h3>
+            <div class="car-lines">
+              <div>${c.kind === 'tank' ? 'Жирная' : 'Гоночная'} • ⛽ ${c.cost}</div>
+              <div>HP ${c.hp} • Урон ${c.damage}</div>
+              <div>Скорость ${c.speed.toFixed(2)} • Удар ${c.attackSpeed}мс</div>
             </div>
-            <div class="car-actions"></div>
-          `;
-          const actions = card.querySelector('.car-actions');
-
-          const favBtn = document.createElement('button');
-          favBtn.className = 'btn-gold';
-          favBtn.textContent = data.favoriteCarId === id ? 'Любимая тачка' : 'Добавить как любимая тачка';
-          favBtn.onclick = () => setFavorite(id);
-          actions.appendChild(favBtn);
-
-          if (inDeck) {
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'btn-red';
-            removeBtn.textContent = 'Убрать из гонки';
-            removeBtn.onclick = () => {
-              const slot = data.deck.indexOf(id);
-              if (slot !== -1) data.deck[slot] = null;
-              if (selectedGarageEmptySlot === null) selectedGarageEmptySlot = slot;
-              saveData();
-              renderGarage();
-              renderLobby();
-            };
-            actions.appendChild(removeBtn);
-          } else {
-            const addBtn = document.createElement('button');
-            addBtn.className = 'btn-blue';
-            const emptyIdx = data.deck.indexOf(null);
-            addBtn.textContent = 'Добавить в гонку';
-            addBtn.disabled = emptyIdx === -1 && selectedGarageEmptySlot === null;
-            addBtn.onclick = () => {
-              let slot = selectedGarageEmptySlot;
-              if (slot === null) slot = data.deck.indexOf(null);
-              if (slot === -1) return;
-              data.deck[slot] = id;
-              if (selectedGarageEmptySlot === slot) selectedGarageEmptySlot = null;
-              saveData();
-              renderGarage();
-              renderLobby();
-            };
-            actions.appendChild(addBtn);
-          }
-
-          grid.appendChild(card);
-        });
+          </div>
+          <div class="car-actions"></div>
+        `;
+        const actions = card.querySelector('.car-actions');
+        const favBtn = document.createElement('button');
+        favBtn.className = 'btn-gold';
+        favBtn.textContent = data.favoriteCarId === id ? 'Любимая тачка' : 'Добавить как любимая тачка';
+        favBtn.onclick = () => { data.favoriteCarId = id; saveData(); renderAll(); };
+        actions.appendChild(favBtn);
+        if (inDeck) {
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'btn-red';
+          removeBtn.textContent = 'Убрать из гонки';
+          removeBtn.onclick = () => {
+            const slot = data.deck.indexOf(id);
+            if (slot !== -1) data.deck[slot] = null;
+            if (selectedGarageEmptySlot === null) selectedGarageEmptySlot = slot;
+            saveData(); renderAll(); showScreen('garage');
+          };
+          actions.appendChild(removeBtn);
+        } else {
+          const addBtn = document.createElement('button');
+          addBtn.className = 'btn-blue';
+          const emptyIdx = data.deck.indexOf(null);
+          addBtn.textContent = 'Добавить в гонку';
+          addBtn.disabled = emptyIdx === -1 && selectedGarageEmptySlot === null;
+          addBtn.onclick = () => {
+            let slot = selectedGarageEmptySlot;
+            if (slot === null) slot = data.deck.indexOf(null);
+            if (slot === -1) return;
+            data.deck[slot] = id;
+            if (selectedGarageEmptySlot === slot) selectedGarageEmptySlot = null;
+            saveData(); renderAll(); showScreen('garage');
+          };
+          actions.appendChild(addBtn);
+        }
+        grid.appendChild(card);
+      });
     }
 
     function renderShop() {
       byId('shopGemsInfo').textContent = `💎 ${data.gems} / ${GEM_LIMIT}`;
+      const remain = formatMs(msToEndOfDay());
+      byId('limitedTimer').textContent = `⏳ Осталось: ${remain}`;
+      const limitedBtn = byId('buyLimitedBtn');
+      if (data.pass.limitedBought) {
+        limitedBtn.textContent = 'Уже куплено';
+        limitedBtn.disabled = true;
+      } else {
+        limitedBtn.textContent = 'Купить за 129 💎';
+        limitedBtn.disabled = data.gems < 129;
+      }
+      const dailyBtn = byId('claimDailyShopBtn');
+      if (data.pass.dailyShopClaimed) {
+        dailyBtn.textContent = 'Уже забрано';
+        dailyBtn.disabled = true;
+      } else {
+        dailyBtn.textContent = 'Забрать';
+        dailyBtn.disabled = false;
+      }
+      renderStoreOffers();
     }
 
-    function rollCase(type) {
-      if (data.gems < 9) {
-        byId('dropBox').innerHTML = `<div><strong>Не хватает гемов</strong><div class="small" style="margin-top:6px;">Нужно 9, а у тебя ${data.gems}.</div></div>`;
-        return;
+    function renderStoreOffers() {
+      const [a,b] = data.store.offers;
+      [a,b].forEach((offer, idx) => {
+        const box = byId(`storeOffer${idx+1}`);
+        if (offer.type === 'case') {
+          box.innerHTML = `
+            <div class="small">Сегодняшнее предложение</div>
+            <div style="font-weight:800;">${offer.label}</div>
+            <div class="muted">Цена: ${offer.price} 💎</div>
+            <button class="btn-gold">Купить</button>
+          `;
+        } else if (offer.type === 'gems') {
+          box.innerHTML = `
+            <div class="small">Сегодняшнее предложение</div>
+            <div style="font-weight:800;">${offer.label}</div>
+            <div class="muted">Платишь ${offer.price} 💎, получаешь ${offer.amount} 💎</div>
+            <button class="btn-gold">Купить</button>
+          `;
+        } else {
+          box.innerHTML = `
+            <div class="small">Сегодняшнее предложение</div>
+            <div style="font-weight:800;">${offer.label}</div>
+            <div class="muted">Цена: ${offer.price} 💎</div>
+            <button class="btn-gold">Купить</button>
+          `;
+        }
+        box.querySelector('button').onclick = () => buyStoreOffer(idx);
+      });
+    }
+
+    function buyStoreOffer(idx) {
+      const offer = data.store.offers[idx];
+      if (!offer || data.gems < offer.price) return;
+      data.gems -= offer.price;
+      let message = '';
+      if (offer.type === 'case') {
+        const car = grantCase(offer.caseType);
+        if (!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id);
+        message = `Из предложения выпало: ${car.name}`;
+      } else if (offer.type === 'gems') {
+        const got = addGems(offer.amount);
+        message = got > 0 ? `Ты получил ${got} гемов` : 'Лимит гемов достигнут';
+      } else if (offer.type === 'car') {
+        if (!data.ownedCars.includes(offer.carId)) data.ownedCars.push(offer.carId);
+        message = `Получена машина: ${carsById[offer.carId].name}`;
       }
-      data.gems -= 9;
-      let pool = carCatalog;
-      if (type === 'tank') pool = carCatalog.filter(c => c.kind === 'tank');
-      if (type === 'racer') pool = carCatalog.filter(c => c.kind === 'racer');
-      if (type === 'mixed') {
-        const kind = Math.random() < 0.5 ? 'tank' : 'racer';
-        pool = carCatalog.filter(c => c.kind === kind);
+      saveData(); renderAll(); showScreen('shop'); alert(message);
+    }
+
+    function buyLimited() {
+      if (data.pass.limitedBought || data.gems < 129) return;
+      data.gems -= 129;
+      data.pass.limitedBought = true;
+      if (!data.ownedCars.includes('maybachgls990')) data.ownedCars.push('maybachgls990');
+      saveData(); renderAll(); showScreen('shop'); alert('Ты получил лимитированную Mercedes Maybach GLS 990');
+    }
+
+    function claimDailyShopBonus() {
+      if (data.pass.dailyShopClaimed) return;
+      data.pass.dailyShopClaimed = true;
+      const got = addGems(5);
+      saveData(); renderAll(); showScreen('shop'); alert(got > 0 ? 'Ты забрал 5 гемов' : 'Лимит гемов достигнут');
+    }
+
+    function renderPass() {
+      const p = getPassLevel();
+      byId('passLevelTitle').textContent = `Уровень ${p.level}`;
+      byId('passXpText').textContent = `${p.xpInLevel} / ${PASS_LEVEL_XP} XP`;
+      byId('passXpFill').style.width = `${(p.xpInLevel / PASS_LEVEL_XP) * 100}%`;
+      byId('passPriceBlock').textContent = data.pass.plusOwned ? 'Куплено ✅' : `${PASS_PRICE} 💎`;
+      byId('passPlusStatus').textContent = data.pass.plusOwned ? 'Car Pass+ активен на весь сегодняшний сезон.' : 'Окупаемый пропуск: кейсы, титул и финальный G63 Brabus.';
+      byId('buyPassPlusBtn').disabled = data.pass.plusOwned || data.gems < PASS_PRICE;
+      byId('buyPassPlusBtn').textContent = data.pass.plusOwned ? 'Car Pass+ куплен' : 'Купить Car Pass+';
+
+      const qWrap = byId('questList');
+      qWrap.innerHTML = '';
+      data.pass.quests.forEach((q, i) => {
+        const done = q.progress >= q.target;
+        const card = document.createElement('div');
+        card.className = 'quest-card';
+        card.innerHTML = `
+          <div style="font-weight:800;">${q.text}</div>
+          <div class="small">${q.progress} / ${q.target} • Награда: 50 XP</div>
+          <button class="${q.claimed ? 'btn-dark' : done ? 'btn-green' : 'btn-dark'}" ${q.claimed || !done ? 'disabled' : ''} style="margin-top:8px;">${q.claimed ? 'Забрано' : done ? 'Забрать' : 'Не выполнено'}</button>
+        `;
+        card.querySelector('button').onclick = () => claimQuest(i);
+        qWrap.appendChild(card);
+      });
+
+      const track = byId('passTrack');
+      track.innerHTML = '';
+      for (let level = PASS_LEVELS; level >= 1; level--) {
+        const freeReward = passFreeRewards[level];
+        const plusReward = passPlusRewards[level];
+        const card = document.createElement('div');
+        card.className = `pass-level ${level === p.level ? 'current' : ''} ${data.pass.freeClaimed.includes(level) ? 'claimed-free' : ''} ${data.pass.plusClaimed.includes(level) ? 'claimed-plus' : ''}`;
+        card.innerHTML = `
+          <div class="pass-level-title">${level}</div>
+          <div class="reward-box free-reward">
+            <div class="small">Бесплатно</div>
+            <div style="font-weight:800;">${rewardToText(freeReward)}</div>
+            <button class="btn-green" ${level > p.level || data.pass.freeClaimed.includes(level) ? 'disabled' : ''}>${data.pass.freeClaimed.includes(level) ? 'Забрано' : 'Забрать'}</button>
+          </div>
+          <div class="reward-box plus-reward">
+            <div class="small">Car Pass+</div>
+            <div style="font-weight:800;">${rewardToText(plusReward)}</div>
+            <button class="btn-gold" ${!data.pass.plusOwned || level > p.level || data.pass.plusClaimed.includes(level) ? 'disabled' : ''}>${data.pass.plusClaimed.includes(level) ? 'Забрано' : 'Забрать'}</button>
+          </div>
+        `;
+        const [freeBtn, plusBtn] = card.querySelectorAll('button');
+        freeBtn.onclick = () => claimPassReward(level, 'free');
+        plusBtn.onclick = () => claimPassReward(level, 'plus');
+        track.appendChild(card);
       }
-      const car = rand(pool);
-      const already = data.ownedCars.includes(car.id);
-      if (!already) data.ownedCars.push(car.id);
-      saveData();
-      renderShop();
-      renderGarage();
-      renderLobby();
-      byId('dropBox').innerHTML = `
-        <div>
-          <div style="font-size:42px;">${car.emoji}</div>
-          <div style="font-weight:800; font-size:18px; margin-top:6px;">${car.name}</div>
-          <div class="small" style="margin-top:6px;">${car.kind === 'tank' ? 'Жирная' : 'Гоночная'} • HP ${car.hp} • Урон ${car.damage} • ⛽ ${car.cost}</div>
-          <div style="margin-top:10px; color:${already ? '#ffca7a' : '#95ffb0'}; font-weight:700;">${already ? 'Повторка, но машина всё равно твоя 😄' : 'Новая тачка получена!'}</div>
-        </div>
-      `;
+    }
+
+    function renderCalendar() {
+      byId('gamesPlayedText').textContent = `Игр сыграно: ${data.calendar.gamesPlayed}`;
+      const grid = byId('calendarGrid');
+      grid.innerHTML = '';
+      calendarRewards.forEach((item, i) => {
+        const done = data.calendar.claimed.includes(item.games);
+        const can = data.calendar.gamesPlayed >= item.games;
+        const card = document.createElement('div');
+        card.className = `calendar-card ${done ? 'done' : ''}`;
+        card.innerHTML = `
+          <div class="small">После ${item.games} игр</div>
+          <div style="font-weight:800;">${rewardToText(item.reward)}</div>
+          <button class="${done ? 'btn-dark' : can ? 'btn-green' : 'btn-dark'}" ${done || !can ? 'disabled' : ''}>${done ? 'Забрано' : can ? 'Забрать' : 'Не открыто'}</button>
+        `;
+        card.querySelector('button').onclick = () => claimCalendarReward(i);
+        grid.appendChild(card);
+      });
+    }
+
+    function renderTimers() {
+      const remain = formatMs(msToEndOfDay());
+      byId('passTimerTop').textContent = `⏳ До конца сезона: ${remain}`;
+      byId('passTimerLobby').textContent = `⏳ До конца сезона: ${remain}`;
+      if (byId('limitedTimer')) byId('limitedTimer').textContent = `⏳ Осталось: ${remain}`;
     }
 
     function pickBotForCurrentCenter() {
@@ -1372,7 +1437,6 @@
       byId('prePlayerTitle').innerHTML = data.selectedTitle ? `<span class="title-chip">${data.selectedTitle}</span>` : `<span class="chip">Без титула</span>`;
       const fav = carsById[data.favoriteCarId];
       byId('prePlayerFav').innerHTML = fav ? `<div class="favorite-card-preview"><div class="big-emoji">${fav.emoji}</div><div><div style="font-weight:800;">${fav.name}</div><div class="small">Любимая тачка</div></div></div>` : '';
-
       byId('preBotName').textContent = bot.name;
       byId('preBotTitle').innerHTML = bot.title ? `<span class="title-chip">${bot.title}</span>` : `<span class="chip">Без титула</span>`;
       const botFav = carsById[bot.favorite];
@@ -1381,10 +1445,7 @@
 
     function openPrebattle() {
       normalizeDeck();
-      if (data.deck.filter(Boolean).length < 5) {
-        alert('Сначала заполни все 5 ячеек в разделе "Мои тачки".');
-        return;
-      }
+      if (data.deck.filter(Boolean).length < 5) return alert('Сначала заполни все 5 ячеек в разделе "Мои тачки".');
       const bot = pickBotForCurrentCenter();
       renderPrebattle(bot);
       showScreen('prebattle');
@@ -1404,26 +1465,32 @@
 
     function createTower(side, role, x, y, hp) {
       const el = document.createElement('div');
-      el.className = `tower ${side} ${role === 'king' ? 'king' : ''}`;
+      el.className = `tower ${side} ${role === 'king' ? 'tower-king' : 'tower-side'}`;
       el.style.left = `${x}px`;
       el.style.top = `${y}px`;
-      el.innerHTML = `<div class="hpbar"><div class="hpfill"></div></div>${role === 'left' ? 'Л' : role === 'right' ? 'П' : 'Ц'}`;
+      el.innerHTML = `
+        <div class="hpbar"><div class="hpfill"></div></div>
+        <div class="tower-roof"></div>
+        <div class="tower-gate"></div>
+        <div class="tower-turret"></div>
+        <div class="tower-flash"></div>
+        ${role === 'left' ? 'Л' : role === 'right' ? 'П' : 'Ц'}
+      `;
       byId('battlefield').appendChild(el);
       return {
-        type: 'tower',
-        side,
-        role,
-        x, y,
-        width: role === 'king' ? 74 : 60,
-        height: role === 'king' ? 74 : 60,
-        hp,
-        maxHp: hp,
-        alive: true,
+        type:'tower', side, role, x, y,
+        width: role === 'king' ? 84 : 66,
+        height: role === 'king' ? 96 : 78,
+        hp, maxHp:hp, alive:true,
+        range: role === 'king' ? 210 : 175,
+        damage: role === 'king' ? 110 : 85,
+        attackSpeed: role === 'king' ? 900 : 1020,
+        lastAttack:0,
         el
       };
     }
 
-    function spawnUnit(side, carId, x, y, lane = 'mid') {
+    function spawnUnit(side, carId, x, y, lane='mid') {
       const c = carsById[carId];
       const el = document.createElement('div');
       el.className = `unit ${side}`;
@@ -1432,112 +1499,12 @@
       el.innerHTML = `<div class="uhp"><span></span></div>${c.emoji}`;
       byId('battlefield').appendChild(el);
       const unit = {
-        type: 'unit', side, lane,
-        id: `${side}_${carId}_${Date.now()}_${Math.random()}`,
-        carId,
-        x: x - 20,
-        y: y - 20,
-        width: 40,
-        height: 40,
-        hp: c.hp,
-        maxHp: c.hp,
-        damage: c.damage,
-        speed: c.speed,
-        cost: c.cost,
-        kind: c.kind,
-        range: c.range,
-        attackSpeed: c.attackSpeed,
-        lastAttack: 0,
-        el,
-        targetLock: null
+        type:'unit', side, lane, carId, x:x-20, y:y-20, width:40, height:40,
+        hp:c.hp, maxHp:c.hp, damage:c.damage, speed:c.speed, cost:c.cost, kind:c.kind,
+        range:c.range, attackSpeed:c.attackSpeed, lastAttack:0, el
       };
       battle.units.push(unit);
       return unit;
-    }
-
-    function setupBattleUI(bot) {
-      byId('botHud').innerHTML = `
-        <div style="font-weight:800;">${bot.name}</div>
-        <div class="small">${bot.title || 'Без титула'} • Любимая: ${carsById[bot.favorite].name}</div>
-      `;
-      byId('playerHud').innerHTML = `
-        <div style="font-weight:800;">Ты ${data.selectedTitle ? '• ' + data.selectedTitle : ''}</div>
-        <div class="small">Любимая: ${carsById[data.favoriteCarId].name}</div>
-      `;
-      renderHand();
-      renderTitleOverlay();
-    }
-
-    function startBattle(bot) {
-      showScreen('battle');
-      battle.running = true;
-      battle.botProfile = bot;
-      battle.playerFuel = 10;
-      battle.botFuel = 10;
-      battle.selectedCardId = null;
-      battle.units = [];
-      battle.towers = [];
-      battle.lastTime = performance.now();
-      battle.lastBotThink = 0;
-      battle.playerDestroyedEnemyTowers = 0;
-      battle.botDestroyedPlayerTowers = 0;
-      byId('resultOverlay').classList.remove('active');
-      byId('titleOverlay').classList.remove('active');
-      [...byId('battlefield').querySelectorAll('.tower, .unit')].forEach(n => n.remove());
-      createBattlefieldObjects();
-      setupBattleUI(bot);
-      updateFuelUI();
-      showPlacementArea();
-      if (battle.loopId) cancelAnimationFrame(battle.loopId);
-      battle.loopId = requestAnimationFrame(battleFrame);
-    }
-
-    function createBattlefieldObjects() {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      battle.towers.push(createTower('bot', 'left', w * 0.16, h * 0.12, 1500));
-      battle.towers.push(createTower('bot', 'right', w * 0.74, h * 0.12, 1500));
-      battle.towers.push(createTower('bot', 'king', w * 0.44, h * 0.04, 2500));
-
-      battle.towers.push(createTower('player', 'left', w * 0.16, h * 0.71, 1500));
-      battle.towers.push(createTower('player', 'right', w * 0.74, h * 0.71, 1500));
-      battle.towers.push(createTower('player', 'king', w * 0.44, h * 0.80, 2500));
-    }
-
-    function renderHand() {
-      const hand = byId('hand');
-      hand.innerHTML = '';
-      data.deck.forEach(id => {
-        const c = carsById[id];
-        const card = document.createElement('div');
-        card.className = `hand-card ${battle.selectedCardId === id ? 'selected' : ''} ${battle.playerFuel < c.cost ? 'unaffordable' : ''}`;
-        card.innerHTML = `
-          <div class="hand-cost">${c.cost}</div>
-          <div class="card-emoji">${c.emoji}</div>
-          <h4>${c.name}</h4>
-          <div class="small">${c.kind === 'tank' ? 'Жирная' : 'Гоночная'}</div>
-        `;
-        card.onclick = () => {
-          if (!battle.running) return;
-          battle.selectedCardId = battle.selectedCardId === id ? null : id;
-          renderHand();
-        };
-        hand.appendChild(card);
-      });
-    }
-
-    function updateFuelUI() {
-      byId('fuelText').textContent = `⛽ ${battle.playerFuel.toFixed(1)} / 10`;
-      byId('fuelFill').style.width = `${clamp((battle.playerFuel / 10) * 100, 0, 100)}%`;
-      renderHand();
-    }
-
-    function centerOf(obj) {
-      return { x: obj.x + obj.width / 2, y: obj.y + obj.height / 2 };
-    }
-    function distance(a, b) {
-      const aa = centerOf(a), bb = centerOf(b);
-      return Math.hypot(aa.x - bb.x, aa.y - bb.y);
     }
 
     function updateHpBar(obj) {
@@ -1545,117 +1512,21 @@
       if (fill) fill.style.width = `${clamp((obj.hp / obj.maxHp) * 100, 0, 100)}%`;
     }
 
-    function enemyTowers(side) {
-      return battle.towers.filter(t => t.side !== side && t.alive);
-    }
-    function sideTowers(side) {
-      return battle.towers.filter(t => t.side === side && t.alive);
-    }
-    function getTower(side, role) {
-      return battle.towers.find(t => t.side === side && t.role === role && t.alive);
-    }
+    function enemyUnits(side){ return battle.units.filter(u => u.side !== side); }
+    function enemyTowers(side){ return battle.towers.filter(t => t.side !== side && t.alive); }
+    function sideTowers(side){ return battle.towers.filter(t => t.side === side && t.alive); }
+    function getTower(side, role){ return battle.towers.find(t => t.side === side && t.role === role && t.alive); }
 
-    function getUnitLane(unit) {
-      const cx = centerOf(unit).x;
-      const w = window.innerWidth;
-      if (cx < w * 0.5) return 'left';
-      return 'right';
-    }
-
-    function nearestTarget(unit) {
-      const enemyUnits = battle.units.filter(u => u.side !== unit.side);
-      const lane = getUnitLane(unit);
-      const laneEnemyUnits = enemyUnits.filter(u => getUnitLane(u) === lane);
-      let candidates = laneEnemyUnits.length ? laneEnemyUnits : enemyUnits;
-      if (!candidates.length) {
-        const enemySide = unit.side === 'player' ? 'bot' : 'player';
-        const mainLaneTower = getTower(enemySide, lane === 'left' ? 'left' : 'right');
-        const king = getTower(enemySide, 'king');
-        const aliveEnemyCount = sideTowers(enemySide).length;
-        if (aliveEnemyCount === 0) return null;
-        if (mainLaneTower) return mainLaneTower;
-        if (king) return king;
-        const any = enemyTowers(unit.side);
-        return any[0] || null;
-      }
-      candidates.sort((a, b) => distance(unit, a) - distance(unit, b));
-      return candidates[0] || null;
-    }
-
-    function destroyTower(tower) {
-      tower.alive = false;
-      tower.el.remove();
-      if (tower.side === 'bot') battle.playerDestroyedEnemyTowers++;
-      else battle.botDestroyedPlayerTowers++;
-      showPlacementArea();
-      checkBattleEnd();
-    }
-
-    function destroyUnit(unit) {
-      unit.el.remove();
-      battle.units = battle.units.filter(u => u !== unit);
-    }
-
-    function attack(attacker, target, now) {
-      if (now - attacker.lastAttack < attacker.attackSpeed) return;
-      attacker.lastAttack = now;
-      target.hp -= attacker.damage;
-      updateHpBar(target);
-      if (target.hp <= 0) {
-        if (target.type === 'tower') destroyTower(target);
-        else destroyUnit(target);
-      }
-    }
-
-    function moveToward(unit, target, delta) {
-      const a = centerOf(unit);
-      const b = centerOf(target);
-      let dx = b.x - a.x;
-      let dy = b.y - a.y;
-      const len = Math.hypot(dx, dy) || 1;
-      dx /= len;
-      dy /= len;
-      const step = unit.speed * delta * 0.072;
-      unit.x += dx * step;
-      unit.y += dy * step;
-      unit.el.style.left = `${unit.x}px`;
-      unit.el.style.top = `${unit.y}px`;
-    }
-
-    function battleFrame(now) {
-      if (!battle.running) return;
-      const delta = now - battle.lastTime;
-      battle.lastTime = now;
-      battle.playerFuel = clamp(battle.playerFuel + delta * 0.00075, 0, 10);
-      battle.botFuel = clamp(battle.botFuel + delta * 0.00075, 0, 10);
-      updateFuelUI();
-
-      [...battle.units].forEach(unit => {
-        const target = nearestTarget(unit);
-        if (!target) return;
-        const d = distance(unit, target);
-        if (d <= unit.range + 8) attack(unit, target, now);
-        else moveToward(unit, target, delta);
-      });
-
-      botThink(now);
-      checkBattleEnd();
-      if (battle.running) battle.loopId = requestAnimationFrame(battleFrame);
-    }
-
-    function getBattleLaneFromX(x) {
-      return x < window.innerWidth / 2 ? 'left' : 'right';
-    }
+    function getLaneByX(x){ return x < window.innerWidth / 2 ? 'left' : 'right'; }
+    function getUnitLane(unit){ return getLaneByX(centerOf(unit).x); }
+    function laneSpawnX(lane){ return lane === 'left' ? window.innerWidth * 0.28 : window.innerWidth * 0.72; }
 
     function getPlacementZone() {
       const h = window.innerHeight;
-      const w = window.innerWidth;
       const enemyLeftAlive = !!getTower('bot', 'left');
       const enemyRightAlive = !!getTower('bot', 'right');
-      const topBase = enemyLeftAlive || enemyRightAlive ? h * 0.53 : h * 0.34;
-      const leftOpen = !enemyLeftAlive;
-      const rightOpen = !enemyRightAlive;
-      return { h, w, topBase, leftOpen, rightOpen };
+      const topBase = (enemyLeftAlive || enemyRightAlive) ? h * 0.53 : h * 0.34;
+      return { topBase, leftOpen:!enemyLeftAlive, rightOpen:!enemyRightAlive };
     }
 
     function showPlacementArea() {
@@ -1672,230 +1543,46 @@
       const zone = getPlacementZone();
       const bottomLimit = window.innerHeight - 108;
       if (y < zone.topBase || y > bottomLimit) return false;
-      const lane = getBattleLaneFromX(x);
+      const lane = getLaneByX(x);
       const open = lane === 'left' ? zone.leftOpen : zone.rightOpen;
       if (y < window.innerHeight * 0.53 && !open) return false;
       return true;
     }
 
-    function laneSpawnX(lane) {
-      return lane === 'left' ? window.innerWidth * 0.28 : window.innerWidth * 0.72;
-    }
-
-    byId('battlefield').addEventListener('click', (e) => {
-      if (!battle.running || !battle.selectedCardId) return;
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const card = carsById[battle.selectedCardId];
-      if (battle.playerFuel < card.cost) return;
-      if (!canPlacePlayerAt(x, y)) return;
-      spawnUnit('player', card.id, x, y, getBattleLaneFromX(x));
-      battle.playerFuel -= card.cost;
-      battle.selectedCardId = null;
-      updateFuelUI();
-    });
-
-    function getPlayerUnits() { return battle.units.filter(u => u.side === 'player'); }
-    function getBotUnits() { return battle.units.filter(u => u.side === 'bot'); }
-
-    function strongestIncomingPlayerUnit() {
-      const arr = getPlayerUnits();
-      if (!arr.length) return null;
-      return arr.sort((a, b) => (b.hp + b.damage) - (a.hp + a.damage))[0];
-    }
-
-    function getAffordableBotCards(filterFn = () => true) {
-      return battle.botProfile.deck.map(id => carsById[id]).filter(c => c && c.cost <= battle.botFuel && filterFn(c));
-    }
-
-    function spawnBotCard(cardId, lane = 'left', offset = 0) {
-      const x = laneSpawnX(lane);
-      const y = window.innerHeight * (0.15 + offset);
-      spawnUnit('bot', cardId, x, y, lane);
-      battle.botFuel -= carsById[cardId].cost;
-    }
-
-    function botThink(now) {
-      if (now - battle.lastBotThink < 900) return;
-      battle.lastBotThink = now;
-      const playerUnits = getPlayerUnits();
-      const botUnits = getBotUnits();
-      const hasPlayer = playerUnits.length > 0;
-      const hasBot = botUnits.length > 0;
-      const style = battle.botProfile.style;
-
-      const incoming = strongestIncomingPlayerUnit();
-      if (!hasBot && incoming) {
-        const lane = getUnitLane(incoming);
-        if (incoming.kind === 'tank') {
-          const racers = getAffordableBotCards(c => c.kind === 'racer');
-          if (racers.length && Math.random() < 0.82) {
-            spawnBotCard(rand(racers).id, lane, 0.02);
-            return;
-          }
-        }
-        if (incoming.kind === 'racer') {
-          const tanks = getAffordableBotCards(c => c.kind === 'tank');
-          if (tanks.length && Math.random() < 0.82) {
-            spawnBotCard(rand(tanks).id, lane, 0.02);
-            return;
-          }
-        }
+    function nearestTargetForUnit(unit) {
+      const enemyUs = battle.units.filter(u => u.side !== unit.side);
+      const lane = getUnitLane(unit);
+      const laneEnemyUnits = enemyUs.filter(u => getUnitLane(u) === lane);
+      let targets = laneEnemyUnits.length ? laneEnemyUnits : enemyUs;
+      if (!targets.length) {
+        const enemySide = unit.side === 'player' ? 'bot' : 'player';
+        const sideTower = getTower(enemySide, lane === 'left' ? 'left' : 'right');
+        const king = getTower(enemySide, 'king');
+        if (sideTower) return sideTower;
+        return king || null;
       }
-
-      if (!hasPlayer) {
-        const comboChance = 0.30;
-        if (battle.botFuel >= 7 && Math.random() < comboChance) {
-          const tanks = getAffordableBotCards(c => c.kind === 'tank');
-          if (tanks.length) {
-            const lane = Math.random() < 0.5 ? 'left' : 'right';
-            const tank = rand(tanks);
-            spawnBotCard(tank.id, lane, 0.02);
-            const racers = getAffordableBotCards(c => c.kind === 'racer');
-            if (racers.length) {
-              setTimeout(() => {
-                if (!battle.running) return;
-                const pick = getAffordableBotCards(c => c.kind === 'racer');
-                if (pick.length) spawnBotCard(rand(pick).id, lane, -0.03);
-              }, 650);
-            }
-            return;
-          }
-        }
-
-        if (battle.botFuel >= 4 && Math.random() < 0.62) {
-          let options = getAffordableBotCards();
-          if (style === 'tank') options = getAffordableBotCards(c => c.kind === 'tank');
-          if (style === 'racer') options = getAffordableBotCards(c => c.kind === 'racer');
-          if (style === 'greedy' && battle.botFuel < 8) options = [];
-          if (options.length) {
-            const pick = rand(options);
-            const lane = Math.random() < 0.5 ? 'left' : 'right';
-            spawnBotCard(pick.id, lane, 0.01);
-            return;
-          }
-        }
-      }
-
-      if (hasPlayer) {
-        const leftPlayer = playerUnits.filter(u => getUnitLane(u) === 'left').length;
-        const rightPlayer = playerUnits.filter(u => getUnitLane(u) === 'right').length;
-        const defendLane = leftPlayer > rightPlayer ? 'left' : 'right';
-        const defensive = getAffordableBotCards(c => {
-          if (style === 'counter') return true;
-          return defendLane === 'left' || defendLane === 'right';
-        });
-        if (defensive.length && Math.random() < 0.72) {
-          let pick = rand(defensive);
-          if (style === 'smart') {
-            const prefer = incoming?.kind === 'tank' ? defensive.filter(c => c.kind === 'racer') : defensive.filter(c => c.kind === 'tank');
-            if (prefer.length) pick = rand(prefer);
-          }
-          spawnBotCard(pick.id, defendLane, 0.02);
-          return;
-        }
-      }
-
-      if (battle.botFuel >= 9) {
-        const options = getAffordableBotCards();
-        if (options.length) {
-          const pick = rand(options);
-          const lane = Math.random() < 0.5 ? 'left' : 'right';
-          spawnBotCard(pick.id, lane, 0.01);
-        }
-      }
+      targets.sort((a,b) => distance(unit,a) - distance(unit,b));
+      return targets[0] || null;
     }
 
-    function allTowersDestroyed(side) {
-      return battle.towers.filter(t => t.side === side && t.alive).length === 0;
+    function nearestTargetForTower(tower) {
+      const enemies = battle.units.filter(u => u.side !== tower.side);
+      const inRange = enemies.filter(u => distance(tower, u) <= tower.range);
+      if (!inRange.length) return null;
+      inRange.sort((a,b) => distance(tower,a) - distance(tower,b));
+      return inRange[0];
     }
 
-    function applyBattleRewards(win) {
-      const oldTrophies = data.trophies;
-      const info = getCenterInfo(oldTrophies);
-      let trophyChange = 0;
-      let gemChange = 0;
-      let trophyRoad = 0;
-      if (!data.finishedGame && oldTrophies < 14000) {
-        trophyChange = win ? info.win : info.lose;
-        data.trophies = clamp(data.trophies + trophyChange, 0, 14000);
-        if (data.trophies >= 14000) data.finishedGame = true;
-      }
-      if (win) gemChange += addGems(3);
-      trophyRoad += checkTrophyRoadRewards(oldTrophies, data.trophies);
-      saveData();
-      return { trophyChange, gemChange, trophyRoad };
-    }
-
-    function finishBattle(win) {
-      if (!battle.running) return;
-      battle.running = false;
-      if (battle.loopId) cancelAnimationFrame(battle.loopId);
-      const rewards = applyBattleRewards(win);
-      renderAll();
-      byId('resultBig').textContent = win ? 'Победа!' : 'Поражение! 😢';
-      const lines = [];
-      if (rewards.trophyChange > 0) lines.push(`🏆 +${rewards.trophyChange} кубка`);
-      if (rewards.trophyChange < 0) lines.push(`🏆 ${rewards.trophyChange} кубков`);
-      if (rewards.gemChange > 0) lines.push(`💎 +${rewards.gemChange} гема`);
-      if (rewards.trophyRoad > 0) lines.push(`🎁 Путь трофеев: +${rewards.trophyRoad} гемов`);
-      if (!lines.length) lines.push('Игра уже пройдена — за победу больше ничего не даётся');
-      byId('resultDetails').textContent = lines.join(' • ');
-      byId('resultOverlay').classList.add('active');
-    }
-
-    function checkBattleEnd() {
-      if (allTowersDestroyed('bot')) finishBattle(true);
-      else if (allTowersDestroyed('player')) finishBattle(false);
-    }
-
-    function renderTitleOverlay() {
-      const list = byId('titleList');
-      list.innerHTML = '';
-      getUnlockedTitles().forEach(title => {
-        const div = document.createElement('div');
-        div.className = `title-item ${data.selectedTitle === title ? 'active' : ''}`;
-        div.textContent = title || 'Без титула';
-        div.onclick = () => {
-          data.selectedTitle = title;
-          saveData();
-          renderAll();
-          renderTitleOverlay();
-          byId('playerHud').innerHTML = `
-            <div style="font-weight:800;">Ты ${data.selectedTitle ? '• ' + data.selectedTitle : ''}</div>
-            <div class="small">Любимая: ${carsById[data.favoriteCarId].name}</div>
-          `;
-        };
-        list.appendChild(div);
-      });
-    }
-
-    function renderAll() {
-      renderLobby();
-      renderGarage();
-      renderShop();
-    }
-
-    byId('battleBtn').onclick = openPrebattle;
-    byId('garageBtn').onclick = () => { renderGarage(); showScreen('garage'); };
-    byId('shopBtn').onclick = () => { renderShop(); showScreen('shop'); };
-    byId('backFromGarage').onclick = () => { renderAll(); showScreen('lobby'); };
-    byId('backFromShop').onclick = () => { renderAll(); showScreen('lobby'); };
-    byId('titleBtnInBattle').onclick = () => byId('titleOverlay').classList.add('active');
-    byId('closeTitleOverlay').onclick = () => byId('titleOverlay').classList.remove('active');
-    byId('backToLobbyBtn').onclick = () => { renderAll(); showScreen('lobby'); };
-    byId('playAgainBtn').onclick = openPrebattle;
-    byId('shop').querySelectorAll('[data-roll]').forEach(btn => {
-      btn.onclick = () => rollCase(btn.dataset.roll);
-    });
-
-    window.addEventListener('resize', () => {
-      if (battle.running) showPlacementArea();
-    });
-
-    normalizeDeck();
-    renderAll();
-  </script>
-</body>
-</html>
+    function createShotFx(from, to) {
+      const fx = document.createElement('div');
+      fx.className = 'fx-shot';
+      const a = centerOf(from), b = centerOf(to);
+      fx.style.left = `${a.x - 5}px`;
+      fx.style.top = `${a.y - 5}px`;
+      byId('battlefield').appendChild(fx);
+      const start = performance.now();
+      const duration = 120;
+      function anim(now) {
+        const t = clamp((now - start) / duration, 0, 1);
+        const x = a.x + (b.x - a.x) * t;
+        const y = a.y
