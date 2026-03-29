@@ -3,27 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Гоночный центр</title>
+  <title>Street Nakamyra — Night Drive</title>
   <style>
     * { box-sizing: border-box; }
     :root {
       --bg1:#0f172a;
       --bg2:#1d4ed8;
       --bg3:#312e81;
-      --panel:rgba(9,16,30,.72);
+      --panel:rgba(9,16,30,.74);
       --panel2:rgba(255,255,255,.07);
       --line:rgba(255,255,255,.12);
       --text:#eef3ff;
-      --muted:#b6c3df;
-      --gold:#f5bd3d;
-      --blue:#3399ff;
-      --green:#3fd68b;
-      --red:#ef5c5c;
-      --sand1:#e2c28a;
-      --sand2:#cca46b;
-      --sand3:#bc8f58;
-      --river1:#72e2ff;
-      --river2:#2ab6ff;
+      --muted:#b9c7df;
+      --gold:#f6c04f;
+      --gold2:#eda62b;
+      --blue:#45b2ff;
+      --green:#56eaa9;
+      --red:#f06363;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
     }
     html,body{
       margin:0;
@@ -34,9 +31,9 @@
       color:var(--text);
       background:linear-gradient(-45deg,var(--bg1),var(--bg2),var(--bg3),#111827);
       background-size:400% 400%;
-      animation:lobbyFlow 14s ease infinite;
+      animation:flow 14s ease infinite;
     }
-    @keyframes lobbyFlow{
+    @keyframes flow{
       0%{background-position:0% 50%}
       50%{background-position:100% 50%}
       100%{background-position:0% 50%}
@@ -46,8 +43,8 @@
     .panel{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:22px;
-      box-shadow:0 18px 48px rgba(0,0,0,.35);
+      border-radius:24px;
+      box-shadow:var(--shadow);
       backdrop-filter:blur(10px);
     }
     button{
@@ -57,84 +54,68 @@
       font-size:15px;
       font-weight:700;
       cursor:pointer;
+      transition:transform .14s ease, opacity .14s ease;
       color:#fff;
-      transition:.14s transform ease,.14s opacity ease;
     }
     button:hover{transform:translateY(-1px)}
     button:active{transform:translateY(1px)}
     button:disabled{opacity:.45;cursor:default;transform:none}
-    .btn-gold{background:linear-gradient(180deg,#ffd98d,#ecad2e); color:#2a1900}
+    .btn-gold{background:linear-gradient(180deg,#ffd98d,var(--gold2));color:#2a1900}
     .btn-blue{background:linear-gradient(180deg,#4ab4ff,#1b79ff)}
     .btn-dark{background:linear-gradient(180deg,#33425d,#1f2a3c)}
-    .btn-green{background:linear-gradient(180deg,#59f0b0,#30bf84); color:#0b2317}
+    .btn-green{background:linear-gradient(180deg,#59f0b0,#30bf84);color:#0b2317}
     .btn-red{background:linear-gradient(180deg,#ff8a8a,#ea5050)}
     .small{font-size:12px;color:var(--muted)}
-    .chip{
-      display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;
-      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);font-size:13px;
-    }
-    .title-chip{
-      display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;
-      background:rgba(255,208,92,.17);border:1px solid rgba(255,208,92,.24);color:#ffd66c;font-weight:700;font-size:13px;
-    }
-    .big-emoji{
-      width:58px;height:58px;border-radius:16px;display:flex;align-items:center;justify-content:center;
-      font-size:30px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);
-    }
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);font-size:13px}
+    .title-chip{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:rgba(255,208,92,.17);border:1px solid rgba(255,208,92,.24);color:#ffd66c;font-weight:700;font-size:13px}
+    .color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(255,255,255,.25)}
 
-    /* LOBBY */
     #lobby{align-items:center;justify-content:center;padding:22px}
-    .lobby-wrap{width:min(1200px,100%);display:grid;grid-template-columns:1.2fr .95fr;gap:20px}
+    .lobby-wrap{width:min(1220px,100%);display:grid;grid-template-columns:1.2fr .95fr;gap:20px}
     .lobby-main,.lobby-side{padding:22px}
     .lobby-main{position:relative;overflow:hidden;display:grid;grid-template-rows:auto auto auto auto;gap:16px}
     .glow{position:absolute;filter:blur(42px);opacity:.25;border-radius:50%;pointer-events:none}
     .glow.one{width:360px;height:360px;right:-60px;top:-80px;background:#2fa5ff}
     .glow.two{width:300px;height:300px;left:-80px;bottom:-90px;background:#7c56ff}
-    .headline h1{margin:0;font-size:52px;line-height:1.02}
+    .headline h1{margin:0;font-size:56px;line-height:1.02}
     .headline p{margin:8px 0 0;color:#d7e1f3;font-size:15px}
     .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
     .stat-box{padding:14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
     .stat-box .n{font-size:20px;font-weight:800;margin-top:4px}
-    .center-card{padding:18px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08)}
+    .hero-card{padding:18px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08)}
     .progress-bar{height:16px;border-radius:999px;background:rgba(0,0,0,.4);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
     .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#ffe486,#f6b73a,#ff9862)}
     .main-actions{display:flex;gap:10px;flex-wrap:wrap}
     .main-actions button{min-width:150px}
+    .mode-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+    .mode-pill{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);cursor:pointer;font-weight:700}
+    .mode-pill.active{box-shadow:0 0 0 2px rgba(87,230,138,.28) inset;color:#7ef5bc}
     .lobby-side{display:grid;grid-template-rows:auto auto auto auto auto;gap:14px}
     .mini-section{padding:16px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
     .favorite-card-preview{display:flex;gap:10px;align-items:center;padding:12px;border-radius:16px;background:rgba(0,0,0,.22);margin-top:10px}
-    #miniDeckPreview{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+    #miniGaragePreview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 
-    /* PAGE */
-    .page{width:min(1200px,100%);height:100%;margin:0 auto;padding:18px;display:grid;grid-template-rows:auto 1fr;gap:14px}
+    .page{width:min(1220px,100%);height:100%;margin:0 auto;padding:18px;display:grid;grid-template-rows:auto 1fr;gap:14px}
     .page-header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
     .page-content{min-height:0;display:grid;gap:14px}
-    #garage .page-content{grid-template-columns:360px 1fr}
-    .deck-panel,.cars-panel,.shop-panel,.pass-panel,.calendar-panel{padding:16px;overflow:auto}
-    .deck-slots{display:grid;gap:10px;margin-top:12px}
-    .deck-slot{display:grid;grid-template-columns:68px 1fr auto;gap:10px;align-items:center;padding:10px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-    .deck-slot.empty{border-style:dashed}
-    .slot-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .car-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
-    .car-card{padding:12px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:64px 1fr;gap:10px}
+    .deck-panel,.cars-panel,.shop-panel,.pass-panel,.calendar-panel,.rank-panel{padding:16px;overflow:auto}
+    .car-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+    .car-card{padding:12px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:start}
     .car-card.favorite{box-shadow:0 0 0 2px rgba(255,210,98,.28) inset}
-    .car-card.in-deck{box-shadow:0 0 0 2px rgba(68,180,255,.22) inset}
+    .car-card.selected{box-shadow:0 0 0 2px rgba(68,180,255,.28) inset}
+    .car-canvas-box{width:100%;height:88px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.06)}
     .car-meta h3{margin:0 0 6px;font-size:16px;line-height:1.15}
     .car-lines{display:grid;gap:4px;font-size:12px;color:#dce5f6}
     .car-actions{grid-column:1 / -1;display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .shop-cases{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .case-card{padding:16px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);display:grid;gap:12px}
+    .shop-offers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .offer-card{padding:16px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);display:grid;gap:12px}
     .drop-box{margin-top:14px;padding:16px;border-radius:18px;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.08);min-height:114px;display:flex;align-items:center;justify-content:center;text-align:center}
 
-    /* PASS */
     .pass-layout{display:grid;grid-template-columns:260px 1fr;gap:14px;min-height:0}
     .pass-side{padding:16px}
     .pass-track-wrap{padding:16px;overflow:auto}
     .pass-levels{display:grid;gap:12px}
-    .pass-level{
-      display:grid;grid-template-columns:74px 1fr 1fr;gap:10px;align-items:center;padding:12px;border-radius:18px;
-      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)
-    }
+    .pass-level{display:grid;grid-template-columns:74px 1fr 1fr;gap:10px;align-items:center;padding:12px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
     .level-num{font-size:22px;font-weight:900;text-align:center}
     .reward-box{padding:12px;border-radius:16px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);min-height:74px;display:flex;flex-direction:column;justify-content:center}
     .reward-box.locked{opacity:.55}
@@ -142,71 +123,49 @@
     .quest-list{display:grid;gap:10px;margin-top:12px}
     .quest-card{padding:12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
 
-    /* CALENDAR */
     .calendar-list{display:grid;gap:10px;margin-top:10px}
     .calendar-reward{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
     .calendar-reward.claimed{box-shadow:0 0 0 2px rgba(87,230,138,.26) inset}
 
-    /* PREBATTLE */
+    .rank-grid{display:grid;gap:10px;margin-top:10px}
+    .rank-row{display:grid;grid-template-columns:160px 1fr auto;gap:12px;align-items:center;padding:12px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+    .rank-row.current{box-shadow:0 0 0 2px rgba(68,180,255,.28) inset}
+
     #prebattle{align-items:center;justify-content:center;padding:20px}
-    .prebattle-card{width:min(760px,100%);padding:22px;display:grid;gap:16px}
+    .prebattle-card{width:min(820px,100%);padding:22px;display:grid;gap:16px}
     .versus{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
     .fighter{padding:16px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
     .countdown{font-size:52px;font-weight:900;color:#ffe07c;text-align:center}
+    .battle-card{padding:14px;border-radius:18px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08)}
+    .battle-card-visual{width:100%;height:140px;border-radius:18px;background:linear-gradient(135deg,#1d4ed8,#312e81);position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+    .battle-card-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 75% 30%,rgba(255,255,255,.16),transparent 28%),linear-gradient(180deg,rgba(255,255,255,.06),transparent 50%)}
+    .battle-card-visual .badge{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+    .battle-card-visual .title{position:absolute;bottom:14px;left:14px;right:14px;font-size:22px;font-weight:900}
+    .battle-card-visual .subtitle{position:absolute;bottom:36px;left:14px;right:14px;font-size:12px;color:#d8e3ff}
+    .battle-card-canvas{position:absolute;right:6px;bottom:10px;width:180px;height:80px}
 
-    /* BATTLE */
-    #battle{position:relative;overflow:hidden;background:#132135}
-    #battlefield{position:absolute;inset:0;overflow:hidden;background:linear-gradient(180deg,var(--sand1),var(--sand2) 45%,var(--sand3))}
-    .sand-decor,.sand-decor-2{position:absolute;inset:0;pointer-events:none}
-    .sand-decor{background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 36px,rgba(0,0,0,.03) 36px 72px),repeating-linear-gradient(180deg,rgba(255,255,255,.03) 0 42px,rgba(0,0,0,.02) 42px 84px);opacity:.26}
-    .sand-decor-2{background:radial-gradient(circle at 12% 22%,rgba(0,0,0,.07),transparent 9%),radial-gradient(circle at 72% 33%,rgba(0,0,0,.06),transparent 8%),radial-gradient(circle at 38% 80%,rgba(255,255,255,.07),transparent 10%),radial-gradient(circle at 85% 70%,rgba(0,0,0,.07),transparent 7%);opacity:.55}
-    .river{position:absolute;left:0;top:46.4%;width:100%;height:7.2%;background:linear-gradient(180deg,rgba(255,255,255,.3),transparent 14%),linear-gradient(180deg,var(--river1),#49c8ff 38%,var(--river2) 100%);box-shadow:inset 0 0 18px rgba(255,255,255,.22);z-index:2}
-    .bridge{position:absolute;top:46.4%;width:86px;height:7.2%;border-left:4px solid #8d5b2f;border-right:4px solid #8d5b2f;background:linear-gradient(180deg,#d3a06a,#af7747);z-index:3;box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)}
-    .bridge.left{left:22%}
-    .bridge.right{right:22%}
-    .placement-line{position:absolute;left:0;width:100%;border-top:2px dashed rgba(255,255,255,.18);z-index:1;pointer-events:none}
-    .placement-line.player{top:71%}
-    .placement-line.bot{top:29%}
-    .placement-highlight{position:absolute;border:2px dashed rgba(255,255,255,.28);background:rgba(255,255,255,.07);z-index:1;pointer-events:none;display:none}
-    .tower{position:absolute;width:60px;height:60px;border-radius:18px;z-index:9;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;text-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.2);box-shadow:0 8px 18px rgba(0,0,0,.28)}
-    .tower.player{background:linear-gradient(180deg,#4d9dff,#1a5de0)}
-    .tower.bot{background:linear-gradient(180deg,#ff8a8a,#d23636)}
-    .tower.king{width:74px;height:74px;border-radius:22px}
-    .tower .hpbar{position:absolute;top:-12px;left:2px;width:calc(100% - 4px);height:8px;background:rgba(0,0,0,.36);border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-    .tower .hpfill{width:100%;height:100%;background:linear-gradient(90deg,#52e082,#21c35f)}
-    .unit{position:absolute;width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:21px;z-index:10;border:2px solid rgba(255,255,255,.22);box-shadow:0 8px 20px rgba(0,0,0,.22);pointer-events:none}
-    .unit.player{background:linear-gradient(180deg,#4d9dff,#1a5de0)}
-    .unit.bot{background:linear-gradient(180deg,#ff8a8a,#d23636)}
-    .unit .uhp{position:absolute;top:-10px;left:2px;width:calc(100% - 4px);height:6px;background:rgba(0,0,0,.38);border-radius:999px;overflow:hidden}
-    .unit .uhp span{display:block;width:100%;height:100%;background:linear-gradient(90deg,#57e68a,#21bf60)}
-    .battle-top{position:absolute;top:0;left:0;width:100%;display:flex;justify-content:space-between;padding:10px;z-index:40;pointer-events:none}
-    .battle-bottom{position:absolute;bottom:108px;left:0;width:100%;display:flex;justify-content:space-between;align-items:flex-end;padding:10px;z-index:40;pointer-events:none}
-    .hud-box{background:rgba(8,16,28,.66);border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 48px rgba(0,0,0,.35);border-radius:16px;padding:10px 12px;min-width:170px;pointer-events:auto}
-    .fuel-box{min-width:190px}
-    .fuel-bar{width:100%;height:14px;border-radius:999px;background:rgba(0,0,0,.4);overflow:hidden;border:1px solid rgba(255,255,255,.08);margin-top:6px}
-    .fuel-fill{height:100%;width:100%;background:linear-gradient(90deg,#ffe07c,#f6b73a)}
-    .title-picker-btn{min-width:0;width:48px;height:48px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:22px;padding:0}
-    #hand{position:absolute;left:0;bottom:0;width:100%;height:108px;z-index:45;display:flex;justify-content:center;align-items:center;gap:8px;padding:8px;background:linear-gradient(180deg,rgba(10,18,31,.14),rgba(7,12,22,.9));border-top:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px)}
-    .hand-card{position:relative;width:18%;min-width:72px;max-width:120px;height:90px;border-radius:18px;padding:8px 8px 6px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:2px solid rgba(255,255,255,.08);cursor:pointer;transition:transform .12s ease,border-color .12s ease,opacity .12s ease;overflow:hidden}
-    .hand-card.selected{border-color:rgba(255,205,89,.95);transform:translateY(-6px);box-shadow:0 10px 24px rgba(246,183,58,.22)}
-    .hand-card.unaffordable{opacity:.55}
-    .hand-cost{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#ffe07c,#f6b73a);color:#1a1302;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
-    .hand-card h4{margin:4px 0 2px;font-size:12px;line-height:1.15;height:30px;overflow:hidden}
-    .overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:70;background:rgba(0,0,0,.48);backdrop-filter:blur(6px)}
+    #game{position:relative;overflow:hidden;background:#0b1020}
+    #gameCanvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+    .hud-top{position:absolute;top:0;left:0;width:100%;display:flex;justify-content:space-between;padding:10px;z-index:20;pointer-events:none}
+    .hud-bottom{position:absolute;bottom:0;left:0;width:100%;display:flex;justify-content:space-between;align-items:flex-end;padding:10px;z-index:20;pointer-events:none}
+    .hud-box{background:rgba(8,16,28,.66);border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);border-radius:16px;padding:10px 12px;min-width:180px;pointer-events:auto}
+    .control-pad{display:flex;gap:10px;pointer-events:auto}
+    .control-pad button{min-width:110px;min-height:62px;font-size:18px}
+    .overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:30;background:rgba(0,0,0,.48);backdrop-filter:blur(6px)}
     .overlay.active{display:flex}
-    .overlay-card{width:min(520px,100%);padding:20px}
+    .overlay-card{width:min(560px,100%);padding:20px}
     .title-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
     .title-item{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.08);cursor:pointer;font-size:13px}
     .title-item.active{box-shadow:0 0 0 2px rgba(255,210,92,.36) inset;color:#ffe08d}
-    .result-big{font-size:54px;margin:0 0 4px;font-weight:900}
+    .result-big{font-size:54px;margin:0 0 4px;font-weight:900;text-align:center}
 
     @media (max-width:980px){
-      .lobby-wrap{grid-template-columns:1fr}
-      #garage .page-content,.pass-layout{grid-template-columns:1fr}
-      .shop-cases{grid-template-columns:1fr}
+      .lobby-wrap,.pass-layout{grid-template-columns:1fr}
+      .shop-offers{grid-template-columns:1fr}
       .stats-grid{grid-template-columns:repeat(2,1fr)}
       .versus{grid-template-columns:1fr}
-      .headline h1{font-size:40px}
+      .headline h1{font-size:42px}
+      .car-card{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -217,34 +176,40 @@
         <div class="glow one"></div>
         <div class="glow two"></div>
         <div class="headline">
-          <h1>🚗 Гоночный центр</h1>
-          <p>Машины, мосты, бензин, башни и ежедневный сезон Car Pass.</p>
+          <h1>🏁 Street Nakamyra</h1>
+          <p>Ночной вайб, неоновые здания, луна, ранги, Street Pass и японские машины.</p>
         </div>
         <div class="stats-grid">
-          <div class="stat-box"><div class="small">🏆 Кубки</div><div class="n" id="statTrophies">0</div></div>
-          <div class="stat-box"><div class="small">💎 Гемы</div><div class="n" id="statGems">0</div></div>
-          <div class="stat-box"><div class="small">🏁 Центр</div><div class="n" id="statCenter">1</div></div>
-          <div class="stat-box"><div class="small">🚘 Машин</div><div class="n" id="statCars">5</div></div>
+          <div class="stat-box"><div class="small">🏆 Ранг-очки</div><div class="n" id="statRank">0</div></div>
+          <div class="stat-box"><div class="small">💎 Гемы</div><div class="n" id="statGems">18</div></div>
+          <div class="stat-box"><div class="small">🚘 Машин</div><div class="n" id="statCars">1</div></div>
+          <div class="stat-box"><div class="small">📏 Рекорд</div><div class="n" id="statRecord">0 км</div></div>
         </div>
-        <div class="center-card">
-          <div class="small">Текущий прогресс</div>
-          <h2 id="centerName" style="margin:6px 0 4px">Центр Новичка</h2>
-          <div id="centerRewardText" class="muted">Победа +33 • Поражение -17</div>
-          <div style="margin-top:14px" class="progress-bar"><div class="progress-fill" id="centerProgress"></div></div>
-          <div class="small" id="centerProgressText" style="margin-top:8px">0 / 1000</div>
+        <div class="hero-card">
+          <div class="small">Выбранный режим</div>
+          <h2 id="selectedModeTitle" style="margin:6px 0 4px">Гонка на трассе</h2>
+          <div id="selectedModeDesc" class="small">Доедь быстрее бота до 50 км за 5 минут.</div>
+          <div class="mode-bar">
+            <div class="mode-pill active" data-mode="race_battle">Гонка на трассе — Бой с ботом</div>
+            <div class="mode-pill" data-mode="race_time">Гонка на трассе — Трасса</div>
+            <div class="mode-pill" data-mode="rank_battle">Гоночный Бой — Бой с ботом</div>
+            <div class="mode-pill" data-mode="rank_time">Гоночный Бой — Трасса</div>
+          </div>
+          <div style="margin-top:14px" class="progress-bar"><div class="progress-fill" id="rankProgress"></div></div>
+          <div class="small" id="rankProgressText" style="margin-top:8px">Бронза • 0 / 300</div>
           <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
             <span class="chip" id="titleChipLobby">Титул: нет</span>
-            <span class="chip" id="favoriteChipLobby">Любимая: —</span>
-            <span class="chip">Лимит гемов: 2145</span>
+            <span class="chip" id="favoriteChipLobby">Любимая: Mercedes S600</span>
             <span class="chip" id="seasonTimerChip">⏳ До конца сезона: --:--:--</span>
           </div>
         </div>
         <div class="main-actions">
-          <button class="btn-gold" id="battleBtn">⚔️ В бой</button>
-          <button class="btn-dark" id="garageBtn">🚘 Мои тачки</button>
+          <button class="btn-gold" id="playBtn">▶ Играть</button>
+          <button class="btn-dark" id="garageBtn">🚘 Мои машины</button>
           <button class="btn-blue" id="shopBtn">🛒 Магазин</button>
-          <button class="btn-green" id="passBtn">🚙 Car Pass — Внедорожная дорога</button>
+          <button class="btn-green" id="passBtn">🛣️ Street Pass</button>
           <button class="btn-dark" id="calendarBtn">🗓️ Календарь</button>
+          <button class="btn-blue" id="rankBtn">🏆 Ранги</button>
         </div>
       </div>
       <div class="panel lobby-side">
@@ -253,21 +218,22 @@
           <div id="lobbyTitleBox" style="margin-top:8px"></div>
         </div>
         <div class="mini-section">
-          <div class="small">Любимая тачка</div>
+          <div class="small">Любимая машина</div>
           <div class="favorite-card-preview" id="favoritePreview"></div>
         </div>
         <div class="mini-section">
-          <div class="small">Твоя гонка (5 карт)</div>
-          <div id="miniDeckPreview"></div>
+          <div class="small">Гараж</div>
+          <div id="miniGaragePreview"></div>
         </div>
         <div class="mini-section">
-          <div class="small">Car Pass</div>
+          <div class="small">Street Pass</div>
           <div style="font-size:17px;font-weight:800;margin-top:8px" id="passInfoText">Уровень 1 • 0 / 90 XP</div>
           <div style="margin-top:10px" class="progress-bar"><div class="progress-fill" id="passProgress"></div></div>
         </div>
         <div class="mini-section">
-          <div class="small">Подсказка</div>
-          <p style="margin:8px 0 0;line-height:1.45;color:#dbe6fb">На Новичке боты очень тупые. На Sayona — средние. На Сильнейшем — как прежние. Между постановками у ботов есть кд, так что спама стало меньше.</p>
+          <div class="small">Ранг</div>
+          <div style="font-size:18px;font-weight:800;margin-top:8px" id="rankTitleLobby">Бронза</div>
+          <div class="small" id="rankCardRewardInfo" style="margin-top:8px">За ранги открываются боевые карты и титулы.</div>
         </div>
       </div>
     </div>
@@ -276,24 +242,17 @@
   <div id="garage" class="screen">
     <div class="page">
       <div class="page-header">
-        <h2>🚘 Мои тачки</h2>
+        <h2>🚘 Мои машины</h2>
         <button class="btn-dark" id="backFromGarage">Назад</button>
       </div>
       <div class="page-content">
-        <div class="panel deck-panel">
-          <div class="small">Моя гонка</div>
-          <h3 style="margin:6px 0 0">5 активных машин</h3>
-          <div class="muted" style="margin-top:6px">Нажми на машинку в гонке, чтобы убрать. Ниже можно добавить новую в пустую ячейку.</div>
-          <div id="deckSlots" class="deck-slots"></div>
-          <div style="margin-top:14px" class="small">Выбранная пустая ячейка: <span id="selectedEmptySlotText">нет</span></div>
-        </div>
         <div class="panel cars-panel">
           <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
             <div>
               <div class="small">Коллекция</div>
-              <h3 style="margin:6px 0 0">Все мои тачки</h3>
+              <h3 style="margin:6px 0 0">Выбор машины</h3>
             </div>
-            <div class="chip" id="garageSummary">0 машин</div>
+            <div class="chip" id="garageSummary">1 машина</div>
           </div>
           <div id="garageCars" class="car-grid"></div>
         </div>
@@ -306,36 +265,36 @@
       <div class="page-header">
         <h2>🛒 Магазин</h2>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-          <span class="chip" id="shopGemsInfo">💎 0 / 2145</span>
+          <span class="chip" id="shopGemsInfo">💎 18 / 2145</span>
           <button class="btn-dark" id="backFromShop">Назад</button>
         </div>
       </div>
       <div class="page-content">
         <div class="panel shop-panel">
-          <div class="shop-cases">
-            <div class="case-card">
+          <div class="shop-offers">
+            <div class="offer-card">
               <div class="small">9 гемов</div>
-              <h3 style="margin:0">🚙 Рулетка больших машин</h3>
-              <div class="muted">Падает любая жирная машина. Шансы равные.</div>
-              <button class="btn-gold shop-roll" data-roll="tank">Крутить</button>
+              <h3 style="margin:0">🎲 Рулетка JDM</h3>
+              <div class="small">Падает японская машина. Шансы равные.</div>
+              <button class="btn-gold shop-roll" data-roll="jdm">Крутить</button>
             </div>
-            <div class="case-card">
+            <div class="offer-card">
               <div class="small">9 гемов</div>
-              <h3 style="margin:0">🏎️ Рулетка гоночных машин</h3>
-              <div class="muted">Падает любая гоночная машина. Шансы равные.</div>
-              <button class="btn-gold shop-roll" data-roll="racer">Крутить</button>
-            </div>
-            <div class="case-card">
-              <div class="small">9 гемов</div>
-              <h3 style="margin:0">🎲 Смешанная рулетка</h3>
-              <div class="muted">50% жирная, 50% гоночная.</div>
+              <h3 style="margin:0">🏁 Смешанная рулетка</h3>
+              <div class="small">Падает любая машина, кроме лимиток.</div>
               <button class="btn-gold shop-roll" data-roll="mixed">Крутить</button>
             </div>
-            <div class="case-card">
-              <div class="small">Спецпредложение</div>
-              <h3 style="margin:0">🔥 Mercedes Maybach GLS 990</h3>
-              <div class="muted">Лимитированная машина сезона. Продаётся только пока не закончится сезон.</div>
-              <button class="btn-green" id="buyLimitedBtn">Купить за 129💎</button>
+            <div class="offer-card">
+              <div class="small">Эксклюзив сезона</div>
+              <h3 style="margin:0">🔥 Nissan 240SX</h3>
+              <div class="small">Продаётся только до конца сезона Street Pass.</div>
+              <button class="btn-green" id="buyExclusiveBtn">Купить за 129💎</button>
+            </div>
+            <div class="offer-card">
+              <div class="small">Совет</div>
+              <h3 style="margin:0">Street Pass или лимитка?</h3>
+              <div class="small">Можно копить на Street Pass+, а можно взять Nissan 240SX прямо сейчас.</div>
+              <button class="btn-blue" id="goPassBtn">Открыть Street Pass</button>
             </div>
           </div>
           <div class="drop-box" id="dropBox">Пока ничего не выпало. Крути рулетку или забирай лимитку 👀</div>
@@ -347,7 +306,7 @@
   <div id="pass" class="screen">
     <div class="page">
       <div class="page-header">
-        <h2>🚙 Car Pass — Внедорожная дорога</h2>
+        <h2>🛣️ Street Pass — Ночная трасса</h2>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
           <span class="chip" id="passTimerHeader">⏳ --:--:--</span>
           <button class="btn-dark" id="backFromPass">Назад</button>
@@ -356,20 +315,20 @@
       <div class="page-content pass-layout">
         <div class="panel pass-side">
           <div class="small">Сезон</div>
-          <h3 style="margin:6px 0 0">Внедорожная дорога</h3>
+          <h3 style="margin:6px 0 0">Ночная трасса</h3>
           <div class="small" style="margin-top:8px">1 сезон длится 1 день</div>
           <div style="margin-top:12px;font-weight:800;font-size:18px" id="passLevelText">Уровень 1</div>
           <div class="small" id="passXpText" style="margin-top:6px">0 / 90 XP</div>
           <div style="margin-top:10px" class="progress-bar"><div class="progress-fill" id="passProgressBar"></div></div>
-          <div style="margin-top:12px" class="chip" id="passPremiumState">Car Pass+: не куплен</div>
+          <div style="margin-top:12px" class="chip" id="passPremiumState">Street Pass+: не куплен</div>
           <div style="margin-top:14px;display:grid;gap:8px;">
-            <button class="btn-gold" id="buyPassBtn">Купить Car Pass+ за 179💎</button>
+            <button class="btn-gold" id="buyPassBtn">Купить Street Pass+ за 179💎</button>
             <button class="btn-blue" id="claimQuestBtn">Забрать выполненный квест</button>
           </div>
           <div class="quest-list" id="questList"></div>
         </div>
         <div class="panel pass-track-wrap">
-          <div class="small">30 уровней • бесплатная линия и Car Pass+</div>
+          <div class="small">30 уровней • бесплатная линия и Street Pass+</div>
           <div id="passLevels" class="pass-levels" style="margin-top:12px"></div>
         </div>
       </div>
@@ -384,7 +343,7 @@
       </div>
       <div class="page-content">
         <div class="panel calendar-panel">
-          <div class="small">Награды за количество сыгранных боёв</div>
+          <div class="small">Награды за количество сыгранных заездов</div>
           <h3 style="margin:6px 0 0">Твой прогресс: <span id="gamesPlayedText">0</span> игр</h3>
           <div class="calendar-list" id="calendarList"></div>
         </div>
@@ -392,58 +351,71 @@
     </div>
   </div>
 
-  <div id="prebattle" class="screen">
-    <div class="panel prebattle-card">
-      <div class="small" style="text-align:center">Осмотр боевой карты</div>
-      <div class="versus">
-        <div class="fighter" style="text-align:center">
-          <div class="small">Ты</div>
-          <h2 style="margin:8px 0 10px" id="prePlayerName">Игрок</h2>
-          <div id="prePlayerTitle"></div>
-          <div id="prePlayerFav" style="margin-top:12px"></div>
-        </div>
-        <div class="countdown" id="preCountdown">3</div>
-        <div class="fighter" style="text-align:center">
-          <div class="small">Соперник</div>
-          <h2 style="margin:8px 0 10px" id="preBotName">Бот</h2>
-          <div id="preBotTitle"></div>
-          <div id="preBotFav" style="margin-top:12px"></div>
+  <div id="rank" class="screen">
+    <div class="page">
+      <div class="page-header">
+        <h2>🏆 Ранги</h2>
+        <button class="btn-dark" id="backFromRank">Назад</button>
+      </div>
+      <div class="page-content">
+        <div class="panel rank-panel">
+          <div class="small">В ранговом бою и в обычном режиме очки считаются одинаково. Победа +100, поражение -100.</div>
+          <h3 style="margin:10px 0 0">Твой ранг: <span id="currentRankBig">Бронза</span></h3>
+          <div class="rank-grid" id="rankGrid"></div>
         </div>
       </div>
-      <div class="muted" style="text-align:center">Режим: Борьба за царя • 3 башни • речка и 2 мостика</div>
     </div>
   </div>
 
-  <div id="battle" class="screen">
-    <div id="battlefield">
-      <div class="sand-decor"></div>
-      <div class="sand-decor-2"></div>
-      <div class="river"></div>
-      <div class="bridge left"></div>
-      <div class="bridge right"></div>
-      <div class="placement-line bot"></div>
-      <div class="placement-line player"></div>
-      <div class="placement-highlight" id="placementHighlight"></div>
+  <div id="prebattle" class="screen">
+    <div class="panel prebattle-card">
+      <div class="small" style="text-align:center">Подготовка к заезду</div>
+      <div class="versus">
+        <div class="fighter">
+          <div class="battle-card">
+            <div class="battle-card-visual">
+              <div class="badge" id="prePlayerRank">Бронза</div>
+              <div class="subtitle" id="prePlayerTitleText">Без титула</div>
+              <div class="title">Ты</div>
+              <canvas class="battle-card-canvas" id="prePlayerCardCanvas" width="180" height="80"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="countdown" id="preCountdown">3</div>
+        <div class="fighter">
+          <div class="battle-card">
+            <div class="battle-card-visual">
+              <div class="badge" id="preBotRank">Бот</div>
+              <div class="subtitle" id="preBotTitleText">Без титула</div>
+              <div class="title" id="preBotName">Street Bot</div>
+              <canvas class="battle-card-canvas" id="preBotCardCanvas" width="180" height="80"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="small" style="text-align:center" id="preModeText">Режим: Гонка на трассе</div>
     </div>
-    <div class="battle-top">
-      <div class="hud-box" id="botHud"></div>
-      <div class="hud-box">👑 Борьба за царя</div>
+  </div>
+
+  <div id="game" class="screen">
+    <canvas id="gameCanvas"></canvas>
+    <div class="hud-top">
+      <div class="hud-box" id="playerHud"></div>
+      <div class="hud-box" id="raceHud"></div>
     </div>
-    <div class="battle-bottom">
+    <div class="hud-bottom">
       <div style="display:flex;gap:8px;align-items:flex-end;pointer-events:auto;">
-        <button class="btn-dark title-picker-btn" id="titleBtnInBattle">🚘</button>
-        <div class="hud-box" id="playerHud"></div>
+        <button class="btn-dark" id="titleBtnInGame">🪪</button>
       </div>
-      <div class="hud-box fuel-box">
-        <div id="fuelText">⛽ 10 / 10</div>
-        <div class="fuel-bar"><div class="fuel-fill" id="fuelFill"></div></div>
+      <div class="control-pad">
+        <button class="btn-red" id="brakeBtn">Тормоз</button>
+        <button class="btn-green" id="gasBtn">Газ</button>
       </div>
     </div>
-    <div id="hand"></div>
     <div class="overlay" id="titleOverlay">
       <div class="panel overlay-card">
         <h3 style="margin:0 0 8px">Выбор титула</h3>
-        <div class="small">Доступные титулы зависят от пройденных центров.</div>
+        <div class="small">Выбери титул, который будет на боевой карте.</div>
         <div class="title-list" id="titleList"></div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
           <button class="btn-dark" id="closeTitleOverlay">Закрыть</button>
@@ -451,12 +423,12 @@
       </div>
     </div>
     <div class="overlay" id="resultOverlay">
-      <div class="panel overlay-card" style="text-align:center">
+      <div class="panel overlay-card">
         <div class="result-big" id="resultBig">Победа!</div>
-        <div id="resultDetails" class="muted">+33 кубка • +3 гема</div>
+        <div id="resultDetails" class="small" style="text-align:center;font-size:14px">Ты доехал до финиша</div>
         <div style="display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap;">
           <button class="btn-gold" id="backToLobbyBtn">В лобби</button>
-          <button class="btn-dark" id="playAgainBtn">Ещё бой</button>
+          <button class="btn-dark" id="playAgainBtn">Ещё заезд</button>
         </div>
       </div>
     </div>
@@ -464,822 +436,168 @@
 
   <script>
     'use strict';
-
-    const GEM_LIMIT = 2145;
-    const TROPHY_STEP_REWARD = 9;
-    const PASS_PRICE = 179;
-    const LIMITED_PRICE = 129;
-    const PASS_XP_PER_LEVEL = 90;
-    const PASS_LEVELS = 30;
-    const PASS_NAME = 'Внедорожная дорога';
-
+    const PASS_PRICE = 179, EXCLUSIVE_PRICE = 129, GEM_LIMIT = 2145, PASS_XP_PER_LEVEL = 90, PASS_LEVELS = 30, STARTER_CAR = 's600';
+    const modes = {
+      race_battle:{ title:'Гонка на трассе — Бой с ботом', desc:'Нужно проехать 50 км за 5 минут. Бот едет рядом.', distance:50, time:300, ranked:false, bot:true },
+      race_time:{ title:'Гонка на трассе — Трасса', desc:'Нужно проехать 100 км за 9 минут.', distance:100, time:540, ranked:false, bot:false },
+      rank_battle:{ title:'Гоночный Бой — Бой с ботом', desc:'Ранговый заезд: 50 км за 5 минут.', distance:50, time:300, ranked:true, bot:true },
+      rank_time:{ title:'Гоночный Бой — Трасса', desc:'Ранговый заезд: 100 км за 9 минут.', distance:100, time:540, ranked:true, bot:false }
+    };
+    const rankTable = [
+      {name:'Бронза', min:0, max:300, reward:'Базовая боевая карта'},
+      {name:'Серебро', min:350, max:800, reward:'Серебряная карта'},
+      {name:'Золото', min:800, max:1200, reward:'Золотая карта'},
+      {name:'Алмаз', min:1200, max:1900, reward:'Алмазная карта'},
+      {name:'Мифическая лига', min:1900, max:3000, reward:'Мифическая карта'},
+      {name:'Легендарная лига', min:3000, max:4500, reward:'Легендарная карта'},
+      {name:'Мастер', min:4500, max:6500, reward:'Титул Мастер'},
+      {name:'Легенда', min:6500, max:10000, reward:'Легендарная боевая карта'}
+    ];
     const carCatalog = [
-      { id:'vaz2107', name:'Семерка с района', emoji:'🚗', kind:'racer', hp:400, damage:200, speed:0.72, cost:3, attackSpeed:980, range:42 },
-      { id:'niva2121', name:'Нива дяди Руслана', emoji:'🚙', kind:'tank', hp:500, damage:180, speed:0.55, cost:4, attackSpeed:1080, range:42 },
-      { id:'vaz2109', name:'Девятка Лёхи', emoji:'🚘', kind:'racer', hp:350, damage:230, speed:0.76, cost:3, attackSpeed:900, range:42 },
-      { id:'vaz2114', name:'Четырка', emoji:'🚗', kind:'racer', hp:400, damage:200, speed:0.71, cost:3, attackSpeed:980, range:42 },
-      { id:'vaz2115', name:'Пятнашка', emoji:'🚕', kind:'tank', hp:450, damage:190, speed:0.57, cost:4, attackSpeed:1020, range:42 },
-      { id:'urus', name:'Lamborghini Urus', emoji:'🚙', kind:'tank', hp:1200, damage:200, speed:0.46, cost:7, attackSpeed:1150, range:44 },
-      { id:'g63', name:'Mercedes G63', emoji:'🚙', kind:'tank', hp:1100, damage:215, speed:0.47, cost:7, attackSpeed:1120, range:44 },
-      { id:'g65amg', name:'Gelendvagen 65 AMG', emoji:'🚙', kind:'tank', hp:980, damage:235, speed:0.50, cost:6, attackSpeed:1070, range:44 },
-      { id:'brabus63', name:'GelendVagen 63 AMG Brabus Restyiling', emoji:'🚙', kind:'tank', hp:1150, damage:240, speed:0.49, cost:7, attackSpeed:1080, range:44 },
-      { id:'rs2suv', name:'Audi RS 2 SUVs', emoji:'🚙', kind:'tank', hp:860, damage:245, speed:0.54, cost:5, attackSpeed:1040, range:44 },
-      { id:'maybachgls990', name:'Mercedes Maybach GLS 990', emoji:'🚙', kind:'tank', hp:450, damage:230, speed:0.56, cost:4, attackSpeed:990, range:44, limited:true },
-      { id:'rrcullinan', name:'Rolls-Royce Black Culinann', emoji:'🚙', kind:'tank', hp:1300, damage:250, speed:0.44, cost:8, attackSpeed:1150, range:44 },
-      { id:'lc300', name:'Toyota Land Cruiser 300', emoji:'🚙', kind:'tank', hp:1050, damage:220, speed:0.48, cost:6, attackSpeed:1100, range:44 },
-      { id:'x7m60i', name:'BMW X7 M60i', emoji:'🚙', kind:'tank', hp:980, damage:225, speed:0.49, cost:6, attackSpeed:1080, range:44 },
-      { id:'escalade', name:'Cadillac Escalade', emoji:'🚙', kind:'tank', hp:1020, damage:210, speed:0.47, cost:6, attackSpeed:1120, range:44 },
-      { id:'defender110', name:'Land Rover Defender 110', emoji:'🚙', kind:'tank', hp:960, damage:230, speed:0.50, cost:6, attackSpeed:1080, range:44 },
-      { id:'gle63', name:'Mercedes GLE 63 S', emoji:'🚙', kind:'tank', hp:920, damage:240, speed:0.51, cost:6, attackSpeed:1060, range:44 },
-      { id:'bmwx5m', name:'BMW X5 M', emoji:'🚙', kind:'tank', hp:900, damage:245, speed:0.52, cost:5, attackSpeed:1040, range:44 },
-      { id:'cayenneturbo', name:'Porsche Cayenne Turbo', emoji:'🚙', kind:'tank', hp:880, damage:250, speed:0.53, cost:5, attackSpeed:1020, range:44 },
-      { id:'patrol', name:'Nissan Patrol', emoji:'🚙', kind:'tank', hp:950, damage:228, speed:0.50, cost:6, attackSpeed:1090, range:44 },
-      { id:'f150raptor', name:'Ford F-150 Raptor', emoji:'🚙', kind:'tank', hp:860, damage:242, speed:0.53, cost:5, attackSpeed:1040, range:44 },
-      { id:'aventador', name:'Lamborghini Aventador', emoji:'🏎️', kind:'racer', hp:250, damage:350, speed:0.90, cost:4, attackSpeed:760, range:42 },
-      { id:'huracan', name:'Lamborghini Huracán', emoji:'🏎️', kind:'racer', hp:280, damage:330, speed:0.88, cost:4, attackSpeed:780, range:42 },
-      { id:'revuelto', name:'Lamborghini Revuelto', emoji:'🏎️', kind:'racer', hp:300, damage:340, speed:0.87, cost:4, attackSpeed:780, range:42 },
-      { id:'bmwm5f90', name:'BMW M5 F90', emoji:'🚘', kind:'racer', hp:320, damage:300, speed:0.82, cost:4, attackSpeed:810, range:42 },
-      { id:'m4comp', name:'BMW M4 Competition', emoji:'🚘', kind:'racer', hp:300, damage:310, speed:0.84, cost:4, attackSpeed:800, range:42 },
-      { id:'rs7', name:'Audi RS7', emoji:'🚘', kind:'racer', hp:330, damage:295, speed:0.81, cost:4, attackSpeed:820, range:42 },
-      { id:'r8v10', name:'Audi R8 V10', emoji:'🏎️', kind:'racer', hp:270, damage:340, speed:0.88, cost:4, attackSpeed:780, range:42 },
-      { id:'amggt', name:'Mercedes-AMG GT', emoji:'🏎️', kind:'racer', hp:310, damage:305, speed:0.83, cost:4, attackSpeed:800, range:42 },
-      { id:'s63amg', name:'Mercedes S63 AMG', emoji:'🚘', kind:'racer', hp:360, damage:285, speed:0.78, cost:4, attackSpeed:850, range:42 },
-      { id:'c63s', name:'Mercedes C63 S', emoji:'🚘', kind:'racer', hp:300, damage:315, speed:0.84, cost:4, attackSpeed:800, range:42 },
-      { id:'gtr35', name:'Nissan GT-R R35', emoji:'🏎️', kind:'racer', hp:290, damage:325, speed:0.86, cost:4, attackSpeed:790, range:42 },
-      { id:'supra', name:'Toyota Supra A90', emoji:'🏎️', kind:'racer', hp:300, damage:312, speed:0.84, cost:4, attackSpeed:800, range:42 },
-      { id:'gr86', name:'Toyota GR86', emoji:'🚗', kind:'racer', hp:340, damage:275, speed:0.80, cost:3, attackSpeed:850, range:42 },
-      { id:'camry70trd', name:'Toyota Camry 70 TRD', emoji:'🚘', kind:'racer', hp:360, damage:270, speed:0.77, cost:3, attackSpeed:860, range:42 },
-      { id:'mustanggt', name:'Ford Mustang GT', emoji:'🏎️', kind:'racer', hp:330, damage:290, speed:0.80, cost:4, attackSpeed:820, range:42 },
-      { id:'chargerhellcat', name:'Dodge Charger Hellcat', emoji:'🚘', kind:'racer', hp:360, damage:285, speed:0.78, cost:4, attackSpeed:840, range:42 },
-      { id:'corvettec8', name:'Chevrolet Corvette C8', emoji:'🏎️', kind:'racer', hp:285, damage:328, speed:0.86, cost:4, attackSpeed:790, range:42 },
-      { id:'911turbo', name:'Porsche 911 Turbo S', emoji:'🏎️', kind:'racer', hp:295, damage:332, speed:0.87, cost:4, attackSpeed:785, range:42 },
-      { id:'civictyper', name:'Honda Civic Type R', emoji:'🚗', kind:'racer', hp:330, damage:280, speed:0.80, cost:3, attackSpeed:840, range:42 },
-      { id:'chaser', name:'Toyota Chaser', emoji:'🚘', kind:'racer', hp:350, damage:286, speed:0.79, cost:3, attackSpeed:845, range:42 }
+      { id:'s600', name:'Mercedes S600', style:'lux', topSpeed:310, accel:7.0, grip:82, color:'#d7d7db', cost:0, type:'starter', jap:false },
+      { id:'s15', name:'Nissan Silvia S15', style:'jdm', topSpeed:300, accel:8.2, grip:88, color:'#00a3ff', cost:45, jap:true },
+      { id:'s13', name:'Nissan Silvia S13', style:'jdm', topSpeed:285, accel:8.4, grip:86, color:'#8b5cf6', cost:42, jap:true },
+      { id:'supra', name:'Toyota Supra MK4', style:'jdm', topSpeed:320, accel:8.8, grip:84, color:'#f59e0b', cost:58, jap:true },
+      { id:'rx7', name:'Mazda RX-7 FD', style:'jdm', topSpeed:315, accel:8.7, grip:90, color:'#ef4444', cost:56, jap:true },
+      { id:'gtr34', name:'Nissan Skyline GT-R R34', style:'jdm', topSpeed:330, accel:9.0, grip:92, color:'#3b82f6', cost:68, jap:true },
+      { id:'ae86', name:'Toyota AE86', style:'jdm', topSpeed:255, accel:7.8, grip:93, color:'#f8fafc', cost:36, jap:true },
+      { id:'240sx', name:'Nissan 240SX', style:'jdm', topSpeed:305, accel:8.6, grip:89, color:'#22c55e', cost:129, jap:true, exclusive:true },
+      { id:'nsx', name:'Honda NSX', style:'jdm', topSpeed:325, accel:8.9, grip:91, color:'#ef4444', cost:74, jap:true },
+      { id:'type_r', name:'Honda Civic Type R', style:'jdm', topSpeed:290, accel:8.2, grip:90, color:'#f1f5f9', cost:44, jap:true },
+      { id:'chaser', name:'Toyota Chaser', style:'jdm', topSpeed:295, accel:8.4, grip:87, color:'#0ea5e9', cost:47, jap:true },
+      { id:'lexus_lc', name:'Lexus LC 500', style:'lux', topSpeed:305, accel:8.0, grip:84, color:'#f59e0b', cost:50, jap:true },
+      { id:'m5', name:'BMW M5 F90', style:'sedan', topSpeed:315, accel:8.3, grip:86, color:'#0f172a', cost:60, jap:false },
+      { id:'911', name:'Porsche 911 Turbo', style:'sport', topSpeed:332, accel:9.1, grip:93, color:'#9ca3af', cost:82, jap:false }
     ];
-    const carsById = Object.fromEntries(carCatalog.map(c => [c.id, c]));
-    const STARTER_DECK = ['vaz2107','niva2121','vaz2109','vaz2114','vaz2115'];
-    const FREE_PASS_REWARDS = {
-      1:{type:'gems',amount:5},2:{type:'random'},3:{type:'gems',amount:7},4:{type:'case',kind:'mixed'},5:{type:'gems',amount:10},
-      6:{type:'random'},7:{type:'gems',amount:12},8:{type:'case',kind:'racer'},9:{type:'gems',amount:15},10:{type:'car',id:'g65amg'},
-      11:{type:'gems',amount:15},12:{type:'random'},13:{type:'gems',amount:20},14:{type:'case',kind:'tank'},15:{type:'gems',amount:20},
-      16:{type:'random'},17:{type:'gems',amount:25},18:{type:'case',kind:'mixed'},19:{type:'gems',amount:25},20:{type:'random'},
-      21:{type:'gems',amount:30},22:{type:'case',kind:'racer'},23:{type:'gems',amount:30},24:{type:'random'},25:{type:'gems',amount:35},
-      26:{type:'case',kind:'tank'},27:{type:'gems',amount:35},28:{type:'random'},29:{type:'gems',amount:40},30:{type:'case',kind:'offroad'}
+    const carsById = Object.fromEntries(carCatalog.map(c=>[c.id,c]));
+    const freePassRewards = {
+      1:{type:'gems',amount:5},2:{type:'random'},3:{type:'gems',amount:7},4:{type:'jdm_case'},5:{type:'gems',amount:10},
+      6:{type:'random'},7:{type:'gems',amount:12},8:{type:'mixed_case'},9:{type:'gems',amount:15},10:{type:'car',id:'chaser'},
+      11:{type:'gems',amount:15},12:{type:'random'},13:{type:'gems',amount:20},14:{type:'jdm_case'},15:{type:'gems',amount:20},
+      16:{type:'random'},17:{type:'gems',amount:25},18:{type:'mixed_case'},19:{type:'gems',amount:25},20:{type:'random'},
+      21:{type:'gems',amount:30},22:{type:'jdm_case'},23:{type:'gems',amount:30},24:{type:'random'},25:{type:'gems',amount:35},
+      26:{type:'mixed_case'},27:{type:'gems',amount:35},28:{type:'random'},29:{type:'gems',amount:40},30:{type:'jdm_case'}
     };
-    const PREMIUM_PASS_REWARDS = {
-      1:{type:'gems',amount:5},2:{type:'random'},3:{type:'gems',amount:7},4:{type:'case',kind:'mixed'},5:{type:'gems',amount:10},
-      6:{type:'random'},7:{type:'gems',amount:12},8:{type:'case',kind:'racer'},9:{type:'gems',amount:15},10:{type:'car',id:'rs2suv'},
-      11:{type:'gems',amount:15},12:{type:'random'},13:{type:'gems',amount:20},14:{type:'case',kind:'tank'},15:{type:'bundle3'},
-      16:{type:'random'},17:{type:'gems',amount:25},18:{type:'case',kind:'mixed'},19:{type:'gems',amount:25},20:{type:'case',kind:'offroad'},
-      21:{type:'gems',amount:30},22:{type:'random'},23:{type:'gems',amount:30},24:{type:'case',kind:'tank'},25:{type:'title',title:'Внедорожная пантера'},
-      26:{type:'gems',amount:35},27:{type:'random'},28:{type:'case',kind:'racer'},29:{type:'gems',amount:40},30:{type:'car',id:'brabus63'}
+    const premiumPassRewards = {
+      1:{type:'gems',amount:5},2:{type:'random'},3:{type:'gems',amount:7},4:{type:'mixed_case'},5:{type:'gems',amount:10},
+      6:{type:'random'},7:{type:'gems',amount:12},8:{type:'jdm_case'},9:{type:'gems',amount:15},10:{type:'car',id:'nsx'},
+      11:{type:'gems',amount:15},12:{type:'random'},13:{type:'gems',amount:20},14:{type:'mixed_case'},15:{type:'bundle3'},
+      16:{type:'random'},17:{type:'gems',amount:25},18:{type:'jdm_case'},19:{type:'gems',amount:25},20:{type:'car',id:'rx7'},
+      21:{type:'gems',amount:30},22:{type:'random'},23:{type:'gems',amount:30},24:{type:'mixed_case'},25:{type:'title',title:'Король трассы'},
+      26:{type:'gems',amount:35},27:{type:'random'},28:{type:'jdm_case'},29:{type:'gems',amount:40},30:{type:'car',id:'gtr34'}
     };
-    const CALENDAR_REWARDS = [
+    const calendarRewards = [
       {games:10, reward:{type:'gems', amount:5}},
-      {games:20, reward:{type:'case', kind:'mixed'}},
+      {games:20, reward:{type:'jdm_case'}},
       {games:30, reward:{type:'gems', amount:10}},
-      {games:50, reward:{type:'car', id:'chaser'}},
-      {games:75, reward:{type:'case', kind:'tank'}},
-      {games:100,reward:{type:'case', kind:'offroad'}}
+      {games:50, reward:{type:'car', id:'type_r'}},
+      {games:75, reward:{type:'mixed_case'}},
+      {games:100,reward:{type:'car', id:'s15'}}
     ];
-
-    function makeBotProfiles(){
-      const namesA=['Turbo','Street','King','Road','Nitro','Drift','Pulse','Fast','Auto','Ghost'];
-      const namesB=['Sayona','Vaz','Rider','Storm','Wheel','Rush','Master','Track','Crown','Shift'];
-      const titlesByTier={novice:['','','','Красавчик'],sayona:['','Красавчик','',''],strongest:['','Красавчик','Легенда','']};
-      const tankIds=carCatalog.filter(c=>c.kind==='tank' && !c.limited).map(c=>c.id);
-      const racerIds=carCatalog.filter(c=>c.kind==='racer').map(c=>c.id);
-      const profiles=[];
-      for(let i=0;i<70;i++){
-        const tier=i<24?'novice':i<48?'sayona':'strongest';
-        const style=['slow','balanced','tank','racer','smart','counter','greedy'][i%7];
-        const favorite=i%2===0?racerIds[i%racerIds.length]:tankIds[i%tankIds.length];
-        const deck=[];
-        while(deck.length<5){
-          const pool=Math.random()<0.5?tankIds:racerIds;
-          const pick=pool[(i*3+deck.length*7+Math.floor(Math.random()*pool.length))%pool.length];
-          if(!deck.includes(pick)) deck.push(pick);
-        }
-        profiles.push({name:`${namesA[i%namesA.length]}_${namesB[(i*2)%namesB.length]}_${i+1}`,title:titlesByTier[tier][i%titlesByTier[tier].length],favorite,deck,style,tier});
-      }
-      return profiles;
-    }
-    const botProfiles = makeBotProfiles();
-
-    function getNextMidnightTs(){
-      const d = new Date();
-      d.setHours(24,0,0,0);
-      return d.getTime();
-    }
-    function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+    function getNextMidnightTs(){ const d = new Date(); d.setHours(24,0,0,0); return d.getTime(); }
+    function safeJsonParse(v){ try{return JSON.parse(v);}catch{return null;} }
     function clamp(n,min,max){ return Math.max(min,Math.min(max,n)); }
     function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
     function byId(id){ return document.getElementById(id); }
     function showScreen(id){ document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active')); byId(id).classList.add('active'); }
-    function safeJsonParse(v){ try { return JSON.parse(v); } catch { return null; } }
-
-    const defaultData = {
-      trophies:0,
-      gems:18,
-      ownedCars:[...STARTER_DECK],
-      deck:[...STARTER_DECK],
-      favoriteCarId:'vaz2107',
-      selectedTitle:'',
-      rewardClaimedSteps:0,
-      finishedGame:false,
-      gamesPlayed:0,
-      calendarClaimed:[],
-      limitedSeasonBought:false,
-      unlockedTitles:[],
-      pass:{
-        seasonName:PASS_NAME,
-        seasonEnd:getNextMidnightTs(),
-        xp:0,
-        premium:false,
-        freeClaimed:[],
-        premiumClaimed:[],
-        quests:[],
-        questClaimedToday:0
-      }
-    };
-
-    const data = Object.assign({}, defaultData, safeJsonParse(localStorage.getItem('race_center_save_v6')) || {});
-    let selectedGarageEmptySlot = null;
-    let selectedBotProfile = null;
-    let preTimer = null;
-    let seasonInterval = null;
-
-    const battle = {
-      running:false, playerFuel:10, botFuel:10, selectedCardId:null,
-      units:[], towers:[], loopId:null, lastTime:0, lastBotThink:0,
-      botProfile:null, playerDestroyedEnemyTowers:0, botDestroyedPlayerTowers:0,
-      botCooldownUntil:0
-    };
-
-    function initData(){
-      if(!Array.isArray(data.ownedCars)) data.ownedCars=[...STARTER_DECK];
-      if(!Array.isArray(data.deck)) data.deck=[...STARTER_DECK];
-      if(!Array.isArray(data.calendarClaimed)) data.calendarClaimed=[];
-      if(!data.pass || typeof data.pass !== 'object') data.pass = structuredClone ? structuredClone(defaultData.pass) : JSON.parse(JSON.stringify(defaultData.pass));
-      if(typeof data.pass.seasonEnd !== 'number') data.pass.seasonEnd = getNextMidnightTs();
-      if(typeof data.pass.xp !== 'number') data.pass.xp = 0;
-      if(typeof data.pass.premium !== 'boolean') data.pass.premium = false;
-      if(!Array.isArray(data.pass.freeClaimed)) data.pass.freeClaimed = [];
-      if(!Array.isArray(data.pass.premiumClaimed)) data.pass.premiumClaimed = [];
-      if(!Array.isArray(data.pass.quests)) data.pass.quests = [];
-      if(typeof data.pass.questClaimedToday !== 'number') data.pass.questClaimedToday = 0;
-      normalizeDeck();
-      resetSeasonIfNeeded();
-      ensureQuests();
-      if(!data.favoriteCarId || !data.ownedCars.includes(data.favoriteCarId)) data.favoriteCarId = data.ownedCars[0] || STARTER_DECK[0];
-      saveData();
-    }
-
-    function saveData(){ localStorage.setItem('race_center_save_v6', JSON.stringify(data)); }
-
-    function normalizeDeck(){
-      while(data.deck.length < 5) data.deck.push(null);
-      if(data.deck.length > 5) data.deck.length = 5;
-      for(let i=0;i<5;i++){
-        if(data.deck[i] && !data.ownedCars.includes(data.deck[i])) data.deck[i] = null;
-      }
-    }
-
-    function resetSeasonIfNeeded(){
-      const now = Date.now();
-      if(now < data.pass.seasonEnd) return;
-      data.pass.seasonEnd = getNextMidnightTs();
-      data.pass.xp = 0;
-      data.pass.premium = false;
-      data.pass.freeClaimed = [];
-      data.pass.premiumClaimed = [];
-      data.pass.quests = [];
-      data.pass.questClaimedToday = 0;
-      data.limitedSeasonBought = false;
-      ensureQuests();
-      saveData();
-    }
-
-    function ensureQuests(){
-      if(data.pass.quests.length === 20) return;
-      data.pass.quests = Array.from({length:20}, (_,i)=>({id:uid(), text:`Квест ${i+1}: сыграй ${i<5?1:2} бой`, done:false, claimed:false}));
-    }
-
-    function getCenterInfo(trophies=data.trophies){
-      const center = clamp(Math.floor(trophies/1000)+1,1,14);
-      let group='novice', name='Центр Новичка', win=33, lose=-17;
-      if(center>=6 && center<=10){ group='sayona'; name='Центр Sayona'; win=25; lose=-21; }
-      if(center>=11){ group='strongest'; name='Центр Сильнейшего'; win=13; lose=-28; }
-      const start=(center-1)*1000;
-      return {center,group,name,win,lose,start,within:trophies-start,end:center*1000};
-    }
-
-    function getUnlockedTitles(){
-      const center = getCenterInfo().center;
-      const arr = [''];
-      if(center>=6) arr.push('Красавчик');
-      if(center>=10) arr.push('Легенда');
-      if(center>=14) arr.push('Мастер игры');
-      if(!arr.includes('Внедорожная пантера') && data.pass.premiumClaimed.includes(25)) arr.push('Внедорожная пантера');
-      return arr;
-    }
-
-    function addGems(amount){
-      const before = data.gems;
-      data.gems = clamp(data.gems + amount, 0, GEM_LIMIT);
-      return data.gems - before;
-    }
-
-    function checkTrophyRoadRewards(oldTrophies,newTrophies){
-      const oldStep = Math.floor(Math.max(oldTrophies,0)/100);
-      const newStep = Math.floor(Math.max(newTrophies,0)/100);
-      let granted = 0;
-      if(newStep > oldStep){
-        for(let step=oldStep+1; step<=newStep; step++) granted += addGems(TROPHY_STEP_REWARD);
-        data.rewardClaimedSteps = Math.max(data.rewardClaimedSteps||0,newStep);
-      }
-      return granted;
-    }
-
+    function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+    const defaultData = { gems:18, rankPoints:0, ownedCars:[STARTER_CAR], selectedCarId:STARTER_CAR, favoriteCarId:STARTER_CAR, selectedTitle:'', gamesPlayed:0, recordKm:0, exclusiveBought:false, selectedMode:'race_battle', calendarClaimed:[], pass:{ seasonEnd:getNextMidnightTs(), xp:0, premium:false, freeClaimed:[], premiumClaimed:[], quests:[] } };
+    const data = Object.assign({}, defaultData, safeJsonParse(localStorage.getItem('street_nakamyra_save_v2')) || {});
+    if(!data.pass || typeof data.pass !== 'object') data.pass = JSON.parse(JSON.stringify(defaultData.pass));
+    if(!Array.isArray(data.pass.quests)) data.pass.quests = [];
+    if(!Array.isArray(data.pass.freeClaimed)) data.pass.freeClaimed = [];
+    if(!Array.isArray(data.pass.premiumClaimed)) data.pass.premiumClaimed = [];
+    if(!Array.isArray(data.ownedCars)) data.ownedCars = [STARTER_CAR];
+    if(!Array.isArray(data.calendarClaimed)) data.calendarClaimed = [];
+    let preTimer = null, seasonInterval = null, selectedBot = null;
+    const raceState = { running:false, modeKey:'race_battle', gas:false, brake:false, playerSpeed:0, botSpeed:0, playerKm:0, botKm:0, remaining:0, lastTime:0, animationId:null };
+    function saveData(){ localStorage.setItem('street_nakamyra_save_v2', JSON.stringify(data)); }
+    function resetSeasonIfNeeded(){ if(Date.now() < data.pass.seasonEnd) return; data.pass.seasonEnd = getNextMidnightTs(); data.pass.xp = 0; data.pass.premium = false; data.pass.freeClaimed = []; data.pass.premiumClaimed = []; data.pass.quests = []; data.exclusiveBought = false; ensureQuests(); saveData(); }
+    function ensureQuests(){ if(data.pass.quests.length === 20) return; data.pass.quests = [ {id:uid(), text:'Сыграй 1 заезд', done:false, claimed:false}, {id:uid(), text:'Сыграй 2 заезда', done:false, claimed:false}, {id:uid(), text:'Выиграй 1 заезд', done:false, claimed:false}, {id:uid(), text:'Выиграй 2 заезда', done:false, claimed:false}, {id:uid(), text:'Проедь 50 км суммарно', done:false, claimed:false}, {id:uid(), text:'Проедь 100 км суммарно', done:false, claimed:false}, {id:uid(), text:'Нажми газ много раз 😄', done:false, claimed:false}, {id:uid(), text:'Победи в ранговом режиме', done:false, claimed:false}, {id:uid(), text:'Победи в обычном режиме', done:false, claimed:false}, {id:uid(), text:'Дойди до 200 км/ч', done:false, claimed:false}, {id:uid(), text:'Сыграй ещё 1 заезд', done:false, claimed:false}, {id:uid(), text:'Сыграй ещё 2 заезда', done:false, claimed:false}, {id:uid(), text:'Выиграй ещё 1 заезд', done:false, claimed:false}, {id:uid(), text:'Выиграй ещё 2 заезда', done:false, claimed:false}, {id:uid(), text:'Проедь ещё 50 км', done:false, claimed:false}, {id:uid(), text:'Проедь ещё 100 км', done:false, claimed:false}, {id:uid(), text:'Прокрути кейс', done:false, claimed:false}, {id:uid(), text:'Купи машину', done:false, claimed:false}, {id:uid(), text:'Зайди в ранги', done:false, claimed:false}, {id:uid(), text:'Заверши день красиво', done:false, claimed:false} ]; }
+    function addGems(amount){ const before = data.gems; data.gems = clamp(data.gems + amount, 0, GEM_LIMIT); return data.gems - before; }
     function getPassLevel(){ return clamp(Math.floor(data.pass.xp / PASS_XP_PER_LEVEL) + 1, 1, PASS_LEVELS); }
     function getPassXpInLevel(){ return data.pass.xp % PASS_XP_PER_LEVEL; }
-
-    function addPassXp(amount){
-      data.pass.xp = clamp(data.pass.xp + amount, 0, PASS_LEVELS * PASS_XP_PER_LEVEL);
-      saveData();
-      renderPass();
-      renderLobby();
+    function addPassXp(amount){ data.pass.xp = clamp(data.pass.xp + amount, 0, PASS_LEVELS * PASS_XP_PER_LEVEL); saveData(); }
+    function getUnlockedTitles(){ const titles = ['']; const rank = getCurrentRank(); if(rank.name === 'Мастер' || rank.name === 'Легенда') titles.push('Мастер'); if(rank.name === 'Легенда') titles.push('Легенда'); if(data.pass.premiumClaimed.includes(25)) titles.push('Король трассы'); return [...new Set(titles)]; }
+    function getCurrentRank(){ let current = rankTable[0]; for(const rank of rankTable){ if(data.rankPoints >= rank.min) current = rank; } return current; }
+    function getNextRank(){ const current = getCurrentRank(); const idx = rankTable.findIndex(r=>r.name===current.name); return rankTable[Math.min(rankTable.length-1, idx+1)]; }
+    function formatReward(reward){ if(!reward) return '—'; if(reward.type === 'gems') return `${reward.amount}💎`; if(reward.type === 'jdm_case') return 'JDM кейс'; if(reward.type === 'mixed_case') return 'Смешанный кейс'; if(reward.type === 'random') return 'Случайная машина'; if(reward.type === 'car') return carsById[reward.id]?.name || 'Машина'; if(reward.type === 'bundle3') return '3 кейса'; if(reward.type === 'title') return `Титул: ${reward.title}`; return 'Награда'; }
+    function grantReward(reward){ if(!reward) return 'Пусто'; if(reward.type === 'gems'){ const got = addGems(reward.amount); saveData(); return `Получено ${got}💎`; } if(reward.type === 'jdm_case') return rollCase('jdm', true); if(reward.type === 'mixed_case') return rollCase('mixed', true); if(reward.type === 'random'){ const pool = carCatalog.filter(c=>!c.exclusive && c.id !== '240sx'); const car = rand(pool); if(!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id); saveData(); return `Получена машина: ${car.name}`; } if(reward.type === 'car'){ if(!data.ownedCars.includes(reward.id)) data.ownedCars.push(reward.id); saveData(); return `Получена машина: ${carsById[reward.id].name}`; } if(reward.type === 'bundle3'){ const a = rollCase('jdm', true), b = rollCase('mixed', true), c = rollCase('jdm', true); return `${a} • ${b} • ${c}`; } if(reward.type === 'title'){ if(!data.selectedTitle) data.selectedTitle = reward.title; saveData(); return `Открыт титул: ${reward.title}`; } return 'Награда получена'; }
+    function claimPassReward(level, premium){ const currentLevel = getPassLevel(); if(level > currentLevel) return; if(premium && !data.pass.premium) return; const arr = premium ? data.pass.premiumClaimed : data.pass.freeClaimed; if(arr.includes(level)) return; arr.push(level); const reward = premium ? premiumPassRewards[level] : freePassRewards[level]; const text = grantReward(reward); saveData(); renderAll(); alert(text); }
+    function drawWheel(ctx, x, y, r, angle){ ctx.save(); ctx.translate(x,y); ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fillStyle='#111'; ctx.fill(); ctx.beginPath(); ctx.arc(0,0,r*0.6,0,Math.PI*2); ctx.fillStyle='#d1d5db'; ctx.fill(); ctx.strokeStyle='#666'; ctx.lineWidth=2; for(let i=0;i<6;i++){ const a = angle + i*(Math.PI*2/6); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(a)*r*0.5, Math.sin(a)*r*0.5); ctx.stroke(); } ctx.restore(); }
+    function shadeColor(hex, amt){ const col = hex.replace('#',''); const num = parseInt(col,16); let r = (num >> 16) + amt, g = ((num >> 8) & 0x00FF) + amt, b = (num & 0x0000FF) + amt; r = Math.max(Math.min(255,r),0); g = Math.max(Math.min(255,g),0); b = Math.max(Math.min(255,b),0); return '#' + (b | (g << 8) | (r << 16)).toString(16).padStart(6,'0'); }
+    function drawCarModel(ctx, car, x, y, scale=1, wheelAngle=0){
+      ctx.save(); ctx.translate(x,y); ctx.scale(scale, scale);
+      const color = car.color || '#3b82f6'; const dark = '#0f172a';
+      const bodyGrad = ctx.createLinearGradient(0,0,150,0); bodyGrad.addColorStop(0, shadeColor(color,-18)); bodyGrad.addColorStop(.45, color); bodyGrad.addColorStop(1, shadeColor(color,18));
+      ctx.fillStyle='rgba(0,0,0,.32)'; ctx.beginPath(); ctx.ellipse(82,72,72,12,0,0,Math.PI*2); ctx.fill();
+      drawWheel(ctx, 48, 64, 16, wheelAngle); drawWheel(ctx, 118, 64, 16, wheelAngle);
+      ctx.fillStyle = bodyGrad; ctx.beginPath();
+      if(car.style === 'jdm'){ ctx.moveTo(8,54); ctx.lineTo(20,36); ctx.lineTo(70,26); ctx.lineTo(104,26); ctx.lineTo(132,38); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
+      else if(car.style === 'lux'){ ctx.moveTo(8,56); ctx.lineTo(18,40); ctx.lineTo(52,30); ctx.lineTo(112,30); ctx.lineTo(140,42); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
+      else if(car.style === 'sport'){ ctx.moveTo(8,56); ctx.lineTo(22,40); ctx.lineTo(58,28); ctx.lineTo(104,28); ctx.lineTo(134,40); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
+      else { ctx.moveTo(8,56); ctx.lineTo(20,40); ctx.lineTo(64,30); ctx.lineTo(112,30); ctx.lineTo(140,42); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
+      ctx.closePath(); ctx.fill();
+      ctx.fillStyle = shadeColor(color, 26); ctx.beginPath(); if(car.style === 'lux'){ ctx.moveTo(40,30); ctx.lineTo(58,14); ctx.lineTo(104,14); ctx.lineTo(124,30); } else { ctx.moveTo(42,30); ctx.lineTo(58,12); ctx.lineTo(100,12); ctx.lineTo(120,30); } ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(190,235,255,.95)'; ctx.beginPath(); ctx.moveTo(60,16); ctx.lineTo(96,16); ctx.lineTo(115,28); ctx.lineTo(54,28); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.beginPath(); ctx.moveTo(66,18); ctx.lineTo(80,18); ctx.lineTo(70,26); ctx.lineTo(58,26); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = dark; ctx.fillRect(8,61,138,4); ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fillRect(18,58,92,2);
+      const headGlow = ctx.createRadialGradient(143,52,2,146,52,16); headGlow.addColorStop(0,'rgba(255,244,170,.9)'); headGlow.addColorStop(1,'rgba(255,244,170,0)'); ctx.fillStyle = headGlow; ctx.beginPath(); ctx.arc(146,52,16,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#fff6a8'; ctx.fillRect(140,49,6,7); ctx.fillStyle = '#ff6b6b'; ctx.fillRect(8,49,6,7); ctx.fillStyle = 'rgba(0,0,0,.42)'; ctx.fillRect(18,48,22,6);
+      ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(30,40); ctx.lineTo(120,40); ctx.stroke();
+      if(car.style === 'jdm'){ ctx.fillStyle = dark; ctx.fillRect(130,28,14,4); }
+      ctx.strokeStyle = 'rgba(0,0,0,.48)'; ctx.lineWidth = 2; ctx.beginPath();
+      if(car.style === 'jdm'){ ctx.moveTo(8,54); ctx.lineTo(20,36); ctx.lineTo(70,26); ctx.lineTo(104,26); ctx.lineTo(132,38); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
+      else if(car.style === 'lux'){ ctx.moveTo(8,56); ctx.lineTo(18,40); ctx.lineTo(52,30); ctx.lineTo(112,30); ctx.lineTo(140,42); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
+      else { ctx.moveTo(8,56); ctx.lineTo(20,40); ctx.lineTo(64,30); ctx.lineTo(112,30); ctx.lineTo(140,42); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
+      ctx.closePath(); ctx.stroke();
+      if(wheelAngle !== 0){ ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 2; for(let i=0;i<3;i++){ ctx.beginPath(); ctx.moveTo(-8 - i*8, 36 + i*8); ctx.lineTo(10 - i*8, 34 + i*8); ctx.stroke(); } }
+      ctx.restore();
     }
-
-    function formatReward(reward){
-      if(!reward) return '—';
-      if(reward.type === 'gems') return `${reward.amount}💎`;
-      if(reward.type === 'case'){
-        if(reward.kind === 'tank') return 'Кейс жирных машин';
-        if(reward.kind === 'racer') return 'Гоночный кейс';
-        if(reward.kind === 'mixed') return 'Смешанный кейс';
-        if(reward.kind === 'offroad') return 'Внедорожный кейс';
-      }
-      if(reward.type === 'random') return 'Случайная машина';
-      if(reward.type === 'car') return carsById[reward.id]?.name || 'Машина';
-      if(reward.type === 'bundle3') return '3 кейса';
-      if(reward.type === 'title') return `Титул: ${reward.title}`;
-      return 'Награда';
+    function renderCarCanvas(canvas, car, opts={}){ const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); drawCarModel(ctx, car, opts.x ?? 10, opts.y ?? 10, opts.scale ?? 0.8, opts.wheelAngle ?? 0); }
+    function renderLobby(){ resetSeasonIfNeeded(); byId('statRank').textContent = data.rankPoints; byId('statGems').textContent = data.gems; byId('statCars').textContent = data.ownedCars.length; byId('statRecord').textContent = `${data.recordKm.toFixed(1)} км`; const currentRank = getCurrentRank(); const nextRank = getNextRank(); const max = currentRank.max, min = currentRank.min; const width = currentRank.name === nextRank.name ? 100 : clamp(((data.rankPoints - min) / (nextRank.min - min || 1))*100,0,100); byId('rankProgress').style.width = `${width}%`; byId('rankProgressText').textContent = currentRank.name === nextRank.name ? `${currentRank.name} • MAX` : `${currentRank.name} • ${data.rankPoints} / ${nextRank.min}`; byId('rankTitleLobby').textContent = currentRank.name; byId('titleChipLobby').textContent = `Титул: ${data.selectedTitle || 'нет'}`; byId('favoriteChipLobby').textContent = `Любимая: ${carsById[data.favoriteCarId]?.name || '—'}`; byId('seasonTimerChip').textContent = `⏳ До конца сезона: ${formatRemaining(data.pass.seasonEnd - Date.now())}`; const mode = modes[data.selectedMode]; byId('selectedModeTitle').textContent = mode.title; byId('selectedModeDesc').textContent = mode.desc; document.querySelectorAll('.mode-pill').forEach(el=>el.classList.toggle('active', el.dataset.mode === data.selectedMode)); byId('passInfoText').textContent = `Уровень ${getPassLevel()} • ${getPassXpInLevel()} / ${PASS_XP_PER_LEVEL} XP`; byId('passProgress').style.width = `${(getPassXpInLevel()/PASS_XP_PER_LEVEL)*100}%`; const titleBox = byId('lobbyTitleBox'); titleBox.innerHTML = data.selectedTitle ? `<span class="title-chip">${data.selectedTitle}</span>` : `<span class="chip">Без титула</span>`; const fav = carsById[data.favoriteCarId]; byId('favoritePreview').innerHTML = `<div class="car-canvas-box" style="width:120px;height:76px"><canvas id="favoriteCanvas" width="120" height="76"></canvas></div><div><div style="font-weight:800;">${fav.name}</div><div class="small">Скорость ${fav.topSpeed} • Разгон ${fav.accel}</div><div class="small">Сцепление ${fav.grip}</div></div>`; renderCarCanvas(byId('favoriteCanvas'), fav, {scale:.72, x:0, y:0}); const mini = byId('miniGaragePreview'); mini.innerHTML = ''; data.ownedCars.slice(0,3).forEach(id=>{ const box = document.createElement('div'); box.style.padding='8px'; box.style.borderRadius='14px'; box.style.background='rgba(255,255,255,.06)'; box.style.border='1px solid rgba(255,255,255,.08)'; box.innerHTML = `<canvas width="98" height="54"></canvas><div class="small" style="margin-top:6px">${carsById[id].name}</div>`; mini.appendChild(box); renderCarCanvas(box.querySelector('canvas'), carsById[id], {scale:.58, x:2, y:0}); }); }
+    function renderGarage(){ byId('garageSummary').textContent = `${data.ownedCars.length} машин`; const grid = byId('garageCars'); grid.innerHTML = ''; data.ownedCars.slice().sort((a,b)=>carsById[a].name.localeCompare(carsById[b].name,'ru')).forEach(id=>{ const car = carsById[id]; const card = document.createElement('div'); card.className = `car-card ${data.favoriteCarId===id?'favorite':''} ${data.selectedCarId===id?'selected':''}`; card.innerHTML = `<div class="car-canvas-box"><canvas width="120" height="88"></canvas></div><div class="car-meta"><h3>${car.name}</h3><div class="car-lines"><div>Макс. скорость: ${car.topSpeed} км/ч</div><div>Разгон: ${car.accel}</div><div>Сцепление: ${car.grip}</div><div><span class="color-dot" style="background:${car.color}"></span> ${car.style.toUpperCase()}</div></div></div><div class="car-actions"></div>`; renderCarCanvas(card.querySelector('canvas'), car, {scale:.76, x:2, y:8}); const actions = card.querySelector('.car-actions'); const selectBtn = document.createElement('button'); selectBtn.className = 'btn-blue'; selectBtn.textContent = data.selectedCarId===id ? 'Выбрана' : 'Выбрать машину'; selectBtn.onclick = ()=>{ data.selectedCarId = id; saveData(); renderGarage(); renderLobby(); }; actions.appendChild(selectBtn); const favBtn = document.createElement('button'); favBtn.className = 'btn-gold'; favBtn.textContent = data.favoriteCarId===id ? 'Любимая машина' : 'Сделать любимой'; favBtn.onclick = ()=>{ data.favoriteCarId = id; saveData(); renderGarage(); renderLobby(); }; actions.appendChild(favBtn); grid.appendChild(card); }); }
+    function rollCase(kind, silent=false){ let pool = carCatalog.filter(c=>!c.exclusive && c.id !== '240sx'); if(kind === 'jdm') pool = carCatalog.filter(c=>c.jap && !c.exclusive && c.id !== '240sx'); const car = rand(pool); if(!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id); saveData(); if(!silent){ byId('dropBox').innerHTML = `<div><div style="font-weight:800;font-size:18px;">Выпало: ${car.name}</div><canvas id="dropCanvas" width="200" height="90" style="margin-top:10px"></canvas></div>`; renderCarCanvas(byId('dropCanvas'), car, {scale:1.0, x:18, y:8}); } return `Выпало: ${car.name}`; }
+    function buyExclusive(){ resetSeasonIfNeeded(); if(data.exclusiveBought) return; if(data.gems < EXCLUSIVE_PRICE) return alert('Не хватает гемов'); data.gems -= EXCLUSIVE_PRICE; data.exclusiveBought = true; if(!data.ownedCars.includes('240sx')) data.ownedCars.push('240sx'); saveData(); renderAll(); byId('dropBox').innerHTML = `<div><div style="font-weight:800;font-size:18px;">Куплена эксклюзивная машина: Nissan 240SX</div><canvas id="dropCanvasExclusive" width="200" height="90" style="margin-top:10px"></canvas></div>`; renderCarCanvas(byId('dropCanvasExclusive'), carsById['240sx'], {scale:1.0, x:18, y:8}); }
+    function renderShop(){ byId('shopGemsInfo').textContent = `💎 ${data.gems} / ${GEM_LIMIT}`; byId('buyExclusiveBtn').disabled = data.exclusiveBought || data.gems < EXCLUSIVE_PRICE || Date.now() >= data.pass.seasonEnd; byId('buyExclusiveBtn').textContent = data.exclusiveBought ? 'Уже куплено' : 'Купить за 129💎'; }
+    function renderPass(){ byId('passTimerHeader').textContent = `⏳ ${formatRemaining(data.pass.seasonEnd - Date.now())}`; byId('passLevelText').textContent = `Уровень ${getPassLevel()}`; byId('passXpText').textContent = `${getPassXpInLevel()} / ${PASS_XP_PER_LEVEL} XP`; byId('passProgressBar').style.width = `${(getPassXpInLevel()/PASS_XP_PER_LEVEL)*100}%`; byId('passPremiumState').textContent = data.pass.premium ? 'Street Pass+: куплен' : 'Street Pass+: не куплен'; byId('buyPassBtn').disabled = data.pass.premium || data.gems < PASS_PRICE; byId('buyPassBtn').textContent = data.pass.premium ? 'Street Pass+ уже куплен' : 'Купить Street Pass+ за 179💎'; renderQuests(); const wrap = byId('passLevels'); wrap.innerHTML = ''; const currentLevel = getPassLevel(); for(let level=1; level<=PASS_LEVELS; level++){ const freeReward = freePassRewards[level], premiumReward = premiumPassRewards[level], freeClaimed = data.pass.freeClaimed.includes(level), premiumClaimed = data.pass.premiumClaimed.includes(level); const row = document.createElement('div'); row.className = 'pass-level'; row.innerHTML = `<div class="level-num">${level}</div><div class="reward-box ${freeClaimed?'claimed':''}"><div class="small">Бесплатно</div><div style="font-weight:800;margin-top:4px">${formatReward(freeReward)}</div><div style="margin-top:8px"><button class="btn-blue free-claim">${freeClaimed?'Забрано':'Забрать'}</button></div></div><div class="reward-box ${data.pass.premium?'':'locked'} ${premiumClaimed?'claimed':''}"><div class="small">Street Pass+</div><div style="font-weight:800;margin-top:4px">${formatReward(premiumReward)}</div><div style="margin-top:8px"><button class="btn-gold premium-claim">${premiumClaimed?'Забрано':'Забрать'}</button></div></div>`; const freeBtn = row.querySelector('.free-claim'); freeBtn.disabled = freeClaimed || level > currentLevel; freeBtn.onclick = ()=>claimPassReward(level,false); const premiumBtn = row.querySelector('.premium-claim'); premiumBtn.disabled = premiumClaimed || level > currentLevel || !data.pass.premium; premiumBtn.onclick = ()=>claimPassReward(level,true); wrap.appendChild(row); } }
+    function renderQuests(){ const list = byId('questList'); list.innerHTML = ''; data.pass.quests.forEach(q=>{ const card = document.createElement('div'); card.className = 'quest-card'; card.innerHTML = `<div style="font-weight:800">${q.text}</div><div class="small" style="margin-top:6px">Награда: 50 XP</div><div class="small" style="margin-top:6px">${q.claimed?'Уже забран':q.done?'Готово к получению':'Ещё не выполнен'}</div>`; list.appendChild(card); }); const canClaim = data.pass.quests.some(q=>q.done && !q.claimed); byId('claimQuestBtn').disabled = !canClaim; }
+    function claimQuest(){ const q = data.pass.quests.find(item=>item.done && !item.claimed); if(!q) return; q.claimed = true; addPassXp(50); saveData(); renderAll(); }
+    function buyPass(){ if(data.pass.premium) return; if(data.gems < PASS_PRICE) return alert('Не хватает гемов'); data.gems -= PASS_PRICE; data.pass.premium = true; saveData(); renderAll(); }
+    function renderCalendar(){ byId('gamesPlayedText').textContent = data.gamesPlayed; const list = byId('calendarList'); list.innerHTML = ''; calendarRewards.forEach(item=>{ const claimed = data.calendarClaimed.includes(item.games), ready = data.gamesPlayed >= item.games; const div = document.createElement('div'); div.className = `calendar-reward ${claimed?'claimed':''}`; div.innerHTML = `<div><div style="font-weight:800">${item.games} игр</div><div class="small">${formatReward(item.reward)}</div></div><button class="${claimed?'btn-dark':'btn-gold'}">${claimed?'Забрано':'Забрать'}</button>`; const btn = div.querySelector('button'); btn.disabled = claimed || !ready; btn.onclick = ()=>{ if(claimed || !ready) return; data.calendarClaimed.push(item.games); const text = grantReward(item.reward); saveData(); renderAll(); alert(text); }; list.appendChild(div); }); }
+    function renderRanks(){ const current = getCurrentRank(); byId('currentRankBig').textContent = current.name; const grid = byId('rankGrid'); grid.innerHTML = ''; rankTable.forEach(rank=>{ const row = document.createElement('div'); row.className = `rank-row ${rank.name===current.name?'current':''}`; row.innerHTML = `<div style="font-weight:800">${rank.name}</div><div><div class="small">${rank.min} - ${rank.max}</div><div class="small" style="margin-top:4px">Награда: ${rank.reward}</div></div><div class="chip">${rank.name===current.name?'Текущий':'—'}</div>`; grid.appendChild(row); }); }
+    function getBotForMode(){ const current = getCurrentRank(); const candidates = carCatalog.filter(c=>!c.exclusive && c.id !== data.selectedCarId && c.id !== STARTER_CAR); let pool = candidates; if(current.name === 'Бронза' || current.name === 'Серебро') pool = candidates.filter(c=>c.topSpeed <= 300); else if(current.name === 'Золото' || current.name === 'Алмаз') pool = candidates.filter(c=>c.topSpeed <= 320); const car = rand(pool.length ? pool : candidates); return { name:'Street Bot', title:'Без титула', rank:getCurrentRank().name, carId:car.id }; }
+    function openPrebattle(){ resetSeasonIfNeeded(); selectedBot = getBotForMode(); const myCar = carsById[data.selectedCarId], botCar = carsById[selectedBot.carId]; byId('prePlayerRank').textContent = getCurrentRank().name; byId('prePlayerTitleText').textContent = data.selectedTitle || 'Без титула'; byId('preBotRank').textContent = selectedBot.rank; byId('preBotTitleText').textContent = selectedBot.title; byId('preBotName').textContent = selectedBot.name; byId('preModeText').textContent = `Режим: ${modes[data.selectedMode].title}`; renderCarCanvas(byId('prePlayerCardCanvas'), myCar, {scale:.92, x:8, y:10}); renderCarCanvas(byId('preBotCardCanvas'), botCar, {scale:.92, x:8, y:10}); showScreen('prebattle'); let n = 3; byId('preCountdown').textContent = n; if(preTimer) clearInterval(preTimer); preTimer = setInterval(()=>{ n--; byId('preCountdown').textContent = n > 0 ? n : 'Старт!'; if(n <= 0){ clearInterval(preTimer); preTimer = null; setTimeout(startRace, 260); } }, 1000); }
+    function updateQuestProgressAfterRace(win, kmMax, topSpeed){ const findOpen = text => data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes(text)); const qPlay = data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes('Сыграй')); if(qPlay) qPlay.done = true; if(win){ const qWin = data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes('Выиграй')); if(qWin) qWin.done = true; } if(kmMax >= 50){ const q50 = findOpen('50 км'); if(q50) q50.done = true; } if(kmMax >= 100){ const q100 = findOpen('100 км'); if(q100) q100.done = true; } if(topSpeed >= 200){ const qTop = findOpen('200 км/ч'); if(qTop) qTop.done = true; } if(modes[data.selectedMode].ranked && win){ const qRank = findOpen('ранговом режиме'); if(qRank) qRank.done = true; } if(!modes[data.selectedMode].ranked && win){ const qCasual = findOpen('обычном режиме'); if(qCasual) qCasual.done = true; } }
+    function startRace(){ showScreen('game'); raceState.running = true; raceState.modeKey = data.selectedMode; raceState.gas = false; raceState.brake = false; raceState.playerSpeed = 0; raceState.botSpeed = 0; raceState.playerKm = 0; raceState.botKm = 0; raceState.remaining = modes[data.selectedMode].time; raceState.lastTime = performance.now(); byId('resultOverlay').classList.remove('active'); if(raceState.animationId) cancelAnimationFrame(raceState.animationId); raceState.animationId = requestAnimationFrame(gameLoop); renderTitleOverlay(); updateHud(); }
+    function updateHud(){ byId('playerHud').innerHTML = `<div style="font-weight:800;">${carsById[data.selectedCarId].name}</div><div class="small">${getCurrentRank().name}${data.selectedTitle ? ' • ' + data.selectedTitle : ''}</div>`; const mode = modes[raceState.modeKey]; const lines = [ `Скорость: ${raceState.playerSpeed.toFixed(0)} км/ч`, `Ты: ${raceState.playerKm.toFixed(1)} / ${mode.distance} км` ]; if(mode.bot) lines.push(`Бот: ${raceState.botKm.toFixed(1)} км`); lines.push(`Время: ${formatGameTime(raceState.remaining)}`); byId('raceHud').innerHTML = lines.map(line=>`<div class="small" style="font-size:13px">${line}</div>`).join(''); }
+    function formatGameTime(sec){ const s = Math.max(0, Math.floor(sec)); const m = Math.floor(s/60), r = s%60; return `${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}`; }
+    function drawScene(){
+      const canvas = byId('gameCanvas'); const ctx = canvas.getContext('2d'); const w = canvas.width = window.innerWidth, h = canvas.height = window.innerHeight; ctx.clearRect(0,0,w,h);
+      const sky = ctx.createLinearGradient(0,0,0,h); sky.addColorStop(0,'#040814'); sky.addColorStop(.35,'#0a1a38'); sky.addColorStop(.72,'#132544'); sky.addColorStop(1,'#08101d'); ctx.fillStyle = sky; ctx.fillRect(0,0,w,h);
+      for(let i=0;i<36;i++){ const sx = (i*83 + 17) % w, sy = 30 + (i*47 % Math.floor(h*0.42)), sr = (i % 3) + 1; ctx.fillStyle = `rgba(255,255,255,${0.35 + (i%4)*0.1})`; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI*2); ctx.fill(); }
+      const moonX = w*0.82, moonY = h*0.16; const moonGlow = ctx.createRadialGradient(moonX, moonY, 18, moonX, moonY, 80); moonGlow.addColorStop(0,'rgba(255,255,235,.75)'); moonGlow.addColorStop(.35,'rgba(255,255,230,.32)'); moonGlow.addColorStop(1,'rgba(255,255,230,0)'); ctx.fillStyle = moonGlow; ctx.beginPath(); ctx.arc(moonX, moonY, 80, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.arc(moonX, moonY, 34, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = 'rgba(10,20,40,.08)'; ctx.beginPath(); ctx.arc(moonX-10, moonY-8, 8, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(moonX+9, moonY+6, 5, 0, Math.PI*2); ctx.fill();
+      const cityGlow = ctx.createLinearGradient(0,h*0.26,0,h*0.55); cityGlow.addColorStop(0,'rgba(72,130,255,0)'); cityGlow.addColorStop(1,'rgba(72,130,255,.15)'); ctx.fillStyle = cityGlow; ctx.fillRect(0,h*0.24,w,h*0.32);
+      const cityShift = (raceState.playerKm * 10) % 160;
+      for(let i=0;i<16;i++){ const bx = i*120 - cityShift, bw = 58 + (i%4)*18, bh = 90 + (i%6)*26, by = h*0.34 + (i%3)*10; ctx.fillStyle = i%2===0 ? 'rgba(8,14,26,.92)' : 'rgba(14,22,38,.96)'; ctx.fillRect(bx, by, bw, bh); ctx.strokeStyle = 'rgba(180,220,255,.18)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx+bw*0.5, by); ctx.lineTo(bx+bw*0.5, by-10-(i%3)*8); ctx.stroke(); for(let r=0;r<Math.floor((bh-18)/16);r++){ for(let c=0;c<Math.floor((bw-14)/12);c++){ if((r+c+i)%3===0 || (r*2+c+i)%5===0){ ctx.fillStyle = (r+c)%2===0 ? 'rgba(255,232,120,.78)' : 'rgba(120,230,255,.68)'; ctx.fillRect(bx+8+c*12, by+10+r*16, 6, 8); } } } }
+      const nearShift = (raceState.playerKm * 22) % 220;
+      for(let i=0;i<8;i++){ const bx = i*210 - nearShift, bw = 100 + (i%3)*22, bh = 110 + (i%4)*34, by = h*0.43 + (i%2)*14; ctx.fillStyle = 'rgba(10,18,31,.97)'; ctx.fillRect(bx, by, bw, bh); ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fillRect(bx+bw-8, by, 8, bh); for(let r=0;r<Math.floor((bh-18)/18);r++){ for(let c=0;c<Math.floor((bw-18)/16);c++){ if((r+c+i)%2===0){ ctx.fillStyle = c%2===0 ? 'rgba(255,229,115,.88)' : 'rgba(110,222,255,.7)'; ctx.fillRect(bx+8+c*16, by+12+r*18, 8, 10); } } } }
+      const roadY = h*0.72; ctx.fillStyle = '#0f172a'; ctx.fillRect(0, roadY, w, h-roadY); ctx.fillStyle = '#1f2937'; ctx.fillRect(0, roadY+8, w, 8); ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 5; ctx.setLineDash([30,22]); ctx.beginPath(); ctx.moveTo(-(raceState.playerKm*60)%52, roadY+58); ctx.lineTo(w, roadY+58); ctx.stroke(); ctx.setLineDash([]);
+      for(let i=0;i<8;i++){ const x = i*190 - ((raceState.playerKm*120)%190); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, roadY-40); ctx.lineTo(x, roadY+2); ctx.stroke(); const lampGlow = ctx.createRadialGradient(x, roadY-44, 2, x, roadY-44, 18); lampGlow.addColorStop(0,'rgba(126,231,255,.85)'); lampGlow.addColorStop(1,'rgba(126,231,255,0)'); ctx.fillStyle = lampGlow; ctx.beginPath(); ctx.arc(x, roadY-44, 18, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#7ee7ff'; ctx.beginPath(); ctx.arc(x, roadY-44, 6, 0, Math.PI*2); ctx.fill(); }
+      ctx.fillStyle = 'rgba(79,191,255,.18)'; ctx.fillRect(0, roadY+6, w, 4); ctx.fillStyle = 'rgba(239,68,68,.16)'; ctx.fillRect(0, roadY+92, w, 4);
+      const playerCar = carsById[data.selectedCarId]; drawCarModel(ctx, playerCar, 120, roadY-30, 1.25, raceState.playerKm*4);
+      if(modes[raceState.modeKey].bot){ const botCar = carsById[selectedBot.carId]; const gap = clamp((raceState.botKm - raceState.playerKm) * 8, -120, 120); drawCarModel(ctx, botCar, 120 + gap, roadY-120, 1.05, raceState.botKm*4.2); }
+      ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = 'bold 18px Arial'; ctx.fillText(`${raceState.playerKm.toFixed(1)} км`, 24, roadY-18); if(modes[raceState.modeKey].bot) ctx.fillText(`Бот: ${raceState.botKm.toFixed(1)} км`, 24, roadY-48);
     }
-
-    function grantReward(reward){
-      if(!reward) return 'Пусто';
-      if(reward.type === 'gems'){
-        const got = addGems(reward.amount);
-        return `Получено ${got}💎`;
-      }
-      if(reward.type === 'case') return rollCase(reward.kind, true);
-      if(reward.type === 'random'){
-        const pool = carCatalog.filter(c=>!c.limited);
-        const car = rand(pool);
-        if(!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id);
-        saveData();
-        return `Получена машина: ${car.name}`;
-      }
-      if(reward.type === 'car'){
-        if(!data.ownedCars.includes(reward.id)) data.ownedCars.push(reward.id);
-        saveData();
-        return `Получена машина: ${carsById[reward.id].name}`;
-      }
-      if(reward.type === 'bundle3'){
-        const a = rollCase('racer', true);
-        const b = rollCase('tank', true);
-        const c = rollCase('mixed', true);
-        return `${a} • ${b} • ${c}`;
-      }
-      if(reward.type === 'title'){
-        if(data.selectedTitle === '') data.selectedTitle = reward.title;
-        saveData();
-        return `Открыт титул: ${reward.title}`;
-      }
-      return 'Награда получена';
-    }
-
-    function claimPassReward(level, premium){
-      const currentLevel = getPassLevel();
-      if(level > currentLevel) return;
-      if(premium && !data.pass.premium) return;
-      const claimedArr = premium ? data.pass.premiumClaimed : data.pass.freeClaimed;
-      if(claimedArr.includes(level)) return;
-      const reward = premium ? PREMIUM_PASS_REWARDS[level] : FREE_PASS_REWARDS[level];
-      claimedArr.push(level);
-      const text = grantReward(reward);
-      saveData();
-      renderAll();
-      alert(text);
-    }
-
-    function renderLobby(){
-      resetSeasonIfNeeded();
-      const info = getCenterInfo();
-      byId('statTrophies').textContent = data.trophies;
-      byId('statGems').textContent = data.gems;
-      byId('statCenter').textContent = `${info.center}`;
-      byId('statCars').textContent = data.ownedCars.length;
-      byId('centerName').textContent = info.name;
-      byId('centerRewardText').textContent = data.finishedGame || data.trophies >= 14000 ? 'Игра пройдена • дальше кубки не даются' : `Победа +${info.win} • Поражение ${info.lose}`;
-      byId('centerProgress').style.width = `${clamp((info.within/1000)*100,0,100)}%`;
-      byId('centerProgressText').textContent = `${info.within} / 1000`;
-      byId('titleChipLobby').textContent = `Титул: ${data.selectedTitle || 'нет'}`;
-      byId('favoriteChipLobby').textContent = `Любимая: ${carsById[data.favoriteCarId]?.name || '—'}`;
-      byId('seasonTimerChip').textContent = `⏳ До конца сезона: ${formatRemaining(data.pass.seasonEnd - Date.now())}`;
-
-      const titleBox = byId('lobbyTitleBox');
-      titleBox.innerHTML = data.selectedTitle ? `<span class="title-chip">${data.selectedTitle}</span>` : `<span class="chip">Без титула</span>`;
-
-      const fav = carsById[data.favoriteCarId];
-      byId('favoritePreview').innerHTML = fav ? `<div class="big-emoji">${fav.emoji}</div><div><div style="font-weight:800;">${fav.name}</div><div class="small">${fav.kind==='tank'?'Жирная':'Гоночная'} • HP ${fav.hp} • Урон ${fav.damage} • ⛽ ${fav.cost}</div></div>` : '<div class="muted">Нет любимой карты</div>';
-
-      const miniDeck = byId('miniDeckPreview');
-      miniDeck.innerHTML = '';
-      data.deck.forEach(id => {
-        const box = document.createElement('div');
-        box.style.padding='8px';box.style.borderRadius='14px';box.style.background='rgba(255,255,255,.06)';box.style.border='1px solid rgba(255,255,255,.08)';box.style.textAlign='center';
-        if(!id) box.innerHTML = `<div class="small">Пусто</div>`;
-        else box.innerHTML = `<div style="font-size:20px;">${carsById[id].emoji}</div><div class="small">${carsById[id].cost}⛽</div>`;
-        miniDeck.appendChild(box);
-      });
-
-      byId('passInfoText').textContent = `Уровень ${getPassLevel()} • ${getPassXpInLevel()} / ${PASS_XP_PER_LEVEL} XP`;
-      byId('passProgress').style.width = `${(getPassXpInLevel()/PASS_XP_PER_LEVEL)*100}%`;
-    }
-
-    function renderGarage(){
-      byId('garageSummary').textContent = `${data.ownedCars.length} машин`;
-      byId('selectedEmptySlotText').textContent = selectedGarageEmptySlot === null ? 'нет' : `ячейка ${selectedGarageEmptySlot + 1}`;
-      const deckWrap = byId('deckSlots');
-      deckWrap.innerHTML = '';
-      data.deck.forEach((id,i)=>{
-        const div = document.createElement('div');
-        div.className = `deck-slot ${!id ? 'empty' : ''}`;
-        if(!id){
-          div.innerHTML = `<div class="big-emoji">➕</div><div><div style="font-weight:800;">Пустая ячейка ${i+1}</div><div class="small">Нажми, чтобы выбрать её и добавить машину снизу.</div></div><div class="slot-actions"><button class="btn-blue">Выбрать</button></div>`;
-          div.querySelector('button').onclick = ()=>{ selectedGarageEmptySlot = i; renderGarage(); };
-        } else {
-          const c = carsById[id];
-          div.innerHTML = `<div class="big-emoji">${c.emoji}</div><div><div style="font-weight:800;">${c.name}</div><div class="small">${c.kind==='tank'?'Жирная':'Гоночная'} • HP ${c.hp} • Урон ${c.damage} • ⛽ ${c.cost}</div></div><div class="slot-actions"><button class="btn-red">Убрать из гонки</button></div>`;
-          div.querySelector('button').onclick = ()=>{ data.deck[i]=null; if(selectedGarageEmptySlot===null) selectedGarageEmptySlot=i; saveData(); renderGarage(); renderLobby(); };
-        }
-        if(selectedGarageEmptySlot === i) div.style.boxShadow = '0 0 0 2px rgba(68,180,255,.35) inset';
-        deckWrap.appendChild(div);
-      });
-
-      const grid = byId('garageCars');
-      grid.innerHTML = '';
-      data.ownedCars.slice().sort((a,b)=>carsById[a].name.localeCompare(carsById[b].name,'ru')).forEach(id=>{
-        const c = carsById[id];
-        const inDeck = data.deck.includes(id);
-        const card = document.createElement('div');
-        card.className = `car-card ${inDeck?'in-deck':''} ${data.favoriteCarId===id?'favorite':''}`;
-        card.innerHTML = `<div class="big-emoji">${c.emoji}</div><div class="car-meta"><h3>${c.name}</h3><div class="car-lines"><div>${c.kind==='tank'?'Жирная':'Гоночная'} • ⛽ ${c.cost}</div><div>HP ${c.hp} • Урон ${c.damage}</div><div>Скорость ${c.speed.toFixed(2)} • Удар ${c.attackSpeed}мс</div></div></div><div class="car-actions"></div>`;
-        const actions = card.querySelector('.car-actions');
-        const favBtn = document.createElement('button');
-        favBtn.className='btn-gold'; favBtn.textContent = data.favoriteCarId===id ? 'Любимая тачка' : 'Добавить как любимая тачка';
-        favBtn.onclick = ()=>{ data.favoriteCarId=id; saveData(); renderAll(); };
-        actions.appendChild(favBtn);
-        if(inDeck){
-          const removeBtn = document.createElement('button');
-          removeBtn.className='btn-red'; removeBtn.textContent='Убрать из гонки';
-          removeBtn.onclick = ()=>{ const slot = data.deck.indexOf(id); if(slot!==-1) data.deck[slot]=null; if(selectedGarageEmptySlot===null) selectedGarageEmptySlot=slot; saveData(); renderGarage(); renderLobby(); };
-          actions.appendChild(removeBtn);
-        } else {
-          const addBtn = document.createElement('button');
-          addBtn.className='btn-blue'; addBtn.textContent='Добавить в гонку';
-          const emptyIdx = data.deck.indexOf(null);
-          addBtn.disabled = emptyIdx===-1 && selectedGarageEmptySlot===null;
-          addBtn.onclick = ()=>{ let slot = selectedGarageEmptySlot; if(slot===null) slot=data.deck.indexOf(null); if(slot===-1) return; data.deck[slot]=id; if(selectedGarageEmptySlot===slot) selectedGarageEmptySlot=null; saveData(); renderGarage(); renderLobby(); };
-          actions.appendChild(addBtn);
-        }
-        grid.appendChild(card);
-      });
-    }
-
-    function rollCase(kind, silent=false){
-      let pool = carCatalog.filter(c=>!c.limited);
-      if(kind==='tank') pool = carCatalog.filter(c=>c.kind==='tank' && !c.limited && c.id !== 'rrcullinan');
-      if(kind==='racer') pool = carCatalog.filter(c=>c.kind==='racer');
-      if(kind==='mixed') pool = carCatalog.filter(c=>!c.limited && c.id !== 'rrcullinan');
-      if(kind==='offroad'){
-        const off = carCatalog.filter(c=>c.kind==='tank' && !c.limited && c.id !== 'rrcullinan');
-        const isRare = Math.random() < 0.02;
-        pool = isRare ? [carsById.rrcullinan] : off;
-      }
-      const car = rand(pool);
-      if(!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id);
-      saveData();
-      if(!silent) byId('dropBox').innerHTML = `<div><div style="font-size:42px;">${car.emoji}</div><div style="font-weight:800;font-size:18px;margin-top:6px;">${car.name}</div><div class="small" style="margin-top:6px">${car.kind==='tank'?'Жирная':'Гоночная'} • HP ${car.hp} • Урон ${car.damage} • ⛽ ${car.cost}</div></div>`;
-      return `Выпало: ${car.name}`;
-    }
-
-    function renderShop(){
-      byId('shopGemsInfo').textContent = `💎 ${data.gems} / ${GEM_LIMIT}`;
-      byId('buyLimitedBtn').disabled = data.limitedSeasonBought || data.gems < LIMITED_PRICE || Date.now() >= data.pass.seasonEnd;
-      byId('buyLimitedBtn').textContent = data.limitedSeasonBought ? 'Уже куплено' : 'Купить за 129💎';
-    }
-
-    function buyLimited(){
-      resetSeasonIfNeeded();
-      if(data.limitedSeasonBought) return;
-      if(data.gems < LIMITED_PRICE) return alert('Не хватает гемов');
-      data.gems -= LIMITED_PRICE;
-      data.limitedSeasonBought = true;
-      if(!data.ownedCars.includes('maybachgls990')) data.ownedCars.push('maybachgls990');
-      saveData();
-      renderAll();
-      byId('dropBox').innerHTML = `<div><div style="font-size:42px;">🚙</div><div style="font-weight:800;font-size:18px;margin-top:6px;">Куплена лимитка: Mercedes Maybach GLS 990</div><div class="small" style="margin-top:6px">Доступна только в этом сезоне</div></div>`;
-    }
-
-    function renderPass(){
-      byId('passTimerHeader').textContent = `⏳ ${formatRemaining(data.pass.seasonEnd - Date.now())}`;
-      byId('passLevelText').textContent = `Уровень ${getPassLevel()}`;
-      byId('passXpText').textContent = `${getPassXpInLevel()} / ${PASS_XP_PER_LEVEL} XP`;
-      byId('passProgressBar').style.width = `${(getPassXpInLevel()/PASS_XP_PER_LEVEL)*100}%`;
-      byId('passPremiumState').textContent = data.pass.premium ? 'Car Pass+: куплен' : 'Car Pass+: не куплен';
-      byId('buyPassBtn').disabled = data.pass.premium || data.gems < PASS_PRICE;
-      byId('buyPassBtn').textContent = data.pass.premium ? 'Car Pass+ уже куплен' : 'Купить Car Pass+ за 179💎';
-      renderQuests();
-
-      const wrap = byId('passLevels');
-      wrap.innerHTML = '';
-      const currentLevel = getPassLevel();
-      for(let level=1; level<=PASS_LEVELS; level++){
-        const row = document.createElement('div');
-        row.className='pass-level';
-        const freeReward = FREE_PASS_REWARDS[level];
-        const premiumReward = PREMIUM_PASS_REWARDS[level];
-        const freeClaimed = data.pass.freeClaimed.includes(level);
-        const premiumClaimed = data.pass.premiumClaimed.includes(level);
-        row.innerHTML = `<div class="level-num">${level}</div>
-          <div class="reward-box ${freeClaimed?'claimed':''}">
-            <div class="small">Бесплатно</div>
-            <div style="font-weight:800;margin-top:4px">${formatReward(freeReward)}</div>
-            <div style="margin-top:8px"><button class="btn-blue free-claim">${freeClaimed?'Забрано':'Забрать'}</button></div>
-          </div>
-          <div class="reward-box ${data.pass.premium?'':'locked'} ${premiumClaimed?'claimed':''}">
-            <div class="small">Car Pass+</div>
-            <div style="font-weight:800;margin-top:4px">${formatReward(premiumReward)}</div>
-            <div style="margin-top:8px"><button class="btn-gold premium-claim">${premiumClaimed?'Забрано':'Забрать'}</button></div>
-          </div>`;
-        const freeBtn = row.querySelector('.free-claim');
-        freeBtn.disabled = freeClaimed || level > currentLevel;
-        freeBtn.onclick = ()=>claimPassReward(level,false);
-        const premiumBtn = row.querySelector('.premium-claim');
-        premiumBtn.disabled = premiumClaimed || level > currentLevel || !data.pass.premium;
-        premiumBtn.onclick = ()=>claimPassReward(level,true);
-        wrap.appendChild(row);
-      }
-    }
-
-    function renderQuests(){
-      const list = byId('questList');
-      list.innerHTML = '';
-      data.pass.quests.forEach((q, idx)=>{
-        const card = document.createElement('div');
-        card.className='quest-card';
-        card.innerHTML = `<div style="font-weight:800">${q.text}</div><div class="small" style="margin-top:6px">Награда: 50 XP</div><div class="small" style="margin-top:6px">${q.claimed?'Уже забран':q.done?'Готово к получению':'Ещё не выполнен'}</div>`;
-        list.appendChild(card);
-      });
-      const canClaim = data.pass.quests.some(q=>q.done && !q.claimed);
-      byId('claimQuestBtn').disabled = !canClaim;
-    }
-
-    function markQuestProgress(){
-      const q = data.pass.quests.find(item=>!item.done);
-      if(q) q.done = true;
-      saveData();
-    }
-
-    function claimQuest(){
-      const q = data.pass.quests.find(item=>item.done && !item.claimed);
-      if(!q) return;
-      q.claimed = true;
-      data.pass.questClaimedToday += 1;
-      addPassXp(50);
-      saveData();
-      renderPass();
-      renderLobby();
-    }
-
-    function buyPass(){
-      if(data.pass.premium) return;
-      if(data.gems < PASS_PRICE) return alert('Не хватает гемов');
-      data.gems -= PASS_PRICE;
-      data.pass.premium = true;
-      saveData();
-      renderAll();
-    }
-
-    function renderCalendar(){
-      byId('gamesPlayedText').textContent = data.gamesPlayed;
-      const list = byId('calendarList');
-      list.innerHTML = '';
-      CALENDAR_REWARDS.forEach(item=>{
-        const claimed = data.calendarClaimed.includes(item.games);
-        const ready = data.gamesPlayed >= item.games;
-        const div = document.createElement('div');
-        div.className = `calendar-reward ${claimed?'claimed':''}`;
-        div.innerHTML = `<div><div style="font-weight:800">${item.games} игр</div><div class="small">${formatReward(item.reward)}</div></div><button class="${claimed?'btn-dark':'btn-gold'}">${claimed?'Забрано':'Забрать'}</button>`;
-        const btn = div.querySelector('button');
-        btn.disabled = claimed || !ready;
-        btn.onclick = ()=>{
-          if(claimed || !ready) return;
-          data.calendarClaimed.push(item.games);
-          const text = grantReward(item.reward);
-          saveData();
-          renderAll();
-          alert(text);
-        };
-        list.appendChild(div);
-      });
-    }
-
-    function pickBotForCurrentCenter(){
-      const group = getCenterInfo().group;
-      const pool = botProfiles.filter(b=>b.tier===group);
-      return rand(pool);
-    }
-
-    function renderPrebattle(bot){
-      selectedBotProfile = bot;
-      byId('prePlayerName').textContent = 'Ты';
-      byId('prePlayerTitle').innerHTML = data.selectedTitle ? `<span class="title-chip">${data.selectedTitle}</span>` : `<span class="chip">Без титула</span>`;
-      const fav = carsById[data.favoriteCarId];
-      byId('prePlayerFav').innerHTML = fav ? `<div class="favorite-card-preview"><div class="big-emoji">${fav.emoji}</div><div><div style="font-weight:800;">${fav.name}</div><div class="small">Любимая тачка</div></div></div>` : '';
-      byId('preBotName').textContent = bot.name;
-      byId('preBotTitle').innerHTML = bot.title ? `<span class="title-chip">${bot.title}</span>` : `<span class="chip">Без титула</span>`;
-      const botFav = carsById[bot.favorite];
-      byId('preBotFav').innerHTML = botFav ? `<div class="favorite-card-preview"><div class="big-emoji">${botFav.emoji}</div><div><div style="font-weight:800;">${botFav.name}</div><div class="small">Любимая тачка</div></div></div>` : '';
-    }
-
-    function openPrebattle(){
-      normalizeDeck();
-      if(data.deck.filter(Boolean).length < 5) return alert('Сначала заполни все 5 ячеек в разделе "Мои тачки".');
-      const bot = pickBotForCurrentCenter();
-      renderPrebattle(bot);
-      showScreen('prebattle');
-      let n = 3;
-      byId('preCountdown').textContent = n;
-      if(preTimer) clearInterval(preTimer);
-      preTimer = setInterval(()=>{
-        n--;
-        byId('preCountdown').textContent = n > 0 ? n : 'Старт!';
-        if(n <= 0){
-          clearInterval(preTimer); preTimer = null;
-          setTimeout(()=>startBattle(selectedBotProfile),280);
-        }
-      },1000);
-    }
-
-    function createTower(side, role, x, y, hp){
-      const el = document.createElement('div');
-      el.className = `tower ${side} ${role==='king'?'king':''}`;
-      el.style.left = `${x}px`; el.style.top = `${y}px`;
-      el.innerHTML = `<div class="hpbar"><div class="hpfill"></div></div>${role==='left'?'Л':role==='right'?'П':'Ц'}`;
-      byId('battlefield').appendChild(el);
-      return {type:'tower',side,role,x,y,width:role==='king'?74:60,height:role==='king'?74:60,hp,maxHp:hp,alive:true,el};
-    }
-
-    function spawnUnit(side, carId, x, y){
-      const c = carsById[carId];
-      const el = document.createElement('div');
-      el.className = `unit ${side}`;
-      el.style.left = `${x-20}px`; el.style.top = `${y-20}px`;
-      el.innerHTML = `<div class="uhp"><span></span></div>${c.emoji}`;
-      byId('battlefield').appendChild(el);
-      const unit = {type:'unit',side,carId,x:x-20,y:y-20,width:40,height:40,hp:c.hp,maxHp:c.hp,damage:c.damage,speed:c.speed,cost:c.cost,kind:c.kind,range:c.range,attackSpeed:c.attackSpeed,lastAttack:0,el};
-      battle.units.push(unit); return unit;
-    }
-
-    function createBattlefieldObjects(){
-      const w = window.innerWidth, h = window.innerHeight;
-      battle.towers.push(createTower('bot','left',w*0.16,h*0.12,1500));
-      battle.towers.push(createTower('bot','right',w*0.74,h*0.12,1500));
-      battle.towers.push(createTower('bot','king',w*0.44,h*0.04,2500));
-      battle.towers.push(createTower('player','left',w*0.16,h*0.71,1500));
-      battle.towers.push(createTower('player','right',w*0.74,h*0.71,1500));
-      battle.towers.push(createTower('player','king',w*0.44,h*0.80,2500));
-    }
-
-    function setupBattleUI(bot){
-      byId('botHud').innerHTML = `<div style="font-weight:800;">${bot.name}</div><div class="small">${bot.title||'Без титула'} • Любимая: ${carsById[bot.favorite].name}</div>`;
-      byId('playerHud').innerHTML = `<div style="font-weight:800;">Ты ${data.selectedTitle ? '• '+data.selectedTitle : ''}</div><div class="small">Любимая: ${carsById[data.favoriteCarId].name}</div>`;
-      renderHand(); renderTitleOverlay(); updateFuelUI(); showPlacementArea();
-    }
-
-    function startBattle(bot){
-      showScreen('battle');
-      battle.running=true; battle.botProfile=bot; battle.playerFuel=10; battle.botFuel=10; battle.selectedCardId=null;
-      battle.units=[]; battle.towers=[]; battle.lastTime=performance.now(); battle.lastBotThink=0;
-      battle.playerDestroyedEnemyTowers=0; battle.botDestroyedPlayerTowers=0; battle.botCooldownUntil=0;
-      byId('resultOverlay').classList.remove('active'); byId('titleOverlay').classList.remove('active');
-      [...byId('battlefield').querySelectorAll('.tower,.unit')].forEach(n=>n.remove());
-      createBattlefieldObjects(); setupBattleUI(bot);
-      if(battle.loopId) cancelAnimationFrame(battle.loopId);
-      battle.loopId = requestAnimationFrame(battleFrame);
-    }
-
-    function centerOf(obj){ return {x:obj.x+obj.width/2,y:obj.y+obj.height/2}; }
-    function distance(a,b){ const aa=centerOf(a), bb=centerOf(b); return Math.hypot(aa.x-bb.x, aa.y-bb.y); }
-    function updateHpBar(obj){ const fill = obj.el.querySelector('.hpfill, .uhp span'); if(fill) fill.style.width = `${clamp((obj.hp/obj.maxHp)*100,0,100)}%`; }
-    function getTower(side, role){ return battle.towers.find(t=>t.side===side && t.role===role && t.alive); }
-    function sideTowers(side){ return battle.towers.filter(t=>t.side===side && t.alive); }
-    function allTowersDestroyed(side){ return battle.towers.filter(t=>t.side===side && t.alive).length===0; }
-    function getUnitLane(unit){ return centerOf(unit).x < window.innerWidth*0.5 ? 'left' : 'right'; }
-    function laneSpawnX(lane){ return lane==='left' ? window.innerWidth*0.28 : window.innerWidth*0.72; }
-    function getPlayerUnits(){ return battle.units.filter(u=>u.side==='player'); }
-    function getBotUnits(){ return battle.units.filter(u=>u.side==='bot'); }
-
-    function nearestTarget(unit){
-      const enemies = battle.units.filter(u=>u.side!==unit.side);
-      const lane = getUnitLane(unit);
-      const laneEnemies = enemies.filter(u=>getUnitLane(u)===lane);
-      const list = laneEnemies.length ? laneEnemies : enemies;
-      if(list.length){ list.sort((a,b)=>distance(unit,a)-distance(unit,b)); return list[0]; }
-      const enemySide = unit.side==='player' ? 'bot' : 'player';
-      const laneTower = getTower(enemySide, lane==='left' ? 'left' : 'right');
-      const king = getTower(enemySide,'king');
-      if(laneTower) return laneTower;
-      return king || null;
-    }
-
-    function destroyTower(tower){ tower.alive=false; tower.el.remove(); if(tower.side==='bot') battle.playerDestroyedEnemyTowers++; else battle.botDestroyedPlayerTowers++; showPlacementArea(); checkBattleEnd(); }
-    function destroyUnit(unit){ unit.el.remove(); battle.units = battle.units.filter(u=>u!==unit); }
-    function attack(attacker, target, now){ if(now-attacker.lastAttack < attacker.attackSpeed) return; attacker.lastAttack = now; target.hp -= attacker.damage; updateHpBar(target); if(target.hp<=0){ if(target.type==='tower') destroyTower(target); else destroyUnit(target); } }
-    function moveToward(unit,target,delta){ const a=centerOf(unit), b=centerOf(target); let dx=b.x-a.x, dy=b.y-a.y; const len=Math.hypot(dx,dy)||1; dx/=len; dy/=len; const step=unit.speed*delta*0.072; unit.x+=dx*step; unit.y+=dy*step; unit.el.style.left=`${unit.x}px`; unit.el.style.top=`${unit.y}px`; }
-
-    function battleFrame(now){
-      if(!battle.running) return;
-      const delta = now - battle.lastTime; battle.lastTime = now;
-      battle.playerFuel = clamp(battle.playerFuel + delta*0.00075, 0, 10);
-      battle.botFuel = clamp(battle.botFuel + delta*0.00075, 0, 10);
-      updateFuelUI();
-      [...battle.units].forEach(unit=>{ const target=nearestTarget(unit); if(!target) return; const d=distance(unit,target); if(d<=unit.range+8) attack(unit,target,now); else moveToward(unit,target,delta); });
-      botThink(now); checkBattleEnd();
-      if(battle.running) battle.loopId = requestAnimationFrame(battleFrame);
-    }
-
-    function updateFuelUI(){ byId('fuelText').textContent = `⛽ ${battle.playerFuel.toFixed(1)} / 10`; byId('fuelFill').style.width = `${(battle.playerFuel/10)*100}%`; renderHand(); }
-    function getPlacementZone(){ const h=window.innerHeight; const enemyLeftAlive=!!getTower('bot','left'); const enemyRightAlive=!!getTower('bot','right'); const topBase=(enemyLeftAlive||enemyRightAlive)?h*0.53:h*0.34; return {topBase,leftOpen:!enemyLeftAlive,rightOpen:!enemyRightAlive}; }
-    function showPlacementArea(){ const zone=getPlacementZone(); const highlight=byId('placementHighlight'); highlight.style.display='block'; highlight.style.left='0px'; highlight.style.top=`${zone.topBase}px`; highlight.style.width='100%'; highlight.style.height=`${window.innerHeight-zone.topBase-108}px`; }
-    function canPlacePlayerAt(x,y){ const zone=getPlacementZone(); const bottomLimit = window.innerHeight-108; if(y<zone.topBase || y>bottomLimit) return false; const lane=x<window.innerWidth/2?'left':'right'; const open=lane==='left'?zone.leftOpen:zone.rightOpen; if(y<window.innerHeight*0.53 && !open) return false; return true; }
-
-    function renderHand(){
-      const hand = byId('hand'); hand.innerHTML='';
-      data.deck.forEach(id=>{ if(!id) return; const c=carsById[id]; const card=document.createElement('div'); card.className=`hand-card ${battle.selectedCardId===id?'selected':''} ${battle.playerFuel<c.cost?'unaffordable':''}`; card.innerHTML=`<div class="hand-cost">${c.cost}</div><div style="font-size:22px">${c.emoji}</div><h4>${c.name}</h4><div class="small">${c.kind==='tank'?'Жирная':'Гоночная'}</div>`; card.onclick=()=>{ if(!battle.running) return; battle.selectedCardId = battle.selectedCardId===id ? null : id; renderHand(); }; hand.appendChild(card); });
-    }
-
-    byId('battlefield').addEventListener('click', e=>{
-      if(!battle.running || !battle.selectedCardId) return;
-      const rect=e.currentTarget.getBoundingClientRect(); const x=e.clientX-rect.left, y=e.clientY-rect.top;
-      const card=carsById[battle.selectedCardId]; if(battle.playerFuel < card.cost) return; if(!canPlacePlayerAt(x,y)) return;
-      spawnUnit('player',card.id,x,y); battle.playerFuel -= card.cost; battle.selectedCardId=null; updateFuelUI();
-    });
-
-    function strongestIncomingPlayerUnit(){ const arr=getPlayerUnits(); if(!arr.length) return null; return arr.sort((a,b)=>(b.hp+b.damage)-(a.hp+a.damage))[0]; }
-    function getAffordableBotCards(filterFn=()=>true){ return battle.botProfile.deck.map(id=>carsById[id]).filter(c=>c && c.cost<=battle.botFuel && filterFn(c)); }
-    function spawnBotCard(cardId,lane='left',offset=0){ const x=laneSpawnX(lane); const y=window.innerHeight*(0.15+offset); spawnUnit('bot',cardId,x,y); battle.botFuel-=carsById[cardId].cost; }
-    function getBotDelayRange(){ const tier=battle.botProfile.tier; if(tier==='novice') return [3200,4500]; if(tier==='sayona') return [2300,3200]; return [1600,2400]; }
-    function botMistakeChance(){ const tier=battle.botProfile.tier; if(tier==='novice') return .45; if(tier==='sayona') return .22; return .10; }
-
-    function botThink(now){
-      if(now < battle.botCooldownUntil) return;
-      if(now - battle.lastBotThink < 650) return;
-      battle.lastBotThink = now;
-      const playerUnits=getPlayerUnits(), botUnits=getBotUnits();
-      const hasPlayer=playerUnits.length>0, hasBot=botUnits.length>0;
-      const incoming=strongestIncomingPlayerUnit();
-      const delayRange=getBotDelayRange();
-      const setCd=()=>{ battle.botCooldownUntil = now + delayRange[0] + Math.random()*(delayRange[1]-delayRange[0]); };
-      const mistake = Math.random() < botMistakeChance();
-
-      if(!hasBot && incoming){
-        const lane=getUnitLane(incoming);
-        if(!mistake){
-          if(incoming.kind==='tank'){
-            const racers=getAffordableBotCards(c=>c.kind==='racer');
-            if(racers.length){ spawnBotCard(rand(racers).id,lane,.02); setCd(); return; }
-          }
-          if(incoming.kind==='racer'){
-            const tanks=getAffordableBotCards(c=>c.kind==='tank');
-            if(tanks.length){ spawnBotCard(rand(tanks).id,lane,.02); setCd(); return; }
-          }
-        }
-      }
-
-      if(!hasPlayer){
-        const comboChance = battle.botProfile.tier==='novice' ? .10 : battle.botProfile.tier==='sayona' ? .20 : .30;
-        if(battle.botFuel>=7 && Math.random()<comboChance){
-          const tanks=getAffordableBotCards(c=>c.kind==='tank');
-          if(tanks.length){
-            const lane=Math.random()<.5?'left':'right';
-            spawnBotCard(rand(tanks).id,lane,.02);
-            const extraDelay = battle.botProfile.tier==='novice' ? 1100 : battle.botProfile.tier==='sayona' ? 850 : 650;
-            setTimeout(()=>{ if(!battle.running) return; const racers=getAffordableBotCards(c=>c.kind==='racer'); if(racers.length) spawnBotCard(rand(racers).id,lane,-.03); }, extraDelay);
-            setCd(); return;
-          }
-        }
-        if(battle.botFuel>=4 && Math.random()<.58){
-          let options=getAffordableBotCards();
-          if(battle.botProfile.style==='tank') options=getAffordableBotCards(c=>c.kind==='tank');
-          if(battle.botProfile.style==='racer') options=getAffordableBotCards(c=>c.kind==='racer');
-          if(options.length){ spawnBotCard(rand(options).id, Math.random()<.5?'left':'right', .01); setCd(); return; }
-        }
-      }
-
-      if(hasPlayer && Math.random() > (battle.botProfile.tier==='novice'?.55:battle.botProfile.tier==='sayona'?.30:.12)){
-        const leftPlayer=playerUnits.filter(u=>getUnitLane(u)==='left').length;
-        const rightPlayer=playerUnits.filter(u=>getUnitLane(u)==='right').length;
-        const defendLane=leftPlayer>rightPlayer?'left':'right';
-        let defensive=getAffordableBotCards();
-        if(!mistake && incoming){
-          const preferred = incoming.kind==='tank' ? defensive.filter(c=>c.kind==='racer') : defensive.filter(c=>c.kind==='tank');
-          if(preferred.length) defensive = preferred;
-        }
-        if(defensive.length){ spawnBotCard(rand(defensive).id, defendLane, .02); setCd(); return; }
-      }
-
-      if(battle.botFuel>=9){ const options=getAffordableBotCards(); if(options.length){ spawnBotCard(rand(options).id, Math.random()<.5?'left':'right', .01); setCd(); } }
-    }
-
-    function applyBattleRewards(win){
-      const oldTrophies=data.trophies; const info=getCenterInfo(oldTrophies);
-      let trophyChange=0, gemChange=0, trophyRoad=0;
-      if(!data.finishedGame && oldTrophies<14000){ trophyChange = win ? info.win : info.lose; data.trophies = clamp(data.trophies+trophyChange,0,14000); if(data.trophies>=14000) data.finishedGame=true; }
-      if(win) gemChange += addGems(3);
-      trophyRoad += checkTrophyRoadRewards(oldTrophies,data.trophies);
-      addPassXp(win ? 50 : 15);
-      data.gamesPlayed += 1;
-      markQuestProgress();
-      saveData();
-      return {trophyChange,gemChange,trophyRoad};
-    }
-
-    function finishBattle(win){
-      if(!battle.running) return;
-      battle.running=false; if(battle.loopId) cancelAnimationFrame(battle.loopId);
-      const rewards=applyBattleRewards(win); renderAll();
-      byId('resultBig').textContent = win ? 'Победа!' : 'Поражение! 😢';
-      const lines=[]; if(rewards.trophyChange>0) lines.push(`🏆 +${rewards.trophyChange} кубка`); if(rewards.trophyChange<0) lines.push(`🏆 ${rewards.trophyChange} кубков`); if(rewards.gemChange>0) lines.push(`💎 +${rewards.gemChange} гема`); if(rewards.trophyRoad>0) lines.push(`🎁 Путь трофеев: +${rewards.trophyRoad} гемов`); if(!lines.length) lines.push('Игра уже пройдена — за победу больше ничего не даётся');
-      byId('resultDetails').textContent = lines.join(' • ');
-      byId('resultOverlay').classList.add('active');
-    }
-
-    function checkBattleEnd(){ if(getTower('bot','king')===undefined || !getTower('bot','king')) finishBattle(true); else if(getTower('player','king')===undefined || !getTower('player','king')) finishBattle(false); }
-
-    function renderTitleOverlay(){
-      const list = byId('titleList'); list.innerHTML='';
-      getUnlockedTitles().forEach(title=>{ const div=document.createElement('div'); div.className=`title-item ${data.selectedTitle===title?'active':''}`; div.textContent=title||'Без титула'; div.onclick=()=>{ data.selectedTitle=title; saveData(); renderAll(); renderTitleOverlay(); byId('playerHud').innerHTML=`<div style="font-weight:800;">Ты ${data.selectedTitle?'• '+data.selectedTitle:''}</div><div class="small">Любимая: ${carsById[data.favoriteCarId].name}</div>`; }; list.appendChild(div); });
-    }
-
-    function formatRemaining(ms){
-      if(ms <= 0) return '00:00:00';
-      const total = Math.floor(ms/1000); const h=Math.floor(total/3600); const m=Math.floor((total%3600)/60); const s=total%60;
-      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
-
-    function updateSeasonTimer(){
-      resetSeasonIfNeeded();
-      const txt = formatRemaining(data.pass.seasonEnd - Date.now());
-      if(byId('seasonTimerChip')) byId('seasonTimerChip').textContent = `⏳ До конца сезона: ${txt}`;
-      if(byId('passTimerHeader')) byId('passTimerHeader').textContent = `⏳ ${txt}`;
-    }
-
-    function bindUI(){
-      byId('battleBtn').onclick = openPrebattle;
-      byId('garageBtn').onclick = ()=>{ renderGarage(); showScreen('garage'); };
-      byId('shopBtn').onclick = ()=>{ renderShop(); showScreen('shop'); };
-      byId('passBtn').onclick = ()=>{ renderPass(); showScreen('pass'); };
-      byId('calendarBtn').onclick = ()=>{ renderCalendar(); showScreen('calendar'); };
-      byId('backFromGarage').onclick = ()=>{ renderAll(); showScreen('lobby'); };
-      byId('backFromShop').onclick = ()=>{ renderAll(); showScreen('lobby'); };
-      byId('backFromPass').onclick = ()=>{ renderAll(); showScreen('lobby'); };
-      byId('backFromCalendar').onclick = ()=>{ renderAll(); showScreen('lobby'); };
-      byId('buyPassBtn').onclick = buyPass;
-      byId('claimQuestBtn').onclick = claimQuest;
-      byId('buyLimitedBtn').onclick = buyLimited;
-      byId('titleBtnInBattle').onclick = ()=>byId('titleOverlay').classList.add('active');
-      byId('closeTitleOverlay').onclick = ()=>byId('titleOverlay').classList.remove('active');
-      byId('backToLobbyBtn').onclick = ()=>{ renderAll(); showScreen('lobby'); };
-      byId('playAgainBtn').onclick = openPrebattle;
-      document.querySelectorAll('.shop-roll').forEach(btn=>{ btn.onclick = ()=>{ if(data.gems < 9) return alert('Не хватает гемов'); data.gems -= 9; rollCase(btn.dataset.roll); saveData(); renderAll(); }; });
-      window.addEventListener('resize', ()=>{ if(battle.running) showPlacementArea(); });
-    }
-
-    function renderAll(){ renderLobby(); renderGarage(); renderShop(); renderPass(); renderCalendar(); }
-
-    document.addEventListener('DOMContentLoaded', ()=>{
-      initData();
-      bindUI();
-      renderAll();
-      updateSeasonTimer();
-      if(seasonInterval) clearInterval(seasonInterval);
-      seasonInterval = setInterval(()=>{ updateSeasonTimer(); }, 1000);
-    });
+    function gameLoop(now){ if(!raceState.running) return; const dt = (now - raceState.lastTime) / 1000; raceState.lastTime = now; const car = carsById[data.selectedCarId], mode = modes[raceState.modeKey]; if(raceState.gas) raceState.playerSpeed += car.accel * 12 * dt; else raceState.playerSpeed -= 18 * dt; if(raceState.brake) raceState.playerSpeed -= 36 * dt; raceState.playerSpeed = clamp(raceState.playerSpeed, 0, car.topSpeed); raceState.playerKm += raceState.playerSpeed * dt / 60; if(mode.bot){ const botCar = carsById[selectedBot.carId]; const target = botCar.topSpeed * (mode.ranked ? 0.88 : 0.82); if(raceState.botSpeed < target) raceState.botSpeed += botCar.accel * 11 * dt; else raceState.botSpeed -= 8 * dt; raceState.botSpeed = clamp(raceState.botSpeed, 0, botCar.topSpeed); raceState.botKm += raceState.botSpeed * dt / 60; } raceState.remaining -= dt; drawScene(); updateHud(); if(raceState.playerKm >= mode.distance || (mode.bot && raceState.botKm >= mode.distance) || raceState.remaining <= 0){ finishRace(); return; } raceState.animationId = requestAnimationFrame(gameLoop); }
+    function updateQuestProgressAfterRace(win, kmMax, topSpeed){ const findOpen = text => data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes(text)); const qPlay = data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes('Сыграй')); if(qPlay) qPlay.done = true; if(win){ const qWin = data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes('Выиграй')); if(qWin) qWin.done = true; } if(kmMax >= 50){ const q50 = findOpen('50 км'); if(q50) q50.done = true; } if(kmMax >= 100){ const q100 = findOpen('100 км'); if(q100) q100.done = true; } if(topSpeed >= 200){ const qTop = findOpen('200 км/ч'); if(qTop) qTop.done = true; } if(modes[data.selectedMode].ranked && win){ const qRank = findOpen('ранговом режиме'); if(qRank) qRank.done = true; } if(!modes[data.selectedMode].ranked && win){ const qCasual = findOpen('обычном режиме'); if(qCasual) qCasual.done = true; } }
+    function finishRace(){ raceState.running = false; if(raceState.animationId) cancelAnimationFrame(raceState.animationId); const mode = modes[raceState.modeKey]; let win = false; if(mode.bot){ win = raceState.playerKm >= mode.distance && raceState.playerKm >= raceState.botKm; if(raceState.remaining <= 0 && raceState.playerKm < mode.distance) win = raceState.playerKm > raceState.botKm; } else { win = raceState.playerKm >= mode.distance; } let rankChange = win ? 100 : -100; data.rankPoints = clamp(data.rankPoints + rankChange, 0, 10000); addPassXp(win ? 50 : 15); data.gamesPlayed += 1; data.recordKm = Math.max(data.recordKm, raceState.playerKm); updateQuestProgressAfterRace(win, raceState.playerKm, raceState.playerSpeed); saveData(); renderAll(); byId('resultBig').textContent = win ? 'Победа!' : 'Поражение!'; const details = []; details.push(`Ты проехал ${raceState.playerKm.toFixed(1)} км`); if(mode.bot) details.push(`Бот проехал ${raceState.botKm.toFixed(1)} км`); details.push(win ? `🏆 +100 ранга` : `🏆 -100 ранга`); details.push(win ? `Street Pass: +50 XP` : `Street Pass: +15 XP`); byId('resultDetails').textContent = details.join(' • '); byId('resultOverlay').classList.add('active'); }
+    function renderTitleOverlay(){ const list = byId('titleList'); list.innerHTML = ''; getUnlockedTitles().forEach(title=>{ const div = document.createElement('div'); div.className = `title-item ${data.selectedTitle===title?'active':''}`; div.textContent = title || 'Без титула'; div.onclick = ()=>{ data.selectedTitle = title; saveData(); renderAll(); renderTitleOverlay(); }; list.appendChild(div); }); }
+    function formatRemaining(ms){ if(ms <= 0) return '00:00:00'; const total = Math.floor(ms/1000), h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = total%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+    function updateSeasonTimer(){ resetSeasonIfNeeded(); const txt = formatRemaining(data.pass.seasonEnd - Date.now()); if(byId('seasonTimerChip')) byId('seasonTimerChip').textContent = `⏳ До конца сезона: ${txt}`; if(byId('passTimerHeader')) byId('passTimerHeader').textContent = `⏳ ${txt}`; }
+    function renderAll(){ renderLobby(); renderGarage(); renderShop(); renderPass(); renderCalendar(); renderRanks(); }
+    function bindUI(){ byId('playBtn').onclick = openPrebattle; byId('garageBtn').onclick = ()=>{ renderGarage(); showScreen('garage'); }; byId('shopBtn').onclick = ()=>{ renderShop(); showScreen('shop'); }; byId('passBtn').onclick = ()=>{ renderPass(); showScreen('pass'); }; byId('calendarBtn').onclick = ()=>{ renderCalendar(); showScreen('calendar'); }; byId('rankBtn').onclick = ()=>{ renderRanks(); showScreen('rank'); }; byId('backFromGarage').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('backFromShop').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('backFromPass').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('backFromCalendar').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('backFromRank').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('buyPassBtn').onclick = buyPass; byId('claimQuestBtn').onclick = claimQuest; byId('buyExclusiveBtn').onclick = buyExclusive; byId('goPassBtn').onclick = ()=>{ renderPass(); showScreen('pass'); }; byId('titleBtnInGame').onclick = ()=>byId('titleOverlay').classList.add('active'); byId('closeTitleOverlay').onclick = ()=>byId('titleOverlay').classList.remove('active'); byId('backToLobbyBtn').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('playAgainBtn').onclick = openPrebattle; document.querySelectorAll('.shop-roll').forEach(btn=>{ btn.onclick = ()=>{ if(data.gems < 9) return alert('Не хватает гемов'); data.gems -= 9; rollCase(btn.dataset.roll); saveData(); renderAll(); }; }); document.querySelectorAll('.mode-pill').forEach(el=>{ el.onclick = ()=>{ data.selectedMode = el.dataset.mode; saveData(); renderLobby(); }; }); byId('gasBtn').onmousedown = ()=>raceState.gas = true; byId('gasBtn').onmouseup = ()=>raceState.gas = false; byId('gasBtn').onmouseleave = ()=>raceState.gas = false; byId('gasBtn').ontouchstart = e=>{ e.preventDefault(); raceState.gas = true; }; byId('gasBtn').ontouchend = e=>{ e.preventDefault(); raceState.gas = false; }; byId('brakeBtn').onmousedown = ()=>raceState.brake = true; byId('brakeBtn').onmouseup = ()=>raceState.brake = false; byId('brakeBtn').onmouseleave = ()=>raceState.brake = false; byId('brakeBtn').ontouchstart = e=>{ e.preventDefault(); raceState.brake = true; }; byId('brakeBtn').ontouchend = e=>{ e.preventDefault(); raceState.brake = false; }; window.addEventListener('keydown', e=>{ if(e.code==='ArrowUp' || e.code==='KeyW' || e.code==='Space') raceState.gas = true; if(e.code==='ArrowDown' || e.code==='KeyS') raceState.brake = true; }); window.addEventListener('keyup', e=>{ if(e.code==='ArrowUp' || e.code==='KeyW' || e.code==='Space') raceState.gas = false; if(e.code==='ArrowDown' || e.code==='KeyS') raceState.brake = false; }); window.addEventListener('resize', ()=>{ if(raceState.running) drawScene(); }); }
+    document.addEventListener('DOMContentLoaded', ()=>{ resetSeasonIfNeeded(); ensureQuests(); if(!data.selectedCarId || !data.ownedCars.includes(data.selectedCarId)) data.selectedCarId = data.ownedCars[0] || STARTER_CAR; if(!data.favoriteCarId || !data.ownedCars.includes(data.favoriteCarId)) data.favoriteCarId = data.ownedCars[0] || STARTER_CAR; bindUI(); renderAll(); updateSeasonTimer(); if(seasonInterval) clearInterval(seasonInterval); seasonInterval = setInterval(updateSeasonTimer, 1000); saveData(); });
   </script>
 </body>
 </html>
