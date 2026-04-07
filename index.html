@@ -1,603 +1,106 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Street Nakamyra — Night Drive</title>
-  <style>
-    * { box-sizing: border-box; }
-    :root {
-      --bg1:#0f172a;
-      --bg2:#1d4ed8;
-      --bg3:#312e81;
-      --panel:rgba(9,16,30,.74);
-      --panel2:rgba(255,255,255,.07);
-      --line:rgba(255,255,255,.12);
-      --text:#eef3ff;
-      --muted:#b9c7df;
-      --gold:#f6c04f;
-      --gold2:#eda62b;
-      --blue:#45b2ff;
-      --green:#56eaa9;
-      --red:#f06363;
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-    }
-    html,body{
-      margin:0;
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      font-family:Arial,Helvetica,sans-serif;
-      color:var(--text);
-      background:linear-gradient(-45deg,var(--bg1),var(--bg2),var(--bg3),#111827);
-      background-size:400% 400%;
-      animation:flow 14s ease infinite;
-    }
-    @keyframes flow{
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-    }
-    .screen{display:none;width:100vw;height:100vh}
-    .screen.active{display:flex}
-    .panel{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(10px);
-    }
-    button{
-      border:none;
-      border-radius:14px;
-      padding:12px 16px;
-      font-size:15px;
-      font-weight:700;
-      cursor:pointer;
-      transition:transform .14s ease, opacity .14s ease;
-      color:#fff;
-    }
-    button:hover{transform:translateY(-1px)}
-    button:active{transform:translateY(1px)}
-    button:disabled{opacity:.45;cursor:default;transform:none}
-    .btn-gold{background:linear-gradient(180deg,#ffd98d,var(--gold2));color:#2a1900}
-    .btn-blue{background:linear-gradient(180deg,#4ab4ff,#1b79ff)}
-    .btn-dark{background:linear-gradient(180deg,#33425d,#1f2a3c)}
-    .btn-green{background:linear-gradient(180deg,#59f0b0,#30bf84);color:#0b2317}
-    .btn-red{background:linear-gradient(180deg,#ff8a8a,#ea5050)}
-    .small{font-size:12px;color:var(--muted)}
-    .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);font-size:13px}
-    .title-chip{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;background:rgba(255,208,92,.17);border:1px solid rgba(255,208,92,.24);color:#ffd66c;font-weight:700;font-size:13px}
-    .color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(255,255,255,.25)}
-
-    #lobby{align-items:center;justify-content:center;padding:22px}
-    .lobby-wrap{width:min(1220px,100%);display:grid;grid-template-columns:1.2fr .95fr;gap:20px}
-    .lobby-main,.lobby-side{padding:22px}
-    .lobby-main{position:relative;overflow:hidden;display:grid;grid-template-rows:auto auto auto auto;gap:16px}
-    .glow{position:absolute;filter:blur(42px);opacity:.25;border-radius:50%;pointer-events:none}
-    .glow.one{width:360px;height:360px;right:-60px;top:-80px;background:#2fa5ff}
-    .glow.two{width:300px;height:300px;left:-80px;bottom:-90px;background:#7c56ff}
-    .headline h1{margin:0;font-size:56px;line-height:1.02}
-    .headline p{margin:8px 0 0;color:#d7e1f3;font-size:15px}
-    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    .stat-box{padding:14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-    .stat-box .n{font-size:20px;font-weight:800;margin-top:4px}
-    .hero-card{padding:18px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08)}
-    .progress-bar{height:16px;border-radius:999px;background:rgba(0,0,0,.4);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-    .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#ffe486,#f6b73a,#ff9862)}
-    .main-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .main-actions button{min-width:150px}
-    .mode-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-    .mode-pill{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);cursor:pointer;font-weight:700}
-    .mode-pill.active{box-shadow:0 0 0 2px rgba(87,230,138,.28) inset;color:#7ef5bc}
-    .lobby-side{display:grid;grid-template-rows:auto auto auto auto auto;gap:14px}
-    .mini-section{padding:16px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-    .favorite-card-preview{display:flex;gap:10px;align-items:center;padding:12px;border-radius:16px;background:rgba(0,0,0,.22);margin-top:10px}
-    #miniGaragePreview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-
-    .page{width:min(1220px,100%);height:100%;margin:0 auto;padding:18px;display:grid;grid-template-rows:auto 1fr;gap:14px}
-    .page-header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-    .page-content{min-height:0;display:grid;gap:14px}
-    .deck-panel,.cars-panel,.shop-panel,.pass-panel,.calendar-panel,.rank-panel{padding:16px;overflow:auto}
-    .car-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-    .car-card{padding:12px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:start}
-    .car-card.favorite{box-shadow:0 0 0 2px rgba(255,210,98,.28) inset}
-    .car-card.selected{box-shadow:0 0 0 2px rgba(68,180,255,.28) inset}
-    .car-canvas-box{width:100%;height:88px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.06)}
-    .car-meta h3{margin:0 0 6px;font-size:16px;line-height:1.15}
-    .car-lines{display:grid;gap:4px;font-size:12px;color:#dce5f6}
-    .car-actions{grid-column:1 / -1;display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .shop-offers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .offer-card{padding:16px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);display:grid;gap:12px}
-    .drop-box{margin-top:14px;padding:16px;border-radius:18px;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.08);min-height:114px;display:flex;align-items:center;justify-content:center;text-align:center}
-
-    .pass-layout{display:grid;grid-template-columns:260px 1fr;gap:14px;min-height:0}
-    .pass-side{padding:16px}
-    .pass-track-wrap{padding:16px;overflow:auto}
-    .pass-levels{display:grid;gap:12px}
-    .pass-level{display:grid;grid-template-columns:74px 1fr 1fr;gap:10px;align-items:center;padding:12px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-    .level-num{font-size:22px;font-weight:900;text-align:center}
-    .reward-box{padding:12px;border-radius:16px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);min-height:74px;display:flex;flex-direction:column;justify-content:center}
-    .reward-box.locked{opacity:.55}
-    .reward-box.claimed{box-shadow:0 0 0 2px rgba(87,230,138,.26) inset}
-    .quest-list{display:grid;gap:10px;margin-top:12px}
-    .quest-card{padding:12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-
-    .calendar-list{display:grid;gap:10px;margin-top:10px}
-    .calendar-reward{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-    .calendar-reward.claimed{box-shadow:0 0 0 2px rgba(87,230,138,.26) inset}
-
-    .rank-grid{display:grid;gap:10px;margin-top:10px}
-    .rank-row{display:grid;grid-template-columns:160px 1fr auto;gap:12px;align-items:center;padding:12px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-    .rank-row.current{box-shadow:0 0 0 2px rgba(68,180,255,.28) inset}
-
-    #prebattle{align-items:center;justify-content:center;padding:20px}
-    .prebattle-card{width:min(820px,100%);padding:22px;display:grid;gap:16px}
-    .versus{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
-    .fighter{padding:16px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
-    .countdown{font-size:52px;font-weight:900;color:#ffe07c;text-align:center}
-    .battle-card{padding:14px;border-radius:18px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08)}
-    .battle-card-visual{width:100%;height:140px;border-radius:18px;background:linear-gradient(135deg,#1d4ed8,#312e81);position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-    .battle-card-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 75% 30%,rgba(255,255,255,.16),transparent 28%),linear-gradient(180deg,rgba(255,255,255,.06),transparent 50%)}
-    .battle-card-visual .badge{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
-    .battle-card-visual .title{position:absolute;bottom:14px;left:14px;right:14px;font-size:22px;font-weight:900}
-    .battle-card-visual .subtitle{position:absolute;bottom:36px;left:14px;right:14px;font-size:12px;color:#d8e3ff}
-    .battle-card-canvas{position:absolute;right:6px;bottom:10px;width:180px;height:80px}
-
-    #game{position:relative;overflow:hidden;background:#0b1020}
-    #gameCanvas{position:absolute;inset:0;display:block;width:100%;height:100%}
-    .hud-top{position:absolute;top:0;left:0;width:100%;display:flex;justify-content:space-between;padding:10px;z-index:20;pointer-events:none}
-    .hud-bottom{position:absolute;bottom:0;left:0;width:100%;display:flex;justify-content:space-between;align-items:flex-end;padding:10px;z-index:20;pointer-events:none}
-    .hud-box{background:rgba(8,16,28,.66);border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);border-radius:16px;padding:10px 12px;min-width:180px;pointer-events:auto}
-    .control-pad{display:flex;gap:10px;pointer-events:auto}
-    .control-pad button{min-width:110px;min-height:62px;font-size:18px}
-    .overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:30;background:rgba(0,0,0,.48);backdrop-filter:blur(6px)}
-    .overlay.active{display:flex}
-    .overlay-card{width:min(560px,100%);padding:20px}
-    .title-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .title-item{padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.08);cursor:pointer;font-size:13px}
-    .title-item.active{box-shadow:0 0 0 2px rgba(255,210,92,.36) inset;color:#ffe08d}
-    .result-big{font-size:54px;margin:0 0 4px;font-weight:900;text-align:center}
-
-    @media (max-width:980px){
-      .lobby-wrap,.pass-layout{grid-template-columns:1fr}
-      .shop-offers{grid-template-columns:1fr}
-      .stats-grid{grid-template-columns:repeat(2,1fr)}
-      .versus{grid-template-columns:1fr}
-      .headline h1{font-size:42px}
-      .car-card{grid-template-columns:1fr}
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Beka Messenger</title>
 </head>
 <body>
-  <div id="lobby" class="screen active">
-    <div class="lobby-wrap">
-      <div class="panel lobby-main">
-        <div class="glow one"></div>
-        <div class="glow two"></div>
-        <div class="headline">
-          <h1>🏁 Street Nakamyra</h1>
-          <p>Ночной вайб, неоновые здания, луна, ранги, Street Pass и японские машины.</p>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-box"><div class="small">🏆 Ранг-очки</div><div class="n" id="statRank">0</div></div>
-          <div class="stat-box"><div class="small">💎 Гемы</div><div class="n" id="statGems">18</div></div>
-          <div class="stat-box"><div class="small">🚘 Машин</div><div class="n" id="statCars">1</div></div>
-          <div class="stat-box"><div class="small">📏 Рекорд</div><div class="n" id="statRecord">0 км</div></div>
-        </div>
-        <div class="hero-card">
-          <div class="small">Выбранный режим</div>
-          <h2 id="selectedModeTitle" style="margin:6px 0 4px">Гонка на трассе</h2>
-          <div id="selectedModeDesc" class="small">Доедь быстрее бота до 50 км за 5 минут.</div>
-          <div class="mode-bar">
-            <div class="mode-pill active" data-mode="race_battle">Гонка на трассе — Бой с ботом</div>
-            <div class="mode-pill" data-mode="race_time">Гонка на трассе — Трасса</div>
-            <div class="mode-pill" data-mode="rank_battle">Гоночный Бой — Бой с ботом</div>
-            <div class="mode-pill" data-mode="rank_time">Гоночный Бой — Трасса</div>
-          </div>
-          <div style="margin-top:14px" class="progress-bar"><div class="progress-fill" id="rankProgress"></div></div>
-          <div class="small" id="rankProgressText" style="margin-top:8px">Бронза • 0 / 300</div>
-          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
-            <span class="chip" id="titleChipLobby">Титул: нет</span>
-            <span class="chip" id="favoriteChipLobby">Любимая: Mercedes S600</span>
-            <span class="chip" id="seasonTimerChip">⏳ До конца сезона: --:--:--</span>
-          </div>
-        </div>
-        <div class="main-actions">
-          <button class="btn-gold" id="playBtn">▶ Играть</button>
-          <button class="btn-dark" id="garageBtn">🚘 Мои машины</button>
-          <button class="btn-blue" id="shopBtn">🛒 Магазин</button>
-          <button class="btn-green" id="passBtn">🛣️ Street Pass</button>
-          <button class="btn-dark" id="calendarBtn">🗓️ Календарь</button>
-          <button class="btn-blue" id="rankBtn">🏆 Ранги</button>
-        </div>
-      </div>
-      <div class="panel lobby-side">
-        <div class="mini-section">
-          <div class="small">Активный титул</div>
-          <div id="lobbyTitleBox" style="margin-top:8px"></div>
-        </div>
-        <div class="mini-section">
-          <div class="small">Любимая машина</div>
-          <div class="favorite-card-preview" id="favoritePreview"></div>
-        </div>
-        <div class="mini-section">
-          <div class="small">Гараж</div>
-          <div id="miniGaragePreview"></div>
-        </div>
-        <div class="mini-section">
-          <div class="small">Street Pass</div>
-          <div style="font-size:17px;font-weight:800;margin-top:8px" id="passInfoText">Уровень 1 • 0 / 90 XP</div>
-          <div style="margin-top:10px" class="progress-bar"><div class="progress-fill" id="passProgress"></div></div>
-        </div>
-        <div class="mini-section">
-          <div class="small">Ранг</div>
-          <div style="font-size:18px;font-weight:800;margin-top:8px" id="rankTitleLobby">Бронза</div>
-          <div class="small" id="rankCardRewardInfo" style="margin-top:8px">За ранги открываются боевые карты и титулы.</div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div id="garage" class="screen">
-    <div class="page">
-      <div class="page-header">
-        <h2>🚘 Мои машины</h2>
-        <button class="btn-dark" id="backFromGarage">Назад</button>
-      </div>
-      <div class="page-content">
-        <div class="panel cars-panel">
-          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
-            <div>
-              <div class="small">Коллекция</div>
-              <h3 style="margin:6px 0 0">Выбор машины</h3>
-            </div>
-            <div class="chip" id="garageSummary">1 машина</div>
-          </div>
-          <div id="garageCars" class="car-grid"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<h2>💬 Beka Messenger</h2>
 
-  <div id="shop" class="screen">
-    <div class="page">
-      <div class="page-header">
-        <h2>🛒 Магазин</h2>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-          <span class="chip" id="shopGemsInfo">💎 18 / 2145</span>
-          <button class="btn-dark" id="backFromShop">Назад</button>
-        </div>
-      </div>
-      <div class="page-content">
-        <div class="panel shop-panel">
-          <div class="shop-offers">
-            <div class="offer-card">
-              <div class="small">9 гемов</div>
-              <h3 style="margin:0">🎲 Рулетка JDM</h3>
-              <div class="small">Падает японская машина. Шансы равные.</div>
-              <button class="btn-gold shop-roll" data-roll="jdm">Крутить</button>
-            </div>
-            <div class="offer-card">
-              <div class="small">9 гемов</div>
-              <h3 style="margin:0">🏁 Смешанная рулетка</h3>
-              <div class="small">Падает любая машина, кроме лимиток.</div>
-              <button class="btn-gold shop-roll" data-roll="mixed">Крутить</button>
-            </div>
-            <div class="offer-card">
-              <div class="small">Эксклюзив сезона</div>
-              <h3 style="margin:0">🔥 Nissan 240SX</h3>
-              <div class="small">Продаётся только до конца сезона Street Pass.</div>
-              <button class="btn-green" id="buyExclusiveBtn">Купить за 129💎</button>
-            </div>
-            <div class="offer-card">
-              <div class="small">Совет</div>
-              <h3 style="margin:0">Street Pass или лимитка?</h3>
-              <div class="small">Можно копить на Street Pass+, а можно взять Nissan 240SX прямо сейчас.</div>
-              <button class="btn-blue" id="goPassBtn">Открыть Street Pass</button>
-            </div>
-          </div>
-          <div class="drop-box" id="dropBox">Пока ничего не выпало. Крути рулетку или забирай лимитку 👀</div>
-        </div>
-      </div>
-    </div>
-  </div>
+<input id="username" placeholder="Твой ник">
+<button onclick="login()">Войти</button>
 
-  <div id="pass" class="screen">
-    <div class="page">
-      <div class="page-header">
-        <h2>🛣️ Street Pass — Ночная трасса</h2>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-          <span class="chip" id="passTimerHeader">⏳ --:--:--</span>
-          <button class="btn-dark" id="backFromPass">Назад</button>
-        </div>
-      </div>
-      <div class="page-content pass-layout">
-        <div class="panel pass-side">
-          <div class="small">Сезон</div>
-          <h3 style="margin:6px 0 0">Ночная трасса</h3>
-          <div class="small" style="margin-top:8px">1 сезон длится 1 день</div>
-          <div style="margin-top:12px;font-weight:800;font-size:18px" id="passLevelText">Уровень 1</div>
-          <div class="small" id="passXpText" style="margin-top:6px">0 / 90 XP</div>
-          <div style="margin-top:10px" class="progress-bar"><div class="progress-fill" id="passProgressBar"></div></div>
-          <div style="margin-top:12px" class="chip" id="passPremiumState">Street Pass+: не куплен</div>
-          <div style="margin-top:14px;display:grid;gap:8px;">
-            <button class="btn-gold" id="buyPassBtn">Купить Street Pass+ за 179💎</button>
-            <button class="btn-blue" id="claimQuestBtn">Забрать выполненный квест</button>
-          </div>
-          <div class="quest-list" id="questList"></div>
-        </div>
-        <div class="panel pass-track-wrap">
-          <div class="small">30 уровней • бесплатная линия и Street Pass+</div>
-          <div id="passLevels" class="pass-levels" style="margin-top:12px"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<hr>
 
-  <div id="calendar" class="screen">
-    <div class="page">
-      <div class="page-header">
-        <h2>🗓️ Календарь за игры</h2>
-        <button class="btn-dark" id="backFromCalendar">Назад</button>
-      </div>
-      <div class="page-content">
-        <div class="panel calendar-panel">
-          <div class="small">Награды за количество сыгранных заездов</div>
-          <h3 style="margin:6px 0 0">Твой прогресс: <span id="gamesPlayedText">0</span> игр</h3>
-          <div class="calendar-list" id="calendarList"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div id="users"></div>
 
-  <div id="rank" class="screen">
-    <div class="page">
-      <div class="page-header">
-        <h2>🏆 Ранги</h2>
-        <button class="btn-dark" id="backFromRank">Назад</button>
-      </div>
-      <div class="page-content">
-        <div class="panel rank-panel">
-          <div class="small">В ранговом бою и в обычном режиме очки считаются одинаково. Победа +100, поражение -100.</div>
-          <h3 style="margin:10px 0 0">Твой ранг: <span id="currentRankBig">Бронза</span></h3>
-          <div class="rank-grid" id="rankGrid"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<hr>
 
-  <div id="prebattle" class="screen">
-    <div class="panel prebattle-card">
-      <div class="small" style="text-align:center">Подготовка к заезду</div>
-      <div class="versus">
-        <div class="fighter">
-          <div class="battle-card">
-            <div class="battle-card-visual">
-              <div class="badge" id="prePlayerRank">Бронза</div>
-              <div class="subtitle" id="prePlayerTitleText">Без титула</div>
-              <div class="title">Ты</div>
-              <canvas class="battle-card-canvas" id="prePlayerCardCanvas" width="180" height="80"></canvas>
-            </div>
-          </div>
-        </div>
-        <div class="countdown" id="preCountdown">3</div>
-        <div class="fighter">
-          <div class="battle-card">
-            <div class="battle-card-visual">
-              <div class="badge" id="preBotRank">Бот</div>
-              <div class="subtitle" id="preBotTitleText">Без титула</div>
-              <div class="title" id="preBotName">Street Bot</div>
-              <canvas class="battle-card-canvas" id="preBotCardCanvas" width="180" height="80"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="small" style="text-align:center" id="preModeText">Режим: Гонка на трассе</div>
-    </div>
-  </div>
+<div id="chat"></div>
 
-  <div id="game" class="screen">
-    <canvas id="gameCanvas"></canvas>
-    <div class="hud-top">
-      <div class="hud-box" id="playerHud"></div>
-      <div class="hud-box" id="raceHud"></div>
-    </div>
-    <div class="hud-bottom">
-      <div style="display:flex;gap:8px;align-items:flex-end;pointer-events:auto;">
-        <button class="btn-dark" id="titleBtnInGame">🪪</button>
-      </div>
-      <div class="control-pad">
-        <button class="btn-red" id="brakeBtn">Тормоз</button>
-        <button class="btn-green" id="gasBtn">Газ</button>
-      </div>
-    </div>
-    <div class="overlay" id="titleOverlay">
-      <div class="panel overlay-card">
-        <h3 style="margin:0 0 8px">Выбор титула</h3>
-        <div class="small">Выбери титул, который будет на боевой карте.</div>
-        <div class="title-list" id="titleList"></div>
-        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
-          <button class="btn-dark" id="closeTitleOverlay">Закрыть</button>
-        </div>
-      </div>
-    </div>
-    <div class="overlay" id="resultOverlay">
-      <div class="panel overlay-card">
-        <div class="result-big" id="resultBig">Победа!</div>
-        <div id="resultDetails" class="small" style="text-align:center;font-size:14px">Ты доехал до финиша</div>
-        <div style="display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap;">
-          <button class="btn-gold" id="backToLobbyBtn">В лобби</button>
-          <button class="btn-dark" id="playAgainBtn">Ещё заезд</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<input id="message" placeholder="Сообщение">
+<button onclick="sendMessage()">Отправить</button>
 
-  <script>
-    'use strict';
-    const PASS_PRICE = 179, EXCLUSIVE_PRICE = 129, GEM_LIMIT = 2145, PASS_XP_PER_LEVEL = 90, PASS_LEVELS = 30, STARTER_CAR = 's600';
-    const modes = {
-      race_battle:{ title:'Гонка на трассе — Бой с ботом', desc:'Нужно проехать 50 км за 5 минут. Бот едет рядом.', distance:50, time:300, ranked:false, bot:true },
-      race_time:{ title:'Гонка на трассе — Трасса', desc:'Нужно проехать 100 км за 9 минут.', distance:100, time:540, ranked:false, bot:false },
-      rank_battle:{ title:'Гоночный Бой — Бой с ботом', desc:'Ранговый заезд: 50 км за 5 минут.', distance:50, time:300, ranked:true, bot:true },
-      rank_time:{ title:'Гоночный Бой — Трасса', desc:'Ранговый заезд: 100 км за 9 минут.', distance:100, time:540, ranked:true, bot:false }
-    };
-    const rankTable = [
-      {name:'Бронза', min:0, max:300, reward:'Базовая боевая карта'},
-      {name:'Серебро', min:350, max:800, reward:'Серебряная карта'},
-      {name:'Золото', min:800, max:1200, reward:'Золотая карта'},
-      {name:'Алмаз', min:1200, max:1900, reward:'Алмазная карта'},
-      {name:'Мифическая лига', min:1900, max:3000, reward:'Мифическая карта'},
-      {name:'Легендарная лига', min:3000, max:4500, reward:'Легендарная карта'},
-      {name:'Мастер', min:4500, max:6500, reward:'Титул Мастер'},
-      {name:'Легенда', min:6500, max:10000, reward:'Легендарная боевая карта'}
-    ];
-    const carCatalog = [
-      { id:'s600', name:'Mercedes S600', style:'lux', topSpeed:310, accel:7.0, grip:82, color:'#d7d7db', cost:0, type:'starter', jap:false },
-      { id:'s15', name:'Nissan Silvia S15', style:'jdm', topSpeed:300, accel:8.2, grip:88, color:'#00a3ff', cost:45, jap:true },
-      { id:'s13', name:'Nissan Silvia S13', style:'jdm', topSpeed:285, accel:8.4, grip:86, color:'#8b5cf6', cost:42, jap:true },
-      { id:'supra', name:'Toyota Supra MK4', style:'jdm', topSpeed:320, accel:8.8, grip:84, color:'#f59e0b', cost:58, jap:true },
-      { id:'rx7', name:'Mazda RX-7 FD', style:'jdm', topSpeed:315, accel:8.7, grip:90, color:'#ef4444', cost:56, jap:true },
-      { id:'gtr34', name:'Nissan Skyline GT-R R34', style:'jdm', topSpeed:330, accel:9.0, grip:92, color:'#3b82f6', cost:68, jap:true },
-      { id:'ae86', name:'Toyota AE86', style:'jdm', topSpeed:255, accel:7.8, grip:93, color:'#f8fafc', cost:36, jap:true },
-      { id:'240sx', name:'Nissan 240SX', style:'jdm', topSpeed:305, accel:8.6, grip:89, color:'#22c55e', cost:129, jap:true, exclusive:true },
-      { id:'nsx', name:'Honda NSX', style:'jdm', topSpeed:325, accel:8.9, grip:91, color:'#ef4444', cost:74, jap:true },
-      { id:'type_r', name:'Honda Civic Type R', style:'jdm', topSpeed:290, accel:8.2, grip:90, color:'#f1f5f9', cost:44, jap:true },
-      { id:'chaser', name:'Toyota Chaser', style:'jdm', topSpeed:295, accel:8.4, grip:87, color:'#0ea5e9', cost:47, jap:true },
-      { id:'lexus_lc', name:'Lexus LC 500', style:'lux', topSpeed:305, accel:8.0, grip:84, color:'#f59e0b', cost:50, jap:true },
-      { id:'m5', name:'BMW M5 F90', style:'sedan', topSpeed:315, accel:8.3, grip:86, color:'#0f172a', cost:60, jap:false },
-      { id:'911', name:'Porsche 911 Turbo', style:'sport', topSpeed:332, accel:9.1, grip:93, color:'#9ca3af', cost:82, jap:false }
-    ];
-    const carsById = Object.fromEntries(carCatalog.map(c=>[c.id,c]));
-    const freePassRewards = {
-      1:{type:'gems',amount:5},2:{type:'random'},3:{type:'gems',amount:7},4:{type:'jdm_case'},5:{type:'gems',amount:10},
-      6:{type:'random'},7:{type:'gems',amount:12},8:{type:'mixed_case'},9:{type:'gems',amount:15},10:{type:'car',id:'chaser'},
-      11:{type:'gems',amount:15},12:{type:'random'},13:{type:'gems',amount:20},14:{type:'jdm_case'},15:{type:'gems',amount:20},
-      16:{type:'random'},17:{type:'gems',amount:25},18:{type:'mixed_case'},19:{type:'gems',amount:25},20:{type:'random'},
-      21:{type:'gems',amount:30},22:{type:'jdm_case'},23:{type:'gems',amount:30},24:{type:'random'},25:{type:'gems',amount:35},
-      26:{type:'mixed_case'},27:{type:'gems',amount:35},28:{type:'random'},29:{type:'gems',amount:40},30:{type:'jdm_case'}
-    };
-    const premiumPassRewards = {
-      1:{type:'gems',amount:5},2:{type:'random'},3:{type:'gems',amount:7},4:{type:'mixed_case'},5:{type:'gems',amount:10},
-      6:{type:'random'},7:{type:'gems',amount:12},8:{type:'jdm_case'},9:{type:'gems',amount:15},10:{type:'car',id:'nsx'},
-      11:{type:'gems',amount:15},12:{type:'random'},13:{type:'gems',amount:20},14:{type:'mixed_case'},15:{type:'bundle3'},
-      16:{type:'random'},17:{type:'gems',amount:25},18:{type:'jdm_case'},19:{type:'gems',amount:25},20:{type:'car',id:'rx7'},
-      21:{type:'gems',amount:30},22:{type:'random'},23:{type:'gems',amount:30},24:{type:'mixed_case'},25:{type:'title',title:'Король трассы'},
-      26:{type:'gems',amount:35},27:{type:'random'},28:{type:'jdm_case'},29:{type:'gems',amount:40},30:{type:'car',id:'gtr34'}
-    };
-    const calendarRewards = [
-      {games:10, reward:{type:'gems', amount:5}},
-      {games:20, reward:{type:'jdm_case'}},
-      {games:30, reward:{type:'gems', amount:10}},
-      {games:50, reward:{type:'car', id:'type_r'}},
-      {games:75, reward:{type:'mixed_case'}},
-      {games:100,reward:{type:'car', id:'s15'}}
-    ];
-    function getNextMidnightTs(){ const d = new Date(); d.setHours(24,0,0,0); return d.getTime(); }
-    function safeJsonParse(v){ try{return JSON.parse(v);}catch{return null;} }
-    function clamp(n,min,max){ return Math.max(min,Math.min(max,n)); }
-    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-    function byId(id){ return document.getElementById(id); }
-    function showScreen(id){ document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active')); byId(id).classList.add('active'); }
-    function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
-    const defaultData = { gems:18, rankPoints:0, ownedCars:[STARTER_CAR], selectedCarId:STARTER_CAR, favoriteCarId:STARTER_CAR, selectedTitle:'', gamesPlayed:0, recordKm:0, exclusiveBought:false, selectedMode:'race_battle', calendarClaimed:[], pass:{ seasonEnd:getNextMidnightTs(), xp:0, premium:false, freeClaimed:[], premiumClaimed:[], quests:[] } };
-    const data = Object.assign({}, defaultData, safeJsonParse(localStorage.getItem('street_nakamyra_save_v2')) || {});
-    if(!data.pass || typeof data.pass !== 'object') data.pass = JSON.parse(JSON.stringify(defaultData.pass));
-    if(!Array.isArray(data.pass.quests)) data.pass.quests = [];
-    if(!Array.isArray(data.pass.freeClaimed)) data.pass.freeClaimed = [];
-    if(!Array.isArray(data.pass.premiumClaimed)) data.pass.premiumClaimed = [];
-    if(!Array.isArray(data.ownedCars)) data.ownedCars = [STARTER_CAR];
-    if(!Array.isArray(data.calendarClaimed)) data.calendarClaimed = [];
-    let preTimer = null, seasonInterval = null, selectedBot = null;
-    const raceState = { running:false, modeKey:'race_battle', gas:false, brake:false, playerSpeed:0, botSpeed:0, playerKm:0, botKm:0, remaining:0, lastTime:0, animationId:null };
-    function saveData(){ localStorage.setItem('street_nakamyra_save_v2', JSON.stringify(data)); }
-    function resetSeasonIfNeeded(){ if(Date.now() < data.pass.seasonEnd) return; data.pass.seasonEnd = getNextMidnightTs(); data.pass.xp = 0; data.pass.premium = false; data.pass.freeClaimed = []; data.pass.premiumClaimed = []; data.pass.quests = []; data.exclusiveBought = false; ensureQuests(); saveData(); }
-    function ensureQuests(){ if(data.pass.quests.length === 20) return; data.pass.quests = [ {id:uid(), text:'Сыграй 1 заезд', done:false, claimed:false}, {id:uid(), text:'Сыграй 2 заезда', done:false, claimed:false}, {id:uid(), text:'Выиграй 1 заезд', done:false, claimed:false}, {id:uid(), text:'Выиграй 2 заезда', done:false, claimed:false}, {id:uid(), text:'Проедь 50 км суммарно', done:false, claimed:false}, {id:uid(), text:'Проедь 100 км суммарно', done:false, claimed:false}, {id:uid(), text:'Нажми газ много раз 😄', done:false, claimed:false}, {id:uid(), text:'Победи в ранговом режиме', done:false, claimed:false}, {id:uid(), text:'Победи в обычном режиме', done:false, claimed:false}, {id:uid(), text:'Дойди до 200 км/ч', done:false, claimed:false}, {id:uid(), text:'Сыграй ещё 1 заезд', done:false, claimed:false}, {id:uid(), text:'Сыграй ещё 2 заезда', done:false, claimed:false}, {id:uid(), text:'Выиграй ещё 1 заезд', done:false, claimed:false}, {id:uid(), text:'Выиграй ещё 2 заезда', done:false, claimed:false}, {id:uid(), text:'Проедь ещё 50 км', done:false, claimed:false}, {id:uid(), text:'Проедь ещё 100 км', done:false, claimed:false}, {id:uid(), text:'Прокрути кейс', done:false, claimed:false}, {id:uid(), text:'Купи машину', done:false, claimed:false}, {id:uid(), text:'Зайди в ранги', done:false, claimed:false}, {id:uid(), text:'Заверши день красиво', done:false, claimed:false} ]; }
-    function addGems(amount){ const before = data.gems; data.gems = clamp(data.gems + amount, 0, GEM_LIMIT); return data.gems - before; }
-    function getPassLevel(){ return clamp(Math.floor(data.pass.xp / PASS_XP_PER_LEVEL) + 1, 1, PASS_LEVELS); }
-    function getPassXpInLevel(){ return data.pass.xp % PASS_XP_PER_LEVEL; }
-    function addPassXp(amount){ data.pass.xp = clamp(data.pass.xp + amount, 0, PASS_LEVELS * PASS_XP_PER_LEVEL); saveData(); }
-    function getUnlockedTitles(){ const titles = ['']; const rank = getCurrentRank(); if(rank.name === 'Мастер' || rank.name === 'Легенда') titles.push('Мастер'); if(rank.name === 'Легенда') titles.push('Легенда'); if(data.pass.premiumClaimed.includes(25)) titles.push('Король трассы'); return [...new Set(titles)]; }
-    function getCurrentRank(){ let current = rankTable[0]; for(const rank of rankTable){ if(data.rankPoints >= rank.min) current = rank; } return current; }
-    function getNextRank(){ const current = getCurrentRank(); const idx = rankTable.findIndex(r=>r.name===current.name); return rankTable[Math.min(rankTable.length-1, idx+1)]; }
-    function formatReward(reward){ if(!reward) return '—'; if(reward.type === 'gems') return `${reward.amount}💎`; if(reward.type === 'jdm_case') return 'JDM кейс'; if(reward.type === 'mixed_case') return 'Смешанный кейс'; if(reward.type === 'random') return 'Случайная машина'; if(reward.type === 'car') return carsById[reward.id]?.name || 'Машина'; if(reward.type === 'bundle3') return '3 кейса'; if(reward.type === 'title') return `Титул: ${reward.title}`; return 'Награда'; }
-    function grantReward(reward){ if(!reward) return 'Пусто'; if(reward.type === 'gems'){ const got = addGems(reward.amount); saveData(); return `Получено ${got}💎`; } if(reward.type === 'jdm_case') return rollCase('jdm', true); if(reward.type === 'mixed_case') return rollCase('mixed', true); if(reward.type === 'random'){ const pool = carCatalog.filter(c=>!c.exclusive && c.id !== '240sx'); const car = rand(pool); if(!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id); saveData(); return `Получена машина: ${car.name}`; } if(reward.type === 'car'){ if(!data.ownedCars.includes(reward.id)) data.ownedCars.push(reward.id); saveData(); return `Получена машина: ${carsById[reward.id].name}`; } if(reward.type === 'bundle3'){ const a = rollCase('jdm', true), b = rollCase('mixed', true), c = rollCase('jdm', true); return `${a} • ${b} • ${c}`; } if(reward.type === 'title'){ if(!data.selectedTitle) data.selectedTitle = reward.title; saveData(); return `Открыт титул: ${reward.title}`; } return 'Награда получена'; }
-    function claimPassReward(level, premium){ const currentLevel = getPassLevel(); if(level > currentLevel) return; if(premium && !data.pass.premium) return; const arr = premium ? data.pass.premiumClaimed : data.pass.freeClaimed; if(arr.includes(level)) return; arr.push(level); const reward = premium ? premiumPassRewards[level] : freePassRewards[level]; const text = grantReward(reward); saveData(); renderAll(); alert(text); }
-    function drawWheel(ctx, x, y, r, angle){ ctx.save(); ctx.translate(x,y); ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fillStyle='#111'; ctx.fill(); ctx.beginPath(); ctx.arc(0,0,r*0.6,0,Math.PI*2); ctx.fillStyle='#d1d5db'; ctx.fill(); ctx.strokeStyle='#666'; ctx.lineWidth=2; for(let i=0;i<6;i++){ const a = angle + i*(Math.PI*2/6); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(a)*r*0.5, Math.sin(a)*r*0.5); ctx.stroke(); } ctx.restore(); }
-    function shadeColor(hex, amt){ const col = hex.replace('#',''); const num = parseInt(col,16); let r = (num >> 16) + amt, g = ((num >> 8) & 0x00FF) + amt, b = (num & 0x0000FF) + amt; r = Math.max(Math.min(255,r),0); g = Math.max(Math.min(255,g),0); b = Math.max(Math.min(255,b),0); return '#' + (b | (g << 8) | (r << 16)).toString(16).padStart(6,'0'); }
-    function drawCarModel(ctx, car, x, y, scale=1, wheelAngle=0){
-      ctx.save(); ctx.translate(x,y); ctx.scale(scale, scale);
-      const color = car.color || '#3b82f6'; const dark = '#0f172a';
-      const bodyGrad = ctx.createLinearGradient(0,0,150,0); bodyGrad.addColorStop(0, shadeColor(color,-18)); bodyGrad.addColorStop(.45, color); bodyGrad.addColorStop(1, shadeColor(color,18));
-      ctx.fillStyle='rgba(0,0,0,.32)'; ctx.beginPath(); ctx.ellipse(82,72,72,12,0,0,Math.PI*2); ctx.fill();
-      drawWheel(ctx, 48, 64, 16, wheelAngle); drawWheel(ctx, 118, 64, 16, wheelAngle);
-      ctx.fillStyle = bodyGrad; ctx.beginPath();
-      if(car.style === 'jdm'){ ctx.moveTo(8,54); ctx.lineTo(20,36); ctx.lineTo(70,26); ctx.lineTo(104,26); ctx.lineTo(132,38); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
-      else if(car.style === 'lux'){ ctx.moveTo(8,56); ctx.lineTo(18,40); ctx.lineTo(52,30); ctx.lineTo(112,30); ctx.lineTo(140,42); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
-      else if(car.style === 'sport'){ ctx.moveTo(8,56); ctx.lineTo(22,40); ctx.lineTo(58,28); ctx.lineTo(104,28); ctx.lineTo(134,40); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
-      else { ctx.moveTo(8,56); ctx.lineTo(20,40); ctx.lineTo(64,30); ctx.lineTo(112,30); ctx.lineTo(140,42); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
-      ctx.closePath(); ctx.fill();
-      ctx.fillStyle = shadeColor(color, 26); ctx.beginPath(); if(car.style === 'lux'){ ctx.moveTo(40,30); ctx.lineTo(58,14); ctx.lineTo(104,14); ctx.lineTo(124,30); } else { ctx.moveTo(42,30); ctx.lineTo(58,12); ctx.lineTo(100,12); ctx.lineTo(120,30); } ctx.closePath(); ctx.fill();
-      ctx.fillStyle = 'rgba(190,235,255,.95)'; ctx.beginPath(); ctx.moveTo(60,16); ctx.lineTo(96,16); ctx.lineTo(115,28); ctx.lineTo(54,28); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.beginPath(); ctx.moveTo(66,18); ctx.lineTo(80,18); ctx.lineTo(70,26); ctx.lineTo(58,26); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = dark; ctx.fillRect(8,61,138,4); ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fillRect(18,58,92,2);
-      const headGlow = ctx.createRadialGradient(143,52,2,146,52,16); headGlow.addColorStop(0,'rgba(255,244,170,.9)'); headGlow.addColorStop(1,'rgba(255,244,170,0)'); ctx.fillStyle = headGlow; ctx.beginPath(); ctx.arc(146,52,16,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#fff6a8'; ctx.fillRect(140,49,6,7); ctx.fillStyle = '#ff6b6b'; ctx.fillRect(8,49,6,7); ctx.fillStyle = 'rgba(0,0,0,.42)'; ctx.fillRect(18,48,22,6);
-      ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(30,40); ctx.lineTo(120,40); ctx.stroke();
-      if(car.style === 'jdm'){ ctx.fillStyle = dark; ctx.fillRect(130,28,14,4); }
-      ctx.strokeStyle = 'rgba(0,0,0,.48)'; ctx.lineWidth = 2; ctx.beginPath();
-      if(car.style === 'jdm'){ ctx.moveTo(8,54); ctx.lineTo(20,36); ctx.lineTo(70,26); ctx.lineTo(104,26); ctx.lineTo(132,38); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
-      else if(car.style === 'lux'){ ctx.moveTo(8,56); ctx.lineTo(18,40); ctx.lineTo(52,30); ctx.lineTo(112,30); ctx.lineTo(140,42); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
-      else { ctx.moveTo(8,56); ctx.lineTo(20,40); ctx.lineTo(64,30); ctx.lineTo(112,30); ctx.lineTo(140,42); ctx.lineTo(146,50); ctx.lineTo(146,64); ctx.lineTo(8,64); }
-      ctx.closePath(); ctx.stroke();
-      if(wheelAngle !== 0){ ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 2; for(let i=0;i<3;i++){ ctx.beginPath(); ctx.moveTo(-8 - i*8, 36 + i*8); ctx.lineTo(10 - i*8, 34 + i*8); ctx.stroke(); } }
-      ctx.restore();
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://luevkczhecwyngqaorgv.supabase.co",
+  "sb_publishable_aKZA-Pe_V47u0L1jp6xA8g_ZP1UxMeQ"
+);
+
+let currentUser = null;
+let currentChat = null;
+
+async function login() {
+  const username = document.getElementById("username").value;
+
+  const { data } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", username)
+    .single();
+
+  currentUser = data;
+  loadUsers();
+}
+
+async function loadUsers() {
+  const { data } = await supabase
+    .from("profiles")
+    .select("*");
+
+  const div = document.getElementById("users");
+  div.innerHTML = "";
+
+  data.forEach(user => {
+    const btn = document.createElement("button");
+    btn.innerText = user.username;
+    btn.onclick = () => openChat(user.id);
+    div.appendChild(btn);
+  });
+}
+
+function openChat(userId) {
+  currentChat = userId;
+  loadMessages();
+}
+
+async function loadMessages() {
+  const { data } = await supabase
+    .from("messages")
+    .select("*");
+
+  const div = document.getElementById("chat");
+  div.innerHTML = "";
+
+  data.forEach(msg => {
+    if (
+      (msg.sender_id == currentUser.id && msg.receiver_id == currentChat) ||
+      (msg.sender_id == currentChat && msg.receiver_id == currentUser.id)
+    ) {
+      const p = document.createElement("p");
+      p.innerText = msg.text;
+      div.appendChild(p);
     }
-    function renderCarCanvas(canvas, car, opts={}){ const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); drawCarModel(ctx, car, opts.x ?? 10, opts.y ?? 10, opts.scale ?? 0.8, opts.wheelAngle ?? 0); }
-    function renderLobby(){ resetSeasonIfNeeded(); byId('statRank').textContent = data.rankPoints; byId('statGems').textContent = data.gems; byId('statCars').textContent = data.ownedCars.length; byId('statRecord').textContent = `${data.recordKm.toFixed(1)} км`; const currentRank = getCurrentRank(); const nextRank = getNextRank(); const max = currentRank.max, min = currentRank.min; const width = currentRank.name === nextRank.name ? 100 : clamp(((data.rankPoints - min) / (nextRank.min - min || 1))*100,0,100); byId('rankProgress').style.width = `${width}%`; byId('rankProgressText').textContent = currentRank.name === nextRank.name ? `${currentRank.name} • MAX` : `${currentRank.name} • ${data.rankPoints} / ${nextRank.min}`; byId('rankTitleLobby').textContent = currentRank.name; byId('titleChipLobby').textContent = `Титул: ${data.selectedTitle || 'нет'}`; byId('favoriteChipLobby').textContent = `Любимая: ${carsById[data.favoriteCarId]?.name || '—'}`; byId('seasonTimerChip').textContent = `⏳ До конца сезона: ${formatRemaining(data.pass.seasonEnd - Date.now())}`; const mode = modes[data.selectedMode]; byId('selectedModeTitle').textContent = mode.title; byId('selectedModeDesc').textContent = mode.desc; document.querySelectorAll('.mode-pill').forEach(el=>el.classList.toggle('active', el.dataset.mode === data.selectedMode)); byId('passInfoText').textContent = `Уровень ${getPassLevel()} • ${getPassXpInLevel()} / ${PASS_XP_PER_LEVEL} XP`; byId('passProgress').style.width = `${(getPassXpInLevel()/PASS_XP_PER_LEVEL)*100}%`; const titleBox = byId('lobbyTitleBox'); titleBox.innerHTML = data.selectedTitle ? `<span class="title-chip">${data.selectedTitle}</span>` : `<span class="chip">Без титула</span>`; const fav = carsById[data.favoriteCarId]; byId('favoritePreview').innerHTML = `<div class="car-canvas-box" style="width:120px;height:76px"><canvas id="favoriteCanvas" width="120" height="76"></canvas></div><div><div style="font-weight:800;">${fav.name}</div><div class="small">Скорость ${fav.topSpeed} • Разгон ${fav.accel}</div><div class="small">Сцепление ${fav.grip}</div></div>`; renderCarCanvas(byId('favoriteCanvas'), fav, {scale:.72, x:0, y:0}); const mini = byId('miniGaragePreview'); mini.innerHTML = ''; data.ownedCars.slice(0,3).forEach(id=>{ const box = document.createElement('div'); box.style.padding='8px'; box.style.borderRadius='14px'; box.style.background='rgba(255,255,255,.06)'; box.style.border='1px solid rgba(255,255,255,.08)'; box.innerHTML = `<canvas width="98" height="54"></canvas><div class="small" style="margin-top:6px">${carsById[id].name}</div>`; mini.appendChild(box); renderCarCanvas(box.querySelector('canvas'), carsById[id], {scale:.58, x:2, y:0}); }); }
-    function renderGarage(){ byId('garageSummary').textContent = `${data.ownedCars.length} машин`; const grid = byId('garageCars'); grid.innerHTML = ''; data.ownedCars.slice().sort((a,b)=>carsById[a].name.localeCompare(carsById[b].name,'ru')).forEach(id=>{ const car = carsById[id]; const card = document.createElement('div'); card.className = `car-card ${data.favoriteCarId===id?'favorite':''} ${data.selectedCarId===id?'selected':''}`; card.innerHTML = `<div class="car-canvas-box"><canvas width="120" height="88"></canvas></div><div class="car-meta"><h3>${car.name}</h3><div class="car-lines"><div>Макс. скорость: ${car.topSpeed} км/ч</div><div>Разгон: ${car.accel}</div><div>Сцепление: ${car.grip}</div><div><span class="color-dot" style="background:${car.color}"></span> ${car.style.toUpperCase()}</div></div></div><div class="car-actions"></div>`; renderCarCanvas(card.querySelector('canvas'), car, {scale:.76, x:2, y:8}); const actions = card.querySelector('.car-actions'); const selectBtn = document.createElement('button'); selectBtn.className = 'btn-blue'; selectBtn.textContent = data.selectedCarId===id ? 'Выбрана' : 'Выбрать машину'; selectBtn.onclick = ()=>{ data.selectedCarId = id; saveData(); renderGarage(); renderLobby(); }; actions.appendChild(selectBtn); const favBtn = document.createElement('button'); favBtn.className = 'btn-gold'; favBtn.textContent = data.favoriteCarId===id ? 'Любимая машина' : 'Сделать любимой'; favBtn.onclick = ()=>{ data.favoriteCarId = id; saveData(); renderGarage(); renderLobby(); }; actions.appendChild(favBtn); grid.appendChild(card); }); }
-    function rollCase(kind, silent=false){ let pool = carCatalog.filter(c=>!c.exclusive && c.id !== '240sx'); if(kind === 'jdm') pool = carCatalog.filter(c=>c.jap && !c.exclusive && c.id !== '240sx'); const car = rand(pool); if(!data.ownedCars.includes(car.id)) data.ownedCars.push(car.id); saveData(); if(!silent){ byId('dropBox').innerHTML = `<div><div style="font-weight:800;font-size:18px;">Выпало: ${car.name}</div><canvas id="dropCanvas" width="200" height="90" style="margin-top:10px"></canvas></div>`; renderCarCanvas(byId('dropCanvas'), car, {scale:1.0, x:18, y:8}); } return `Выпало: ${car.name}`; }
-    function buyExclusive(){ resetSeasonIfNeeded(); if(data.exclusiveBought) return; if(data.gems < EXCLUSIVE_PRICE) return alert('Не хватает гемов'); data.gems -= EXCLUSIVE_PRICE; data.exclusiveBought = true; if(!data.ownedCars.includes('240sx')) data.ownedCars.push('240sx'); saveData(); renderAll(); byId('dropBox').innerHTML = `<div><div style="font-weight:800;font-size:18px;">Куплена эксклюзивная машина: Nissan 240SX</div><canvas id="dropCanvasExclusive" width="200" height="90" style="margin-top:10px"></canvas></div>`; renderCarCanvas(byId('dropCanvasExclusive'), carsById['240sx'], {scale:1.0, x:18, y:8}); }
-    function renderShop(){ byId('shopGemsInfo').textContent = `💎 ${data.gems} / ${GEM_LIMIT}`; byId('buyExclusiveBtn').disabled = data.exclusiveBought || data.gems < EXCLUSIVE_PRICE || Date.now() >= data.pass.seasonEnd; byId('buyExclusiveBtn').textContent = data.exclusiveBought ? 'Уже куплено' : 'Купить за 129💎'; }
-    function renderPass(){ byId('passTimerHeader').textContent = `⏳ ${formatRemaining(data.pass.seasonEnd - Date.now())}`; byId('passLevelText').textContent = `Уровень ${getPassLevel()}`; byId('passXpText').textContent = `${getPassXpInLevel()} / ${PASS_XP_PER_LEVEL} XP`; byId('passProgressBar').style.width = `${(getPassXpInLevel()/PASS_XP_PER_LEVEL)*100}%`; byId('passPremiumState').textContent = data.pass.premium ? 'Street Pass+: куплен' : 'Street Pass+: не куплен'; byId('buyPassBtn').disabled = data.pass.premium || data.gems < PASS_PRICE; byId('buyPassBtn').textContent = data.pass.premium ? 'Street Pass+ уже куплен' : 'Купить Street Pass+ за 179💎'; renderQuests(); const wrap = byId('passLevels'); wrap.innerHTML = ''; const currentLevel = getPassLevel(); for(let level=1; level<=PASS_LEVELS; level++){ const freeReward = freePassRewards[level], premiumReward = premiumPassRewards[level], freeClaimed = data.pass.freeClaimed.includes(level), premiumClaimed = data.pass.premiumClaimed.includes(level); const row = document.createElement('div'); row.className = 'pass-level'; row.innerHTML = `<div class="level-num">${level}</div><div class="reward-box ${freeClaimed?'claimed':''}"><div class="small">Бесплатно</div><div style="font-weight:800;margin-top:4px">${formatReward(freeReward)}</div><div style="margin-top:8px"><button class="btn-blue free-claim">${freeClaimed?'Забрано':'Забрать'}</button></div></div><div class="reward-box ${data.pass.premium?'':'locked'} ${premiumClaimed?'claimed':''}"><div class="small">Street Pass+</div><div style="font-weight:800;margin-top:4px">${formatReward(premiumReward)}</div><div style="margin-top:8px"><button class="btn-gold premium-claim">${premiumClaimed?'Забрано':'Забрать'}</button></div></div>`; const freeBtn = row.querySelector('.free-claim'); freeBtn.disabled = freeClaimed || level > currentLevel; freeBtn.onclick = ()=>claimPassReward(level,false); const premiumBtn = row.querySelector('.premium-claim'); premiumBtn.disabled = premiumClaimed || level > currentLevel || !data.pass.premium; premiumBtn.onclick = ()=>claimPassReward(level,true); wrap.appendChild(row); } }
-    function renderQuests(){ const list = byId('questList'); list.innerHTML = ''; data.pass.quests.forEach(q=>{ const card = document.createElement('div'); card.className = 'quest-card'; card.innerHTML = `<div style="font-weight:800">${q.text}</div><div class="small" style="margin-top:6px">Награда: 50 XP</div><div class="small" style="margin-top:6px">${q.claimed?'Уже забран':q.done?'Готово к получению':'Ещё не выполнен'}</div>`; list.appendChild(card); }); const canClaim = data.pass.quests.some(q=>q.done && !q.claimed); byId('claimQuestBtn').disabled = !canClaim; }
-    function claimQuest(){ const q = data.pass.quests.find(item=>item.done && !item.claimed); if(!q) return; q.claimed = true; addPassXp(50); saveData(); renderAll(); }
-    function buyPass(){ if(data.pass.premium) return; if(data.gems < PASS_PRICE) return alert('Не хватает гемов'); data.gems -= PASS_PRICE; data.pass.premium = true; saveData(); renderAll(); }
-    function renderCalendar(){ byId('gamesPlayedText').textContent = data.gamesPlayed; const list = byId('calendarList'); list.innerHTML = ''; calendarRewards.forEach(item=>{ const claimed = data.calendarClaimed.includes(item.games), ready = data.gamesPlayed >= item.games; const div = document.createElement('div'); div.className = `calendar-reward ${claimed?'claimed':''}`; div.innerHTML = `<div><div style="font-weight:800">${item.games} игр</div><div class="small">${formatReward(item.reward)}</div></div><button class="${claimed?'btn-dark':'btn-gold'}">${claimed?'Забрано':'Забрать'}</button>`; const btn = div.querySelector('button'); btn.disabled = claimed || !ready; btn.onclick = ()=>{ if(claimed || !ready) return; data.calendarClaimed.push(item.games); const text = grantReward(item.reward); saveData(); renderAll(); alert(text); }; list.appendChild(div); }); }
-    function renderRanks(){ const current = getCurrentRank(); byId('currentRankBig').textContent = current.name; const grid = byId('rankGrid'); grid.innerHTML = ''; rankTable.forEach(rank=>{ const row = document.createElement('div'); row.className = `rank-row ${rank.name===current.name?'current':''}`; row.innerHTML = `<div style="font-weight:800">${rank.name}</div><div><div class="small">${rank.min} - ${rank.max}</div><div class="small" style="margin-top:4px">Награда: ${rank.reward}</div></div><div class="chip">${rank.name===current.name?'Текущий':'—'}</div>`; grid.appendChild(row); }); }
-    function getBotForMode(){ const current = getCurrentRank(); const candidates = carCatalog.filter(c=>!c.exclusive && c.id !== data.selectedCarId && c.id !== STARTER_CAR); let pool = candidates; if(current.name === 'Бронза' || current.name === 'Серебро') pool = candidates.filter(c=>c.topSpeed <= 300); else if(current.name === 'Золото' || current.name === 'Алмаз') pool = candidates.filter(c=>c.topSpeed <= 320); const car = rand(pool.length ? pool : candidates); return { name:'Street Bot', title:'Без титула', rank:getCurrentRank().name, carId:car.id }; }
-    function openPrebattle(){ resetSeasonIfNeeded(); selectedBot = getBotForMode(); const myCar = carsById[data.selectedCarId], botCar = carsById[selectedBot.carId]; byId('prePlayerRank').textContent = getCurrentRank().name; byId('prePlayerTitleText').textContent = data.selectedTitle || 'Без титула'; byId('preBotRank').textContent = selectedBot.rank; byId('preBotTitleText').textContent = selectedBot.title; byId('preBotName').textContent = selectedBot.name; byId('preModeText').textContent = `Режим: ${modes[data.selectedMode].title}`; renderCarCanvas(byId('prePlayerCardCanvas'), myCar, {scale:.92, x:8, y:10}); renderCarCanvas(byId('preBotCardCanvas'), botCar, {scale:.92, x:8, y:10}); showScreen('prebattle'); let n = 3; byId('preCountdown').textContent = n; if(preTimer) clearInterval(preTimer); preTimer = setInterval(()=>{ n--; byId('preCountdown').textContent = n > 0 ? n : 'Старт!'; if(n <= 0){ clearInterval(preTimer); preTimer = null; setTimeout(startRace, 260); } }, 1000); }
-    function updateQuestProgressAfterRace(win, kmMax, topSpeed){ const findOpen = text => data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes(text)); const qPlay = data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes('Сыграй')); if(qPlay) qPlay.done = true; if(win){ const qWin = data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes('Выиграй')); if(qWin) qWin.done = true; } if(kmMax >= 50){ const q50 = findOpen('50 км'); if(q50) q50.done = true; } if(kmMax >= 100){ const q100 = findOpen('100 км'); if(q100) q100.done = true; } if(topSpeed >= 200){ const qTop = findOpen('200 км/ч'); if(qTop) qTop.done = true; } if(modes[data.selectedMode].ranked && win){ const qRank = findOpen('ранговом режиме'); if(qRank) qRank.done = true; } if(!modes[data.selectedMode].ranked && win){ const qCasual = findOpen('обычном режиме'); if(qCasual) qCasual.done = true; } }
-    function startRace(){ showScreen('game'); raceState.running = true; raceState.modeKey = data.selectedMode; raceState.gas = false; raceState.brake = false; raceState.playerSpeed = 0; raceState.botSpeed = 0; raceState.playerKm = 0; raceState.botKm = 0; raceState.remaining = modes[data.selectedMode].time; raceState.lastTime = performance.now(); byId('resultOverlay').classList.remove('active'); if(raceState.animationId) cancelAnimationFrame(raceState.animationId); raceState.animationId = requestAnimationFrame(gameLoop); renderTitleOverlay(); updateHud(); }
-    function updateHud(){ byId('playerHud').innerHTML = `<div style="font-weight:800;">${carsById[data.selectedCarId].name}</div><div class="small">${getCurrentRank().name}${data.selectedTitle ? ' • ' + data.selectedTitle : ''}</div>`; const mode = modes[raceState.modeKey]; const lines = [ `Скорость: ${raceState.playerSpeed.toFixed(0)} км/ч`, `Ты: ${raceState.playerKm.toFixed(1)} / ${mode.distance} км` ]; if(mode.bot) lines.push(`Бот: ${raceState.botKm.toFixed(1)} км`); lines.push(`Время: ${formatGameTime(raceState.remaining)}`); byId('raceHud').innerHTML = lines.map(line=>`<div class="small" style="font-size:13px">${line}</div>`).join(''); }
-    function formatGameTime(sec){ const s = Math.max(0, Math.floor(sec)); const m = Math.floor(s/60), r = s%60; return `${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}`; }
-    function drawScene(){
-      const canvas = byId('gameCanvas'); const ctx = canvas.getContext('2d'); const w = canvas.width = window.innerWidth, h = canvas.height = window.innerHeight; ctx.clearRect(0,0,w,h);
-      const sky = ctx.createLinearGradient(0,0,0,h); sky.addColorStop(0,'#040814'); sky.addColorStop(.35,'#0a1a38'); sky.addColorStop(.72,'#132544'); sky.addColorStop(1,'#08101d'); ctx.fillStyle = sky; ctx.fillRect(0,0,w,h);
-      for(let i=0;i<36;i++){ const sx = (i*83 + 17) % w, sy = 30 + (i*47 % Math.floor(h*0.42)), sr = (i % 3) + 1; ctx.fillStyle = `rgba(255,255,255,${0.35 + (i%4)*0.1})`; ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI*2); ctx.fill(); }
-      const moonX = w*0.82, moonY = h*0.16; const moonGlow = ctx.createRadialGradient(moonX, moonY, 18, moonX, moonY, 80); moonGlow.addColorStop(0,'rgba(255,255,235,.75)'); moonGlow.addColorStop(.35,'rgba(255,255,230,.32)'); moonGlow.addColorStop(1,'rgba(255,255,230,0)'); ctx.fillStyle = moonGlow; ctx.beginPath(); ctx.arc(moonX, moonY, 80, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.arc(moonX, moonY, 34, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = 'rgba(10,20,40,.08)'; ctx.beginPath(); ctx.arc(moonX-10, moonY-8, 8, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(moonX+9, moonY+6, 5, 0, Math.PI*2); ctx.fill();
-      const cityGlow = ctx.createLinearGradient(0,h*0.26,0,h*0.55); cityGlow.addColorStop(0,'rgba(72,130,255,0)'); cityGlow.addColorStop(1,'rgba(72,130,255,.15)'); ctx.fillStyle = cityGlow; ctx.fillRect(0,h*0.24,w,h*0.32);
-      const cityShift = (raceState.playerKm * 10) % 160;
-      for(let i=0;i<16;i++){ const bx = i*120 - cityShift, bw = 58 + (i%4)*18, bh = 90 + (i%6)*26, by = h*0.34 + (i%3)*10; ctx.fillStyle = i%2===0 ? 'rgba(8,14,26,.92)' : 'rgba(14,22,38,.96)'; ctx.fillRect(bx, by, bw, bh); ctx.strokeStyle = 'rgba(180,220,255,.18)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx+bw*0.5, by); ctx.lineTo(bx+bw*0.5, by-10-(i%3)*8); ctx.stroke(); for(let r=0;r<Math.floor((bh-18)/16);r++){ for(let c=0;c<Math.floor((bw-14)/12);c++){ if((r+c+i)%3===0 || (r*2+c+i)%5===0){ ctx.fillStyle = (r+c)%2===0 ? 'rgba(255,232,120,.78)' : 'rgba(120,230,255,.68)'; ctx.fillRect(bx+8+c*12, by+10+r*16, 6, 8); } } } }
-      const nearShift = (raceState.playerKm * 22) % 220;
-      for(let i=0;i<8;i++){ const bx = i*210 - nearShift, bw = 100 + (i%3)*22, bh = 110 + (i%4)*34, by = h*0.43 + (i%2)*14; ctx.fillStyle = 'rgba(10,18,31,.97)'; ctx.fillRect(bx, by, bw, bh); ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fillRect(bx+bw-8, by, 8, bh); for(let r=0;r<Math.floor((bh-18)/18);r++){ for(let c=0;c<Math.floor((bw-18)/16);c++){ if((r+c+i)%2===0){ ctx.fillStyle = c%2===0 ? 'rgba(255,229,115,.88)' : 'rgba(110,222,255,.7)'; ctx.fillRect(bx+8+c*16, by+12+r*18, 8, 10); } } } }
-      const roadY = h*0.72; ctx.fillStyle = '#0f172a'; ctx.fillRect(0, roadY, w, h-roadY); ctx.fillStyle = '#1f2937'; ctx.fillRect(0, roadY+8, w, 8); ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 5; ctx.setLineDash([30,22]); ctx.beginPath(); ctx.moveTo(-(raceState.playerKm*60)%52, roadY+58); ctx.lineTo(w, roadY+58); ctx.stroke(); ctx.setLineDash([]);
-      for(let i=0;i<8;i++){ const x = i*190 - ((raceState.playerKm*120)%190); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, roadY-40); ctx.lineTo(x, roadY+2); ctx.stroke(); const lampGlow = ctx.createRadialGradient(x, roadY-44, 2, x, roadY-44, 18); lampGlow.addColorStop(0,'rgba(126,231,255,.85)'); lampGlow.addColorStop(1,'rgba(126,231,255,0)'); ctx.fillStyle = lampGlow; ctx.beginPath(); ctx.arc(x, roadY-44, 18, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = '#7ee7ff'; ctx.beginPath(); ctx.arc(x, roadY-44, 6, 0, Math.PI*2); ctx.fill(); }
-      ctx.fillStyle = 'rgba(79,191,255,.18)'; ctx.fillRect(0, roadY+6, w, 4); ctx.fillStyle = 'rgba(239,68,68,.16)'; ctx.fillRect(0, roadY+92, w, 4);
-      const playerCar = carsById[data.selectedCarId]; drawCarModel(ctx, playerCar, 120, roadY-30, 1.25, raceState.playerKm*4);
-      if(modes[raceState.modeKey].bot){ const botCar = carsById[selectedBot.carId]; const gap = clamp((raceState.botKm - raceState.playerKm) * 8, -120, 120); drawCarModel(ctx, botCar, 120 + gap, roadY-120, 1.05, raceState.botKm*4.2); }
-      ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = 'bold 18px Arial'; ctx.fillText(`${raceState.playerKm.toFixed(1)} км`, 24, roadY-18); if(modes[raceState.modeKey].bot) ctx.fillText(`Бот: ${raceState.botKm.toFixed(1)} км`, 24, roadY-48);
+  });
+}
+
+async function sendMessage() {
+  const text = document.getElementById("message").value;
+
+  await supabase.from("messages").insert([
+    {
+      sender_id: currentUser.id,
+      receiver_id: currentChat,
+      text: text
     }
-    function gameLoop(now){ if(!raceState.running) return; const dt = (now - raceState.lastTime) / 1000; raceState.lastTime = now; const car = carsById[data.selectedCarId], mode = modes[raceState.modeKey]; if(raceState.gas) raceState.playerSpeed += car.accel * 12 * dt; else raceState.playerSpeed -= 18 * dt; if(raceState.brake) raceState.playerSpeed -= 36 * dt; raceState.playerSpeed = clamp(raceState.playerSpeed, 0, car.topSpeed); raceState.playerKm += raceState.playerSpeed * dt / 60; if(mode.bot){ const botCar = carsById[selectedBot.carId]; const target = botCar.topSpeed * (mode.ranked ? 0.88 : 0.82); if(raceState.botSpeed < target) raceState.botSpeed += botCar.accel * 11 * dt; else raceState.botSpeed -= 8 * dt; raceState.botSpeed = clamp(raceState.botSpeed, 0, botCar.topSpeed); raceState.botKm += raceState.botSpeed * dt / 60; } raceState.remaining -= dt; drawScene(); updateHud(); if(raceState.playerKm >= mode.distance || (mode.bot && raceState.botKm >= mode.distance) || raceState.remaining <= 0){ finishRace(); return; } raceState.animationId = requestAnimationFrame(gameLoop); }
-    function updateQuestProgressAfterRace(win, kmMax, topSpeed){ const findOpen = text => data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes(text)); const qPlay = data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes('Сыграй')); if(qPlay) qPlay.done = true; if(win){ const qWin = data.pass.quests.find(q=>!q.done && !q.claimed && q.text.includes('Выиграй')); if(qWin) qWin.done = true; } if(kmMax >= 50){ const q50 = findOpen('50 км'); if(q50) q50.done = true; } if(kmMax >= 100){ const q100 = findOpen('100 км'); if(q100) q100.done = true; } if(topSpeed >= 200){ const qTop = findOpen('200 км/ч'); if(qTop) qTop.done = true; } if(modes[data.selectedMode].ranked && win){ const qRank = findOpen('ранговом режиме'); if(qRank) qRank.done = true; } if(!modes[data.selectedMode].ranked && win){ const qCasual = findOpen('обычном режиме'); if(qCasual) qCasual.done = true; } }
-    function finishRace(){ raceState.running = false; if(raceState.animationId) cancelAnimationFrame(raceState.animationId); const mode = modes[raceState.modeKey]; let win = false; if(mode.bot){ win = raceState.playerKm >= mode.distance && raceState.playerKm >= raceState.botKm; if(raceState.remaining <= 0 && raceState.playerKm < mode.distance) win = raceState.playerKm > raceState.botKm; } else { win = raceState.playerKm >= mode.distance; } let rankChange = win ? 100 : -100; data.rankPoints = clamp(data.rankPoints + rankChange, 0, 10000); addPassXp(win ? 50 : 15); data.gamesPlayed += 1; data.recordKm = Math.max(data.recordKm, raceState.playerKm); updateQuestProgressAfterRace(win, raceState.playerKm, raceState.playerSpeed); saveData(); renderAll(); byId('resultBig').textContent = win ? 'Победа!' : 'Поражение!'; const details = []; details.push(`Ты проехал ${raceState.playerKm.toFixed(1)} км`); if(mode.bot) details.push(`Бот проехал ${raceState.botKm.toFixed(1)} км`); details.push(win ? `🏆 +100 ранга` : `🏆 -100 ранга`); details.push(win ? `Street Pass: +50 XP` : `Street Pass: +15 XP`); byId('resultDetails').textContent = details.join(' • '); byId('resultOverlay').classList.add('active'); }
-    function renderTitleOverlay(){ const list = byId('titleList'); list.innerHTML = ''; getUnlockedTitles().forEach(title=>{ const div = document.createElement('div'); div.className = `title-item ${data.selectedTitle===title?'active':''}`; div.textContent = title || 'Без титула'; div.onclick = ()=>{ data.selectedTitle = title; saveData(); renderAll(); renderTitleOverlay(); }; list.appendChild(div); }); }
-    function formatRemaining(ms){ if(ms <= 0) return '00:00:00'; const total = Math.floor(ms/1000), h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = total%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
-    function updateSeasonTimer(){ resetSeasonIfNeeded(); const txt = formatRemaining(data.pass.seasonEnd - Date.now()); if(byId('seasonTimerChip')) byId('seasonTimerChip').textContent = `⏳ До конца сезона: ${txt}`; if(byId('passTimerHeader')) byId('passTimerHeader').textContent = `⏳ ${txt}`; }
-    function renderAll(){ renderLobby(); renderGarage(); renderShop(); renderPass(); renderCalendar(); renderRanks(); }
-    function bindUI(){ byId('playBtn').onclick = openPrebattle; byId('garageBtn').onclick = ()=>{ renderGarage(); showScreen('garage'); }; byId('shopBtn').onclick = ()=>{ renderShop(); showScreen('shop'); }; byId('passBtn').onclick = ()=>{ renderPass(); showScreen('pass'); }; byId('calendarBtn').onclick = ()=>{ renderCalendar(); showScreen('calendar'); }; byId('rankBtn').onclick = ()=>{ renderRanks(); showScreen('rank'); }; byId('backFromGarage').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('backFromShop').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('backFromPass').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('backFromCalendar').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('backFromRank').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('buyPassBtn').onclick = buyPass; byId('claimQuestBtn').onclick = claimQuest; byId('buyExclusiveBtn').onclick = buyExclusive; byId('goPassBtn').onclick = ()=>{ renderPass(); showScreen('pass'); }; byId('titleBtnInGame').onclick = ()=>byId('titleOverlay').classList.add('active'); byId('closeTitleOverlay').onclick = ()=>byId('titleOverlay').classList.remove('active'); byId('backToLobbyBtn').onclick = ()=>{ renderAll(); showScreen('lobby'); }; byId('playAgainBtn').onclick = openPrebattle; document.querySelectorAll('.shop-roll').forEach(btn=>{ btn.onclick = ()=>{ if(data.gems < 9) return alert('Не хватает гемов'); data.gems -= 9; rollCase(btn.dataset.roll); saveData(); renderAll(); }; }); document.querySelectorAll('.mode-pill').forEach(el=>{ el.onclick = ()=>{ data.selectedMode = el.dataset.mode; saveData(); renderLobby(); }; }); byId('gasBtn').onmousedown = ()=>raceState.gas = true; byId('gasBtn').onmouseup = ()=>raceState.gas = false; byId('gasBtn').onmouseleave = ()=>raceState.gas = false; byId('gasBtn').ontouchstart = e=>{ e.preventDefault(); raceState.gas = true; }; byId('gasBtn').ontouchend = e=>{ e.preventDefault(); raceState.gas = false; }; byId('brakeBtn').onmousedown = ()=>raceState.brake = true; byId('brakeBtn').onmouseup = ()=>raceState.brake = false; byId('brakeBtn').onmouseleave = ()=>raceState.brake = false; byId('brakeBtn').ontouchstart = e=>{ e.preventDefault(); raceState.brake = true; }; byId('brakeBtn').ontouchend = e=>{ e.preventDefault(); raceState.brake = false; }; window.addEventListener('keydown', e=>{ if(e.code==='ArrowUp' || e.code==='KeyW' || e.code==='Space') raceState.gas = true; if(e.code==='ArrowDown' || e.code==='KeyS') raceState.brake = true; }); window.addEventListener('keyup', e=>{ if(e.code==='ArrowUp' || e.code==='KeyW' || e.code==='Space') raceState.gas = false; if(e.code==='ArrowDown' || e.code==='KeyS') raceState.brake = false; }); window.addEventListener('resize', ()=>{ if(raceState.running) drawScene(); }); }
-    document.addEventListener('DOMContentLoaded', ()=>{ resetSeasonIfNeeded(); ensureQuests(); if(!data.selectedCarId || !data.ownedCars.includes(data.selectedCarId)) data.selectedCarId = data.ownedCars[0] || STARTER_CAR; if(!data.favoriteCarId || !data.ownedCars.includes(data.favoriteCarId)) data.favoriteCarId = data.ownedCars[0] || STARTER_CAR; bindUI(); renderAll(); updateSeasonTimer(); if(seasonInterval) clearInterval(seasonInterval); seasonInterval = setInterval(updateSeasonTimer, 1000); saveData(); });
-  </script>
+  ]);
+
+  loadMessages();
+}
+</script>
+
 </body>
 </html>
