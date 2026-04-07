@@ -5,802 +5,957 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Urbaev Helper</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ffd6a5, #fdffb6, #caffbf);
+      background:
+        radial-gradient(circle at top left, #2f4858 0%, transparent 30%),
+        radial-gradient(circle at top right, #4b2e83 0%, transparent 28%),
+        linear-gradient(135deg, #111827, #1f2937, #0f172a);
+      color: #fff;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
     .header {
-      background: linear-gradient(135deg, #ff7b54, #ffb26b);
-      color: white;
       text-align: center;
-      padding: 18px 12px 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 20px 10px 10px;
     }
 
     .header h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 42px;
+      color: #ffd166;
+      text-shadow: 0 0 15px rgba(255, 209, 102, 0.35);
     }
 
-    .subtitle {
-      margin-top: 8px;
-      font-size: 14px;
-      opacity: 0.95;
+    .header p {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #d1d5db;
     }
 
-    .warning {
-      margin-top: 8px;
-      font-size: 13px;
-      background: rgba(255,255,255,0.2);
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 10px;
-    }
-
-    .quick-buttons {
+    .top-bar {
       display: flex;
-      gap: 8px;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 25px 0 18px;
+    }
+
+    .tab-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s ease;
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+
+    .tab-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      background: rgba(255,255,255,0.18);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
       flex-wrap: wrap;
       justify-content: center;
-      padding: 12px;
-      background: rgba(255,255,255,0.45);
-      backdrop-filter: blur(6px);
+      margin-bottom: 18px;
     }
 
-    .quick-buttons button {
+    .search-box input {
+      width: min(600px, 100%);
+      padding: 15px 16px;
+      border-radius: 14px;
       border: none;
-      background: white;
-      padding: 10px 12px;
-      border-radius: 12px;
+      outline: none;
+      font-size: 16px;
+      background: rgba(255,255,255,0.95);
+      color: #111827;
+    }
+
+    .search-box button {
+      padding: 15px 20px;
+      border: none;
+      border-radius: 14px;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      font-size: 16px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
       transition: 0.2s;
     }
 
-    .quick-buttons button:hover {
-      transform: translateY(-2px);
+    .search-box button:hover {
+      transform: scale(1.04);
     }
 
-    .chat {
-      flex: 1;
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.22);
+      backdrop-filter: blur(10px);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #ffd166;
+    }
+
+    .menu-list {
+      max-height: 650px;
       overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      padding-right: 6px;
     }
 
-    .message {
-      max-width: 78%;
-      padding: 12px 14px;
-      border-radius: 16px;
-      white-space: pre-wrap;
-      line-height: 1.45;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-    }
-
-    .user {
-      align-self: flex-end;
-      background: #ffffff;
-      border-bottom-right-radius: 4px;
-    }
-
-    .bot {
-      align-self: flex-start;
-      background: #fff1cc;
-      border-bottom-left-radius: 4px;
-    }
-
-    .input-area {
-      display: flex;
-      gap: 10px;
-      padding: 12px;
-      background: white;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-    }
-
-    .input-area input {
-      flex: 1;
-      border: 2px solid #ffd39a;
-      border-radius: 14px;
-      padding: 14px;
-      font-size: 16px;
-      outline: none;
-    }
-
-    .input-area input:focus {
-      border-color: #ff9b54;
-    }
-
-    .input-area button {
+    .dish-btn {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 10px;
       border: none;
-      background: #ff8c42;
-      color: white;
-      padding: 0 18px;
       border-radius: 14px;
-      font-size: 16px;
-      font-weight: bold;
+      padding: 12px 14px;
       cursor: pointer;
+      background: rgba(255,255,255,0.10);
+      color: white;
+      transition: 0.2s;
+      font-size: 15px;
+    }
+
+    .dish-btn:hover {
+      background: rgba(255,255,255,0.18);
+      transform: translateX(4px);
+    }
+
+    .recipe-title {
+      font-size: 30px;
+      color: #ffd166;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .recipe-meta {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      margin-bottom: 18px;
+      font-size: 14px;
+      color: #e5e7eb;
+    }
+
+    .recipe-block {
+      background: rgba(255,255,255,0.07);
+      padding: 14px;
+      border-radius: 16px;
+      margin-bottom: 14px;
+    }
+
+    .recipe-block h3 {
+      margin-top: 0;
+      color: #86efac;
+    }
+
+    .recipe-block ul,
+    .recipe-block ol {
+      margin: 0;
+      padding-left: 22px;
+      line-height: 1.7;
+    }
+
+    .muted {
+      color: #cbd5e1;
+      font-size: 15px;
+      line-height: 1.6;
     }
 
     .footer-note {
       text-align: center;
-      font-size: 12px;
-      color: #6d4c41;
-      padding: 6px 10px 12px;
-      background: white;
+      margin-top: 18px;
+      color: #cbd5e1;
+      font-size: 14px;
+      opacity: 0.9;
     }
 
-    @media (max-width: 700px) {
-      .message {
-        max-width: 90%;
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,209,102,0.12);
+      color: #ffe08a;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .menu-list {
+        max-height: 320px;
       }
 
       .header h1 {
-        font-size: 23px;
-      }
-
-      .input-area {
-        padding: 10px;
-      }
-
-      .input-area input {
-        font-size: 15px;
-        padding: 12px;
+        font-size: 34px;
       }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <h1>🍳 Urbaev Helper</h1>
+      <p>Urbaev Helper - Это ИИ, он может ошибатся</p>
+    </div>
 
-  <div class="header">
-    <h1>Urbaev Helper 🍳</h1>
-    <div class="subtitle">Твой помощник по готовке еды</div>
-    <div class="warning">Urbaev Helper - Это ИИ, он может ошибатся</div>
+    <div class="top-bar">
+      <button class="tab-btn active" onclick="setCategory('breakfast', this)">🍞 Завтрак</button>
+      <button class="tab-btn" onclick="setCategory('lunch', this)">🍲 Обед</button>
+      <button class="tab-btn" onclick="setCategory('dinner', this)">🍝 Ужин</button>
+    </div>
+
+    <div class="search-box">
+      <input id="searchInput" type="text" placeholder="Например: Омлет классический" onkeydown="if(event.key==='Enter') searchRecipe()" />
+      <button onclick="searchRecipe()">Найти рецепт</button>
+      <button onclick="showAllCurrent()">Показать меню</button>
+    </div>
+
+    <div class="layout">
+      <div class="panel">
+        <h2 id="menuTitle">Меню: Завтрак</h2>
+        <div class="menu-list" id="menuList"></div>
+      </div>
+
+      <div class="panel">
+        <div class="badge" id="categoryBadge">Категория: Завтрак</div>
+        <h2 class="recipe-title" id="recipeTitle">Выбери блюдо</h2>
+        <div class="recipe-meta" id="recipeMeta">Нажми на блюдо слева или напиши его название</div>
+
+        <div id="recipeContent">
+          <p class="muted">
+            Тут будет показан рецепт.  
+            Сначала выбери категорию сверху, потом нажми на блюдо слева или введи название в поиск.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Сделано для книги и удобного просмотра рецептов 💛
+    </div>
   </div>
-
-  <div class="quick-buttons">
-    <button onclick="askPreset('Что приготовить на завтрак')">Завтрак</button>
-    <button onclick="askPreset('Что приготовить на обед')">Обед</button>
-    <button onclick="askPreset('Что приготовить на ужин')">Ужин</button>
-    <button onclick="askPreset('Как приготовить макароны')">Макароны</button>
-    <button onclick="askPreset('Как приготовить омлет')">Омлет</button>
-    <button onclick="askPreset('Что приготовить быстро')">Быстро</button>
-    <button onclick="askPreset('Что приготовить из курицы')">Курица</button>
-    <button onclick="askPreset('Что приготовить из картошки')">Картошка</button>
-  </div>
-
-  <div class="chat" id="chat"></div>
-
-  <div class="input-area">
-    <input type="text" id="input" placeholder="Например: Как приготовить макароны на кастрюле в воде" />
-    <button onclick="sendMessage()">Отправить</button>
-  </div>
-
-  <div class="footer-note">Можно спрашивать обычным текстом: “Как варить рис”, “Что сделать из яиц”, “Рецепт пюре”</div>
 
   <script>
-    const chat = document.getElementById("chat");
-    const input = document.getElementById("input");
+    const recipes = {
+      breakfast: [
+        "Омлет классический",
+        "Омлет с сыром",
+        "Омлет с помидорами",
+        "Омлет с колбасой",
+        "Яичница глазунья",
+        "Яичница с беконом",
+        "Яичница с овощами",
+        "Скрэмбл (яичница-болтунья)",
+        "Овсянка на воде",
+        "Овсянка на молоке",
+        "Овсянка с бананом",
+        "Овсянка с медом и орехами",
+        "Гречка с молоком",
+        "Манная каша",
+        "Рисовая каша",
+        "Пшенная каша",
+        "Сырники классические",
+        "Сырники с изюмом",
+        "Сырники с бананом",
+        "Блины классические",
+        "Блины с творогом",
+        "Блины с вареньем",
+        "Блины с мясом",
+        "Оладьи",
+        "Оладьи на кефире",
+        "Оладьи с яблоками",
+        "Тосты с маслом",
+        "Тосты с авокадо",
+        "Тосты с яйцом",
+        "Тосты с сыром",
+        "Горячие бутерброды",
+        "Бутерброды с колбасой",
+        "Бутерброды с сыром",
+        "Бутерброды с рыбой",
+        "Круассаны",
+        "Круассаны с шоколадом",
+        "Круассаны с ветчиной",
+        "Йогурт с фруктами",
+        "Йогурт с гранолой",
+        "Гранола с молоком",
+        "Фруктовый салат",
+        "Банановый смузи",
+        "Клубничный смузи",
+        "Шоколадный смузи",
+        "Творог с медом",
+        "Творог с фруктами",
+        "Творог с орехами",
+        "Запеканка творожная",
+        "Запеканка с изюмом",
+        "Панкейки",
+        "Панкейки с сиропом",
+        "Панкейки с ягодами",
+        "Вафли",
+        "Вафли с шоколадом",
+        "Вафли с фруктами",
+        "Лаваш с сыром",
+        "Лаваш с яйцом",
+        "Лаваш с колбасой",
+        "Кесадилья с сыром",
+        "Кесадилья с курицей",
+        "Ролл с яйцом",
+        "Ролл с сыром",
+        "Ролл с овощами",
+        "Пудинг рисовый",
+        "Пудинг шоколадный",
+        "Пудинг ванильный",
+        "Каша киноа",
+        "Каша с ягодами",
+        "Омлет в духовке",
+        "Яйцо пашот"
+      ],
 
-    const recipes = [
-      {
-        title: "Макароны",
-        keywords: ["макароны", "паста", "спагетти", "рожки", "лапша"],
-        text: `🍝 Как приготовить макароны на кастрюле в воде:
+      lunch: [
+        "Борщ",
+        "Щи",
+        "Суп куриный",
+        "Суп с фрикадельками",
+        "Суп грибной",
+        "Суп чечевичный",
+        "Суп гороховый",
+        "Суп овощной",
+        "Суп томатный",
+        "Суп сырный",
+        "Солянка",
+        "Уха",
+        "Рассольник",
+        "Плов",
+        "Плов с курицей",
+        "Плов с говядиной",
+        "Макароны с сыром",
+        "Макароны с мясом",
+        "Макароны с соусом",
+        "Спагетти болоньезе",
+        "Спагетти карбонара",
+        "Лапша с курицей",
+        "Рис с овощами",
+        "Рис с мясом",
+        "Гречка с мясом",
+        "Гречка с грибами",
+        "Картофель жареный",
+        "Картофель пюре",
+        "Картофель запеченный",
+        "Картофель с мясом",
+        "Курица жареная",
+        "Курица запеченная",
+        "Курица в соусе",
+        "Говядина тушеная",
+        "Свинина жареная",
+        "Котлеты",
+        "Котлеты куриные",
+        "Котлеты рыбные",
+        "Голубцы",
+        "Перец фаршированный",
+        "Пельмени",
+        "Вареники",
+        "Манты",
+        "Хинкали",
+        "Лагман",
+        "Шаурма",
+        "Шашлык",
+        "Рыба жареная",
+        "Рыба запеченная",
+        "Рыба в кляре",
+        "Салат оливье",
+        "Салат цезарь",
+        "Салат греческий",
+        "Салат овощной",
+        "Салат с курицей",
+        "Салат с тунцом",
+        "Салат с яйцом",
+        "Салат с крабовыми палочками",
+        "Лаваш с мясом",
+        "Лаваш с курицей",
+        "Кесадилья",
+        "Бургер",
+        "Чебуреки",
+        "Беляши",
+        "Самса",
+        "Пицца",
+        "Пицца с сыром",
+        "Пицца с колбасой",
+        "Пицца с курицей",
+        "Паста с грибами"
+      ],
 
-1. Налей в кастрюлю воду.
-2. Поставь на плиту и доведи до кипения.
-3. Добавь соль.
-4. Засыпь макароны в кипящую воду.
-5. Перемешай, чтобы не слиплись.
-6. Вари примерно 7–12 минут, смотря какие макароны.
-7. Иногда помешивай.
-8. Когда станут мягкими, слей воду через дуршлаг.
-9. Можно добавить масло, сыр или соус.
+      dinner: [
+        "Легкий салат",
+        "Салат с курицей",
+        "Салат с рыбой",
+        "Салат с овощами",
+        "Омлет вечерний",
+        "Омлет с овощами",
+        "Омлет с сыром",
+        "Курица на пару",
+        "Рыба на пару",
+        "Овощи на пару",
+        "Тушеные овощи",
+        "Рагу овощное",
+        "Рагу с мясом",
+        "Курица в духовке",
+        "Рыба в духовке",
+        "Картофель с овощами",
+        "Рис с овощами",
+        "Гречка с овощами",
+        "Макароны легкие",
+        "Макароны с овощами",
+        "Спагетти с сыром",
+        "Лапша с овощами",
+        "Лапша с курицей",
+        "Куриный салат",
+        "Тунец с овощами",
+        "Запеканка овощная",
+        "Запеканка картофельная",
+        "Запеканка мясная",
+        "Куриные рулеты",
+        "Рыбные котлеты",
+        "Куриные котлеты",
+        "Индейка запеченная",
+        "Омлет с зеленью",
+        "Яйца вареные с салатом",
+        "Творог с фруктами",
+        "Творог с медом",
+        "Йогурт с ягодами",
+        "Смузи вечерний",
+        "Кефир с фруктами",
+        "Лаваш с курицей",
+        "Лаваш с овощами",
+        "Лаваш с сыром",
+        "Суп легкий",
+        "Суп овощной",
+        "Суп куриный легкий",
+        "Крем-суп",
+        "Тыквенный суп",
+        "Грибной крем-суп",
+        "Салат с авокадо",
+        "Салат с яйцом",
+        "Салат с сыром",
+        "Салат с орехами",
+        "Курица гриль",
+        "Рыба гриль",
+        "Овощи гриль",
+        "Буррито",
+        "Кесадилья",
+        "Роллы домашние",
+        "Паста легкая",
+        "Рис с курицей"
+      ]
+    };
 
-Совет: если хочешь просто и вкусно — после варки добавь кусочек сливочного масла.`
-      },
-      {
-        title: "Рис",
-        keywords: ["рис", "варить рис", "как приготовить рис"],
-        text: `🍚 Как приготовить рис:
+    let currentCategory = "breakfast";
 
-1. Возьми 1 стакан риса.
-2. Промой его 2–3 раза в воде.
-3. В кастрюлю добавь 1 стакан риса и 2 стакана воды.
-4. Добавь немного соли.
-5. Доведи до кипения.
-6. Убавь огонь до слабого.
-7. Накрой крышкой и вари 15–20 минут.
-8. Когда вода впитается — рис готов.
-
-Совет: после готовки оставь рис под крышкой ещё на 5 минут.`
-      },
-      {
-        title: "Гречка",
-        keywords: ["гречка", "как варить гречку"],
-        text: `🥣 Как приготовить гречку:
-
-1. Промой гречку.
-2. На 1 стакан гречки возьми 2 стакана воды.
-3. Добавь воду в кастрюлю и посоли.
-4. Засыпь гречку.
-5. Доведи до кипения.
-6. Убавь огонь.
-7. Вари 15–20 минут до впитывания воды.
-8. Добавь масло по желанию.
-
-Совет: гречка отлично идёт с курицей, котлетами или просто с маслом.`
-      },
-      {
-        title: "Омлет",
-        keywords: ["омлет", "яйца с молоком", "как приготовить омлет"],
-        text: `🍳 Как приготовить омлет:
-
-1. Разбей 2–4 яйца в миску.
-2. Добавь немного соли.
-3. Налей немного молока.
-4. Всё хорошо перемешай вилкой.
-5. Разогрей сковородку.
-6. Добавь немного масла.
-7. Вылей смесь на сковородку.
-8. Жарь на среднем или слабом огне 3–5 минут.
-9. Можно накрыть крышкой.
-
-Совет: можно добавить сыр, колбасу, помидоры или зелень.`
-      },
-      {
-        title: "Яичница",
-        keywords: ["яичница", "жареные яйца", "как пожарить яйца"],
-        text: `🍳 Как приготовить яичницу:
-
-1. Разогрей сковородку.
-2. Добавь немного масла.
-3. Разбей яйца на сковородку.
-4. Посоли.
-5. Жарь 2–4 минуты, пока белок не станет белым.
-6. Если хочешь — накрой крышкой.
-
-Совет: сверху можно добавить зелень или сыр.`
-      },
-      {
-        title: "Жареная картошка",
-        keywords: ["жареная картошка", "картошка на сковороде", "как пожарить картошку"],
-        text: `🥔 Как приготовить жареную картошку:
-
-1. Очисти картошку.
-2. Нарежь соломкой или кусочками.
-3. Разогрей сковородку с маслом.
-4. Выложи картошку.
-5. Жарь на среднем огне.
-6. Иногда переворачивай.
-7. В конце посоли.
-8. Готовь до золотистой корочки.
-
-Совет: не мешай слишком часто, иначе не будет красивой корочки.`
-      },
-      {
-        title: "Пюре",
-        keywords: ["пюре", "картофельное пюре"],
-        text: `🥔 Как приготовить пюре:
-
-1. Очисти картошку.
-2. Нарежь на кусочки.
-3. Положи в кастрюлю и залей водой.
-4. Посоли.
-5. Вари 20–25 минут до мягкости.
-6. Слей воду.
-7. Добавь масло и немного тёплого молока.
-8. Разомни толкушкой.
-
-Совет: если хочешь нежнее — добавь чуть больше молока.`
-      },
-      {
-        title: "Курица на сковороде",
-        keywords: ["курица", "филе курицы", "как приготовить курицу", "курица на сковороде"],
-        text: `🍗 Как приготовить курицу на сковороде:
-
-1. Нарежь курицу кусочками.
-2. Добавь соль и специи.
-3. Разогрей сковородку с маслом.
-4. Выложи курицу.
-5. Жарь 10–15 минут, помешивая.
-6. Когда кусочки побелеют и подрумянятся — готово.
-
-Совет: можно добавить лук или немного сметаны.`
-      },
-      {
-        title: "Курица в духовке",
-        keywords: ["курица в духовке", "запечь курицу"],
-        text: `🍗 Как приготовить курицу в духовке:
-
-1. Посоли курицу и добавь специи.
-2. Можно смазать майонезом или маслом.
-3. Положи в форму.
-4. Разогрей духовку до 180–200 градусов.
-5. Запекай примерно 35–50 минут.
-6. Проверь, чтобы внутри не было сырого мяса.
-
-Совет: вкусно добавить картошку рядом в форму.`
-      },
-      {
-        title: "Суп с картошкой",
-        keywords: ["суп", "суп с картошкой", "простой суп"],
-        text: `🍲 Как приготовить простой суп:
-
-1. Налей воду в кастрюлю.
-2. Поставь на плиту.
-3. Нарежь картошку.
-4. Добавь в кипящую воду.
-5. Можно добавить морковь и лук.
-6. Если есть мясо — добавь его заранее.
-7. Посоли.
-8. Вари 25–40 минут.
-9. В конце можно добавить зелень.
-
-Совет: если без мяса, тоже получится вкусно.`
-      },
-      {
-        title: "Сосиски",
-        keywords: ["сосиски", "как сварить сосиски", "вареные сосиски"],
-        text: `🌭 Как приготовить сосиски:
-
-1. Налей воду в кастрюлю.
-2. Доведи её до кипения.
-3. Положи сосиски в кипящую воду.
-4. Вари 3–5 минут.
-5. Достань и подавай.
-
-Совет: можно есть с хлебом, пюре или макаронами.`
-      },
-      {
-        title: "Пельмени",
-        keywords: ["пельмени", "как варить пельмени"],
-        text: `🥟 Как приготовить пельмени:
-
-1. Налей воду в кастрюлю.
-2. Доведи до кипения.
-3. Посоли воду.
-4. Закинь пельмени.
-5. Перемешай, чтобы не прилипли.
-6. После всплытия вари ещё 5–7 минут.
-7. Достань и подавай.
-
-Совет: можно добавить масло, сметану или перец.`
-      },
-      {
-        title: "Жареные пельмени",
-        keywords: ["жареные пельмени", "как пожарить пельмени"],
-        text: `🥟 Как приготовить жареные пельмени:
-
-1. Разогрей сковородку с маслом.
-2. Выложи пельмени.
-3. Жарь несколько минут до корочки.
-4. Добавь немного воды.
-5. Накрой крышкой.
-6. Готовь 5–7 минут.
-7. Потом снова слегка обжарь.
-
-Совет: получается очень вкусно с кетчупом.`
-      },
-      {
-        title: "Блины",
-        keywords: ["блины", "как приготовить блины"],
-        text: `🥞 Как приготовить блины:
-
-1. В миску разбей 2 яйца.
-2. Добавь 2 стакана молока.
-3. Добавь немного соли и сахара.
-4. Насыпь муку и размешай.
-5. Добавь немного масла.
-6. Разогрей сковородку.
-7. Наливай тесто тонким слоем.
-8. Жарь с двух сторон.
-
-Совет: можно есть со сгущёнкой, вареньем или сметаной.`
-      },
-      {
-        title: "Оладьи",
-        keywords: ["оладьи", "как приготовить оладьи"],
-        text: `🥞 Как приготовить оладьи:
-
-1. Смешай яйцо, кефир или молоко.
-2. Добавь немного сахара и соли.
-3. Насыпь муку до густоты.
-4. Можно добавить чуть соды.
-5. Разогрей сковородку с маслом.
-6. Выкладывай тесто ложкой.
-7. Жарь с двух сторон.
-
-Совет: оладьи хорошо идут с чаем.`
-      },
-      {
-        title: "Гренки",
-        keywords: ["гренки", "хлеб на сковороде", "что сделать из хлеба"],
-        text: `🍞 Как приготовить гренки:
-
-1. Нарежь хлеб.
-2. Разбей яйцо и немного посоли.
-3. Можно добавить чуть молока.
-4. Обмакни хлеб в смесь.
-5. Положи на горячую сковородку с маслом.
-6. Обжарь с двух сторон.
-
-Совет: можно сделать и сладкий вариант с сахаром.`
-      },
-      {
-        title: "Салат из огурцов и помидоров",
-        keywords: ["салат", "огурцы", "помидоры", "овощной салат"],
-        text: `🥗 Как приготовить простой салат:
-
-1. Нарежь огурцы.
-2. Нарежь помидоры.
-3. Можно добавить лук.
-4. Посоли.
-5. Добавь масло или сметану.
-6. Перемешай.
-
-Совет: если есть зелень — будет ещё вкуснее.`
-      },
-      {
-        title: "Бутерброды",
-        keywords: ["бутерброды", "бутер", "что сделать быстро"],
-        text: `🥪 Как приготовить бутерброды:
-
-1. Возьми хлеб.
-2. Намажь масло, майонез или кетчуп.
-3. Положи сверху сыр, колбасу, помидор.
-4. Можно подогреть на сковородке или в микроволновке.
-
-Совет: это один из самых быстрых вариантов еды.`
-      },
-      {
-        title: "Каша",
-        keywords: ["каша", "овсянка", "манка"],
-        text: `🥣 Как приготовить простую кашу:
-
-1. Налей молоко или воду в кастрюлю.
-2. Доведи до кипения.
-3. Добавь крупу.
-4. Помешивай.
-5. Вари несколько минут до густоты.
-6. Добавь сахар или соль по вкусу.
-
-Совет: в овсянку можно добавить банан или мёд.`
-      },
-      {
-        title: "Плов простой",
-        keywords: ["плов", "как приготовить плов"],
-        text: `🍛 Как приготовить простой плов:
-
-1. Обжарь лук и морковь.
-2. Добавь кусочки мяса или курицы.
-3. Немного обжарь.
-4. Насыпь промытый рис.
-5. Залей водой так, чтобы покрывало рис.
-6. Посоли и добавь специи.
-7. Готовь под крышкой до впитывания воды.
-
-Совет: не мешай слишком часто после добавления риса.`
-      },
-      {
-        title: "Жареный лук с яйцом",
-        keywords: ["лук с яйцом", "яйца и лук"],
-        text: `🧅🍳 Как приготовить лук с яйцом:
-
-1. Нарежь лук.
-2. Обжарь его на сковородке до мягкости.
-3. Разбей сверху яйца.
-4. Посоли.
-5. Жарь до готовности.
-
-Совет: очень простой и дешёвый вариант.`
-      },
-      {
-        title: "Сырники",
-        keywords: ["сырники", "как приготовить сырники", "творог"],
-        text: `🧀 Как приготовить сырники:
-
-1. Возьми творог.
-2. Добавь яйцо.
-3. Добавь немного сахара.
-4. Насыпь немного муки.
-5. Слепи круглые сырники.
-6. Обжарь на сковородке с двух сторон.
-
-Совет: вкусно со сметаной или вареньем.`
-      },
-      {
-        title: "Лапша быстрого приготовления",
-        keywords: ["доширак", "лапша быстрого приготовления", "быстрая лапша"],
-        text: `🍜 Как приготовить лапшу быстрого приготовления:
-
-1. Вскипяти воду.
-2. Положи лапшу в тарелку или кастрюлю.
-3. Залей кипятком.
-4. Добавь специи из пачки.
-5. Подожди 3–5 минут.
-6. Перемешай.
-
-Совет: можно добавить яйцо или сосиску, чтобы было сытнее.`
-      },
-      {
-        title: "Сосиска в тесте ленивый вариант",
-        keywords: ["сосиска в тесте", "ленивая сосиска в тесте"],
-        text: `🌭 Как сделать ленивую сосиску в тесте:
-
-1. Возьми готовое тесто.
-2. Заверни в него сосиску.
-3. Положи на противень.
-4. Выпекай до румяности.
-
-Совет: если духовки нет, проще просто сварить сосиски и сделать бутерброд.`
-      },
-      {
-        title: "Макароны с сыром",
-        keywords: ["макароны с сыром", "сырные макароны"],
-        text: `🧀🍝 Как приготовить макароны с сыром:
-
-1. Сначала отвари макароны.
-2. Слей воду.
-3. Пока макароны горячие, добавь тёртый сыр.
-4. Перемешай.
-5. Можно добавить масло.
-
-Совет: если сыр плохо плавится — накрой крышкой на 1 минуту.`
-      },
-      {
-        title: "Картошка с луком",
-        keywords: ["картошка с луком", "жареная картошка с луком"],
-        text: `🥔🧅 Как приготовить картошку с луком:
-
-1. Нарежь картошку.
-2. Нарежь лук.
-3. Сначала начни жарить картошку.
-4. Через несколько минут добавь лук.
-5. Посоли в конце.
-6. Жарь до золотистости.
-
-Совет: лук лучше добавлять не сразу, чтобы не сгорел.`
-      }
-    ];
-
-    const generalAnswers = [
-      "Можешь написать конкретнее, например: 'Как приготовить рис' или 'Что сделать из картошки'.",
-      "Я не совсем понял блюдо, но могу помочь. Попробуй спросить: 'Рецепт омлета' или 'Как варить макароны'.",
-      "Напиши продукт или блюдо, и я постараюсь найти рецепт. Например: курица, суп, пельмени, гречка.",
-      "Попробуй спросить проще: 'Как приготовить пюре', 'Что сделать быстро', 'Что приготовить на ужин'."
-    ];
-
-    const breakfastIdeas = `🍳 Что приготовить на завтрак:
-
-- омлет
-- яичницу
-- блины
-- оладьи
-- бутерброды
-- кашу
-- гренки
-
-Можешь сразу спросить: "Как приготовить омлет"`;
-    
-    const lunchIdeas = `🍲 Что приготовить на обед:
-
-- суп
-- рис с курицей
-- плов
-- макароны с сыром
-- гречку
-- картошку с курицей
-- пельмени
-
-Можешь написать: "Как приготовить суп"`;
-    
-    const dinnerIdeas = `🍽 Что приготовить на ужин:
-
-- жареную картошку
-- салат
-- курицу на сковороде
-- макароны
-- рис
-- пюре с сосисками
-- гречку
-
-Можешь написать: "Как приготовить жареную картошку"`;
-
-    function addMessage(text, type) {
-      const div = document.createElement("div");
-      div.className = "message " + type;
-      div.textContent = text;
-      chat.appendChild(div);
-      chat.scrollTop = chat.scrollHeight;
+    function categoryRu(key) {
+      if (key === "breakfast") return "Завтрак";
+      if (key === "lunch") return "Обед";
+      return "Ужин";
     }
 
-    function normalizeText(text) {
-      return text
-        .toLowerCase()
-        .replace(/[.,!?;:()"]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+    function setCategory(category, btn) {
+      currentCategory = category;
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("menuTitle").textContent = "Меню: " + categoryRu(category);
+      document.getElementById("categoryBadge").textContent = "Категория: " + categoryRu(category);
+      document.getElementById("searchInput").value = "";
+      renderMenu(recipes[category]);
+      clearRecipeText();
     }
 
-    function scoreRecipe(userText, recipe) {
-      let score = 0;
-      for (const keyword of recipe.keywords) {
-        if (userText.includes(keyword)) {
-          score += keyword.length;
-        }
-      }
-      return score;
+    function clearRecipeText() {
+      document.getElementById("recipeTitle").textContent = "Выбери блюдо";
+      document.getElementById("recipeMeta").textContent = "Нажми на блюдо слева или напиши его название";
+      document.getElementById("recipeContent").innerHTML = `
+        <p class="muted">
+          Тут будет показан рецепт.  
+          Сначала выбери категорию сверху, потом нажми на блюдо слева или введи название в поиск.
+        </p>
+      `;
     }
 
-    function findBestRecipe(userText) {
-      let bestRecipe = null;
-      let bestScore = 0;
+    function renderMenu(list) {
+      const menu = document.getElementById("menuList");
+      menu.innerHTML = "";
 
-      for (const recipe of recipes) {
-        const score = scoreRecipe(userText, recipe);
-        if (score > bestScore) {
-          bestScore = score;
-          bestRecipe = recipe;
-        }
+      if (!list.length) {
+        menu.innerHTML = `<p class="muted">Ничего не найдено.</p>`;
+        return;
       }
 
-      return bestRecipe;
+      list.forEach(item => {
+        const btn = document.createElement("button");
+        btn.className = "dish-btn";
+        btn.textContent = item;
+        btn.onclick = () => {
+          document.getElementById("searchInput").value = item;
+          showRecipe(item, currentCategory);
+        };
+        menu.appendChild(btn);
+      });
     }
 
-    function getResponse(rawText) {
-      const text = normalizeText(rawText);
-
-      if (text.includes("привет") || text.includes("здарова") || text.includes("салам") || text.includes("hello")) {
-        return "Привет 👨‍🍳 Я Urbaev Helper! Напиши блюдо или продукт, и я постараюсь подсказать рецепт.";
-      }
-
-      if (text.includes("спасибо")) {
-        return "Пожалуйста 😄 Если хочешь, можешь спросить ещё какой-нибудь рецепт.";
-      }
-
-      if (text.includes("завтрак")) {
-        return breakfastIdeas;
-      }
-
-      if (text.includes("обед")) {
-        return lunchIdeas;
-      }
-
-      if (text.includes("ужин")) {
-        return dinnerIdeas;
-      }
-
-      if (text.includes("что приготовить быстро") || text.includes("быстро")) {
-        return `⚡ Что можно приготовить быстро:
-
-- яичницу
-- омлет
-- бутерброды
-- гренки
-- лапшу быстрого приготовления
-- сосиски
-- макароны
-
-Например, спроси: "Как приготовить яичницу"`;
-      }
-
-      if (text.includes("что приготовить дешево") || text.includes("дешево")) {
-        return `💸 Что приготовить дёшево:
-
-- картошку
-- макароны
-- яйца
-- гречку
-- рис
-- бутерброды
-- суп без мяса
-
-Например: "Как приготовить жареную картошку"`;
-      }
-
-      if (text.includes("что приготовить из курицы")) {
-        return `🍗 Из курицы можно приготовить:
-
-- курицу на сковороде
-- курицу в духовке
-- рис с курицей
-- суп с курицей
-- плов с курицей
-
-Напиши: "Как приготовить курицу на сковороде"`;
-      }
-
-      if (text.includes("что приготовить из картошки")) {
-        return `🥔 Из картошки можно приготовить:
-
-- жареную картошку
-- пюре
-- суп
-- картошку с луком
-- картошку с курицей
-
-Напиши: "Как приготовить пюре"`;
-      }
-
-      if (text.includes("что приготовить из яиц")) {
-        return `🥚 Из яиц можно приготовить:
-
-- омлет
-- яичницу
-- гренки
-- яйца с луком
-- блины
-
-Напиши: "Как приготовить омлет"`;
-      }
-
-      if (text.includes("что приготовить")) {
-        return `🍽 Вот идеи, что можно приготовить:
-
-- макароны
-- рис
-- гречку
-- омлет
-- яичницу
-- суп
-- жареную картошку
-- пельмени
-- блины
-- салат
-- курицу
-
-Напиши конкретнее, например: "Как приготовить рис"`;
-      }
-
-      const bestRecipe = findBestRecipe(text);
-      if (bestRecipe) {
-        return bestRecipe.text;
-      }
-
-      return generalAnswers[Math.floor(Math.random() * generalAnswers.length)];
+    function showAllCurrent() {
+      renderMenu(recipes[currentCategory]);
     }
 
-    function sendMessage() {
-      const value = input.value.trim();
-      if (!value) return;
+    function searchRecipe() {
+      const value = document.getElementById("searchInput").value.trim().toLowerCase();
+      const categoryList = recipes[currentCategory];
 
-      addMessage(value, "user");
-      input.value = "";
-
-      setTimeout(() => {
-        addMessage(getResponse(value), "bot");
-      }, 300);
-    }
-
-    function askPreset(text) {
-      input.value = text;
-      sendMessage();
-    }
-
-    input.addEventListener("keydown", function(e) {
-      if (e.key === "Enter") {
-        sendMessage();
+      if (!value) {
+        renderMenu(categoryList);
+        return;
       }
-    });
 
-    addMessage(
-      "Привет 👨‍🍳 Я Urbaev Helper!\n\nЯ могу подсказывать рецепты по обычным сообщениям.\nНапример:\n- Как приготовить макароны на кастрюле в воде\n- Как варить рис\n- Что приготовить на завтрак\n- Что сделать из картошки\n\nUrbaev Helper - Это ИИ, он может ошибатся",
-      "bot"
-    );
+      const exact = categoryList.find(item => item.toLowerCase() === value);
+      if (exact) {
+        renderMenu(categoryList.filter(item => item.toLowerCase().includes(value)));
+        showRecipe(exact, currentCategory);
+        return;
+      }
+
+      const found = categoryList.filter(item => item.toLowerCase().includes(value));
+      renderMenu(found);
+
+      if (found.length > 0) {
+        showRecipe(found[0], currentCategory);
+      } else {
+        document.getElementById("recipeTitle").textContent = "Ничего не найдено";
+        document.getElementById("recipeMeta").textContent = "Попробуй другое название";
+        document.getElementById("recipeContent").innerHTML = `
+          <p class="muted">
+            В категории <b>${categoryRu(currentCategory)}</b> такого блюда не найдено.
+            Попробуй написать название чуть короче. Например: <b>омлет</b>, <b>салат</b>, <b>пицца</b>.
+          </p>
+        `;
+      }
+    }
+
+    function showRecipe(name, category) {
+      const recipe = generateRecipe(name, category);
+
+      document.getElementById("recipeTitle").textContent = recipe.title;
+      document.getElementById("recipeMeta").textContent =
+        `Примерное время: ${recipe.time} • Сложность: ${recipe.level} • Категория: ${categoryRu(category)}`;
+
+      document.getElementById("recipeContent").innerHTML = `
+        <div class="recipe-block">
+          <h3>📋 Описание</h3>
+          <p class="muted">${recipe.description}</p>
+        </div>
+
+        <div class="recipe-block">
+          <h3>🛒 Ингредиенты</h3>
+          <ul>
+            ${recipe.ingredients.map(i => `<li>${i}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="recipe-block">
+          <h3>👨‍🍳 Шаги приготовления</h3>
+          <ol>
+            ${recipe.steps.map(s => `<li>${s}</li>`).join("")}
+          </ol>
+        </div>
+
+        <div class="recipe-block">
+          <h3>💡 Совет</h3>
+          <p class="muted">${recipe.tip}</p>
+        </div>
+      `;
+    }
+
+    function generateRecipe(name, category) {
+      const lower = name.toLowerCase();
+
+      let ingredients = [];
+      let steps = [];
+      let description = "";
+      let time = "15–25 мин";
+      let level = "Легко";
+      let tip = "Подавай блюдо свежим — так вкуснее.";
+
+      if (lower.includes("омлет")) {
+        ingredients = ["3 яйца", "50 мл молока", "щепотка соли", "щепотка перца", "1 ч. л. масла"];
+        if (lower.includes("сыр")) ingredients.push("50 г сыра");
+        if (lower.includes("помидор")) ingredients.push("1 помидор");
+        if (lower.includes("колбас")) ingredients.push("70 г колбасы");
+        if (lower.includes("овощ")) ingredients.push("небольшая порция овощей");
+        if (lower.includes("зелень")) ingredients.push("немного зелени");
+        description = `${name} — простой и сытный вариант, который отлично подходит для ${categoryRu(category).toLowerCase()}.`;
+        steps = [
+          "Разбей яйца в миску, добавь молоко, соль и перец.",
+          "Хорошо взбей смесь вилкой или венчиком.",
+          "Если есть добавки, нарежь их небольшими кусочками.",
+          "Разогрей сковороду с маслом.",
+          "Вылей яичную смесь на сковороду и добавь начинку.",
+          "Готовь на среднем огне до готовности.",
+          "Сложи омлет пополам или подавай как есть."
+        ];
+        tip = "Чтобы омлет был нежнее, не жарь его на слишком сильном огне.";
+      }
+
+      else if (lower.includes("яичниц")) {
+        ingredients = ["2–3 яйца", "1 ч. л. масла", "соль по вкусу", "перец по вкусу"];
+        if (lower.includes("бекон")) ingredients.push("2–3 полоски бекона");
+        if (lower.includes("овощ")) ingredients.push("немного овощей");
+        description = `${name} — быстрый вариант блюда, когда хочется поесть без долгой готовки.`;
+        steps = [
+          "Разогрей сковороду и добавь масло.",
+          "Если есть дополнительные ингредиенты, слегка обжарь их.",
+          "Аккуратно разбей яйца на сковороду.",
+          "Посоли и поперчи по вкусу.",
+          "Готовь до нужной степени прожарки.",
+          "Подавай горячей."
+        ];
+        tip = "Накрой сковороду крышкой, если хочешь более мягкий желток сверху.";
+      }
+
+      else if (lower.includes("овсянк") || lower.includes("каша") || lower.includes("манная") || lower.includes("гречка с молоком") || lower.includes("рисовая") || lower.includes("пшенная")) {
+        ingredients = ["1 стакан основы", "2 стакана воды или молока", "щепотка соли", "сахар по вкусу"];
+        if (lower.includes("банан")) ingredients.push("1 банан");
+        if (lower.includes("мед")) ingredients.push("1 ч. л. меда");
+        if (lower.includes("орех")) ingredients.push("горсть орехов");
+        if (lower.includes("ягод")) ingredients.push("горсть ягод");
+        description = `${name} — домашнее теплое блюдо, которое хорошо подходит для спокойного начала дня.`;
+        steps = [
+          "Налей воду или молоко в кастрюлю и доведи до кипения.",
+          "Добавь крупу или основную смесь.",
+          "Убавь огонь и вари, помешивая.",
+          "Добавь соль и сахар по вкусу.",
+          "Если нужны фрукты, орехи или мед — добавь их в конце.",
+          "Подавай горячим."
+        ];
+        tip = "Для более насыщенного вкуса можно смешать воду и молоко вместе.";
+      }
+
+      else if (lower.includes("сырники")) {
+        ingredients = ["400 г творога", "1 яйцо", "2–3 ст. л. сахара", "3–4 ст. л. муки", "щепотка соли", "масло для жарки"];
+        if (lower.includes("изюм")) ingredients.push("горсть изюма");
+        if (lower.includes("банан")) ingredients.push("1 банан");
+        description = `${name} — мягкие сладкие сырники, которые хорошо сочетаются со сметаной, медом или вареньем.`;
+        steps = [
+          "Смешай творог, яйцо, сахар, соль и муку.",
+          "Если нужно, добавь изюм или кусочки банана.",
+          "Сформируй небольшие сырники.",
+          "Обваляй их слегка в муке.",
+          "Обжарь с двух сторон до золотистой корочки.",
+          "Подавай теплыми."
+        ];
+        time = "20–30 мин";
+        tip = "Не добавляй слишком много муки, иначе сырники будут плотными.";
+      }
+
+      else if (lower.includes("блины") || lower.includes("оладьи") || lower.includes("панкейк")) {
+        ingredients = ["1 яйцо", "250 мл молока или кефира", "150–180 г муки", "1–2 ст. л. сахара", "щепотка соли", "1 ч. л. масла"];
+        if (lower.includes("яблок")) ingredients.push("1 яблоко");
+        if (lower.includes("творог")) ingredients.push("творог для начинки");
+        if (lower.includes("варень")) ingredients.push("варенье для подачи");
+        if (lower.includes("мяс")) ingredients.push("готовая мясная начинка");
+        if (lower.includes("ягод")) ingredients.push("ягоды для подачи");
+        if (lower.includes("сироп")) ingredients.push("сироп для подачи");
+        description = `${name} — вкусная домашняя выпечка для уютного завтрака или перекуса.`;
+        steps = [
+          "Смешай яйцо, молоко, сахар и соль.",
+          "Постепенно добавь муку и размешай до однородности.",
+          "Если нужно, добавь начинку или кусочки фруктов.",
+          "Разогрей сковороду.",
+          "Выпекай небольшими порциями до румяности с двух сторон.",
+          "Подавай с добавками по вкусу."
+        ];
+        time = "20–35 мин";
+        tip = "Тесто должно быть без комочков — тогда все получится красивее.";
+      }
+
+      else if (lower.includes("тосты") || lower.includes("бутерброд")) {
+        ingredients = ["2 ломтика хлеба", "основная начинка по названию", "немного масла или соуса"];
+        description = `${name} — быстрый вариант, когда нужно приготовить что-то простое и вкусное.`;
+        steps = [
+          "Подготовь хлеб и начинку.",
+          "При желании подрумянь хлеб на сухой сковороде или в тостере.",
+          "Выложи начинку сверху.",
+          "Если это горячий вариант — прогрей еще 2–4 минуты.",
+          "Подавай сразу."
+        ];
+        time = "5–10 мин";
+        tip = "Добавь свежую зелень — вкус станет ярче.";
+      }
+
+      else if (lower.includes("круассан")) {
+        ingredients = ["готовые круассаны или слоеное тесто", "начинка по вкусу"];
+        description = `${name} — нежный и приятный вариант для завтрака или сладкого перекуса.`;
+        steps = [
+          "Подготовь круассаны или сделай их из слоеного теста.",
+          "Добавь выбранную начинку.",
+          "Подогрей в духовке 5–7 минут, если нужно.",
+          "Подавай теплыми."
+        ];
+        time = "10–20 мин";
+        tip = "Теплые круассаны особенно вкусные с чаем или кофе.";
+      }
+
+      else if (lower.includes("йогурт") || lower.includes("гранола") || lower.includes("смузи") || lower.includes("творог") || lower.includes("салат")) {
+        ingredients = ["основа блюда", "фрукты или овощи", "добавка по вкусу"];
+        if (lower.includes("авокадо")) ingredients.push("авокадо");
+        if (lower.includes("орех")) ingredients.push("горсть орехов");
+        if (lower.includes("ягод")) ingredients.push("горсть ягод");
+        if (lower.includes("куриц")) ingredients.push("кусочки курицы");
+        if (lower.includes("рыб")) ingredients.push("кусочки рыбы");
+        if (lower.includes("яйц")) ingredients.push("1–2 яйца");
+        if (lower.includes("тунц")) ingredients.push("тунец");
+        description = `${name} — свежий и удобный вариант блюда, который можно легко менять под свой вкус.`;
+        steps = [
+          "Подготовь все ингредиенты.",
+          "Нарежь или смешай их в подходящей миске.",
+          "Добавь заправку или сладкую добавку.",
+          "Хорошо перемешай.",
+          "Подавай сразу."
+        ];
+        time = "5–15 мин";
+        tip = "Не заправляй заранее, если хочешь сохранить свежесть ингредиентов.";
+      }
+
+      else if (lower.includes("запеканка")) {
+        ingredients = ["основа по названию", "1–2 яйца", "немного муки или манки", "соль или сахар по вкусу"];
+        description = `${name} — сытное домашнее блюдо, которое удобно готовить сразу на несколько порций.`;
+        steps = [
+          "Смешай основу блюда с остальными ингредиентами.",
+          "Переложи массу в форму.",
+          "Разогрей духовку.",
+          "Запекай до золотистой корочки.",
+          "Немного остуди и подавай."
+        ];
+        time = "35–50 мин";
+        level = "Средне";
+        tip = "Дай запеканке постоять 5–10 минут после духовки, так ее легче нарезать.";
+      }
+
+      else if (lower.includes("пудинг")) {
+        ingredients = ["молоко", "сахар", "основа по вкусу", "загуститель"];
+        description = `${name} — нежный десертный вариант, который подойдет и на завтрак, и на легкий перекус.`;
+        steps = [
+          "Смешай ингредиенты в кастрюле.",
+          "Прогрей на слабом огне, постоянно помешивая.",
+          "Доведи до загустения.",
+          "Разлей по формочкам.",
+          "Охлади и подавай."
+        ];
+        time = "20–30 мин";
+        tip = "Для более яркого вкуса добавь ваниль, ягоды или шоколадную стружку.";
+      }
+
+      else if (lower.includes("суп") || lower.includes("борщ") || lower.includes("щи") || lower.includes("солянка") || lower.includes("уха") || lower.includes("рассольник") || lower.includes("крем-суп")) {
+        ingredients = ["вода или бульон", "овощная основа", "соль", "перец", "зелень"];
+        if (lower.includes("кури")) ingredients.push("курица");
+        if (lower.includes("фрикадель")) ingredients.push("фрикадельки");
+        if (lower.includes("гриб")) ingredients.push("грибы");
+        if (lower.includes("чечевич")) ingredients.push("чечевица");
+        if (lower.includes("горох")) ingredients.push("горох");
+        if (lower.includes("томат")) ingredients.push("томаты");
+        if (lower.includes("сыр")) ingredients.push("сыр");
+        if (lower.includes("уха") || lower.includes("рыб")) ingredients.push("рыба");
+        if (lower.includes("тыквен")) ingredients.push("тыква");
+        description = `${name} — горячее первое блюдо, которое хорошо насыщает и подходит для домашнего обеда или ужина.`;
+        steps = [
+          "Подготовь и нарежь все ингредиенты.",
+          "Вскипяти воду или бульон.",
+          "Добавь продукты в нужной последовательности.",
+          "Вари до мягкости всех ингредиентов.",
+          "Посоли, поперчи и добавь зелень.",
+          "Дай супу постоять 5 минут и подавай."
+        ];
+        time = "35–60 мин";
+        level = "Средне";
+        tip = "Если суп настоится немного после приготовления, вкус станет богаче.";
+      }
+
+      else if (lower.includes("плов") || lower.includes("рис") || lower.includes("гречка") || lower.includes("лапша") || lower.includes("макароны") || lower.includes("спагетти") || lower.includes("паста")) {
+        ingredients = ["основа блюда по названию", "масло", "соль", "специи", "добавка по названию"];
+        description = `${name} — сытное горячее блюдо, которое отлично подходит для полноценного приема пищи.`;
+        steps = [
+          "Подготовь все продукты и нарежь добавки.",
+          "Разогрей сковороду или кастрюлю.",
+          "Слегка обжарь основные добавки.",
+          "Добавь крупу, лапшу, макароны или рис.",
+          "Готовь до мягкости согласно типу блюда.",
+          "Доведи вкус специями и подавай горячим."
+        ];
+        time = "20–45 мин";
+        tip = "Не перевари основу блюда — так текстура будет вкуснее.";
+      }
+
+      else if (lower.includes("картофель")) {
+        ingredients = ["картофель", "масло", "соль", "перец"];
+        if (lower.includes("мяс")) ingredients.push("мясо");
+        description = `${name} — простое и понятное блюдо, которое любят многие.`;
+        steps = [
+          "Очисти и нарежь картофель.",
+          "Подготовь дополнительные ингредиенты, если они есть.",
+          "Обжарь, отвари или запеки картофель в зависимости от блюда.",
+          "Добавь соль и специи.",
+          "Доведи до готовности и подавай."
+        ];
+        time = "25–45 мин";
+        tip = "Для румяной корочки картофель лучше обсушить перед жаркой или запеканием.";
+      }
+
+      else if (lower.includes("куриц") || lower.includes("говядин") || lower.includes("свинин") || lower.includes("индейк") || lower.includes("шашлык") || lower.includes("рулет")) {
+        ingredients = ["мясо по названию", "соль", "перец", "масло", "специи"];
+        description = `${name} — сытное мясное блюдо, подходящее для обеда или ужина.`;
+        steps = [
+          "Подготовь мясо: промой и обсуши.",
+          "Добавь специи и соль.",
+          "При желании замаринуй на 15–30 минут.",
+          "Обжарь, запеки или потуши в зависимости от блюда.",
+          "Доведи до полной готовности.",
+          "Подавай с гарниром или овощами."
+        ];
+        time = "30–60 мин";
+        level = "Средне";
+        tip = "Не пересушивай мясо — лучше готовить на умеренном огне.";
+      }
+
+      else if (lower.includes("котлет")) {
+        ingredients = ["фарш", "лук", "соль", "перец", "яйцо", "немного хлеба или сухарей"];
+        description = `${name} — домашнее блюдо, которое хорошо сочетается почти с любым гарниром.`;
+        steps = [
+          "Смешай фарш с луком, яйцом и специями.",
+          "Сформируй котлеты.",
+          "Обжарь их с двух сторон.",
+          "При желании потом немного протуши под крышкой.",
+          "Подавай горячими."
+        ];
+        time = "25–40 мин";
+        tip = "Слегка влажные руки помогут формировать ровные котлеты.";
+      }
+
+      else if (lower.includes("голубцы") || lower.includes("перец фаршированный") || lower.includes("манты") || lower.includes("хинкали") || lower.includes("пельмени") || lower.includes("вареники")) {
+        ingredients = ["основа блюда", "начинка по вкусу", "специи"];
+        description = `${name} — сытное традиционное блюдо, которое особенно вкусно в горячем виде.`;
+        steps = [
+          "Подготовь начинку и основу блюда.",
+          "Сформируй изделия нужной формы.",
+          "Отвари, запеки или потуши в зависимости от блюда.",
+          "Доведи до полной готовности.",
+          "Подавай со сметаной, соусом или зеленью."
+        ];
+        time = "40–70 мин";
+        level = "Средне";
+        tip = "Такие блюда удобно готовить сразу на несколько порций.";
+      }
+
+      else if (lower.includes("шаурма") || lower.includes("лаваш") || lower.includes("кесадилья") || lower.includes("ролл") || lower.includes("буррито") || lower.includes("бургер")) {
+        ingredients = ["основа из лаваша, булки или тортильи", "начинка по названию", "соус", "овощи"];
+        description = `${name} — удобное и вкусное блюдо, которое можно быстро собрать дома.`;
+        steps = [
+          "Подготовь начинку и нарежь все ингредиенты.",
+          "Разложи основу на столе.",
+          "Добавь начинку и соус.",
+          "Сверни или накрой второй частью основы.",
+          "При желании обжарь или прогрей 2–5 минут.",
+          "Подавай горячим."
+        ];
+        time = "10–20 мин";
+        tip = "Не клади слишком много соуса, иначе блюдо будет разваливаться.";
+      }
+
+      else if (lower.includes("рыба")) {
+        ingredients = ["рыба", "соль", "перец", "лимон", "немного масла"];
+        description = `${name} — легкое и вкусное блюдо, подходящее для тех, кто хочет не слишком тяжелую еду.`;
+        steps = [
+          "Подготовь рыбу и обсуши ее.",
+          "Добавь соль, перец и немного лимонного сока.",
+          "Обжарь, запеки, приготовь на пару или на гриле.",
+          "Доведи до готовности.",
+          "Подавай с овощами или гарниром."
+        ];
+        time = "20–35 мин";
+        tip = "Рыбу лучше не передерживать, чтобы она осталась сочной.";
+      }
+
+      else if (lower.includes("пицца") || lower.includes("чебуреки") || lower.includes("беляши") || lower.includes("самса")) {
+        ingredients = ["тесто", "начинка по названию", "специи"];
+        description = `${name} — популярное домашнее блюдо, которое можно сделать под свой вкус.`;
+        steps = [
+          "Подготовь тесто и начинку.",
+          "Сформируй блюдо нужной формы.",
+          "Добавь начинку внутрь или сверху.",
+          "Запеки или обжарь до готовности.",
+          "Дай немного остыть и подавай."
+        ];
+        time = "30–50 мин";
+        level = "Средне";
+        tip = "Не клади слишком много начинки, иначе тесто может плохо приготовиться.";
+      }
+
+      else {
+        ingredients = ["основные продукты по названию блюда", "соль", "перец", "масло", "добавки по вкусу"];
+        description = `${name} — вкусное домашнее блюдо, которое можно приготовить без слишком сложных действий.`;
+        steps = [
+          "Подготовь все ингредиенты.",
+          "Нарежь продукты, если это нужно.",
+          "Разогрей сковороду, духовку или кастрюлю.",
+          "Смешай или начни готовить основные компоненты блюда.",
+          "Добавь специи и доведи до готовности.",
+          "Подавай горячим или теплым."
+        ];
+        tip = "Можешь менять специи и количество ингредиентов под свой вкус.";
+      }
+
+      return {
+        title: name,
+        description,
+        ingredients,
+        steps,
+        time,
+        level,
+        tip
+      };
+    }
+
+    renderMenu(recipes.breakfast);
   </script>
-
 </body>
 </html>
